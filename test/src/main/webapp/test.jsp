@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	kiem tra xem uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+	kiem tra xem 
 </body>
 </html>
