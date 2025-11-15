@@ -32,6 +32,10 @@
       <i class="fa-solid fa-cart-shopping"></i>
     </div>
   </header>
+  
+  <div class="bodyC">
+ <h1>san pham</h1>
+ </div>
   <footer class="footer">
     <div class="footer-top">
         <div class="contact">
