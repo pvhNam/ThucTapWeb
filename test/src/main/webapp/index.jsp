@@ -1,18 +1,20 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Trang Chủ</title>
 <link rel="stylesheet" href="style.css" />
-<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
-	<header class="header">
-    <img src="dsad" alt="logo" class="logo">
+<header class="header">
+    <img src="/home/nam/git/DoAnLTweb/test/src/main/java/img/logo.jpg" alt="" class="logo">
 
     <nav class="menu">
       <a href="#">CỬA HÀNG</a>
-      <a href="#">BỘ SƯU TẬP</a>
+      <a href="About.jsp">BỘ SƯU TẬP</a>
       <a href="#">GIỚI THIỆU</a>
       <a href="#">TIN TỨC</a>
     </nav>
