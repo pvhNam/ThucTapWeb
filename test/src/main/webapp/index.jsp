@@ -15,8 +15,8 @@
     <nav class="menu">
       <a href="#">CỬA HÀNG</a>
       <a href="About.jsp">BỘ SƯU TẬP</a>
-      <a href="#">GIỚI THIỆU</a>
-      <a href="#">TIN TỨC</a>
+      <a href="gioithieu.jsp"> GIỚI THIỆU</a> 
+			<a href="tintuc.jsp">TIN TỨC </a>
     </nav>
 
     <div class="actions">
@@ -25,8 +25,8 @@
         <input type="text" placeholder="Tìm kiếm" />
       </div>
       <div class="account">
-        <a href="#">ĐĂNG NHẬP</a> |
-        <a href="#">ĐĂNG KÍ</a>
+        <a href="signin.jsp">ĐĂNG NHẬP</a> |
+        <a href="register.jsp">ĐĂNG KÍ</a>
       </div>
       <i class="fa-solid fa-cart-shopping"></i>
     </div>

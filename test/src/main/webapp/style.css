@@ -187,3 +187,16 @@ body {
 .social-icons a:hover {
 	transform: scale(1.1);
 }
+
+#NAM
+.body-nd  .tieude {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	gap: 63px;	
+		text-decoration: none;
+	color: black;
+	font-weight: 600;
+	transition: 0.3s;
+
+}
