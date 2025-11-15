@@ -34,7 +34,7 @@
   </header>
   
   <div class="bodyC">
- <h1>san pham</h1>
+ <h1>san </h1>
  </div>
   <footer class="footer">
     <div class="footer-top">
