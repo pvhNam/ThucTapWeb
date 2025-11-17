@@ -34,7 +34,7 @@
   <footer class="footer">
     <div class="footer-top">
         <div class="contact">
-            <h3>Đolis</h3>
+            <h3>NTShop</h3>
             <p><strong>☎️</strong> 0981774313</p>
             <p><strong>✉️</strong> tranthanglo@gmail.com</p>
             <p><strong>📍</strong> S2, đường Hải Triều, phường Bến Nghé, Quận 1, TP HCM</p>
