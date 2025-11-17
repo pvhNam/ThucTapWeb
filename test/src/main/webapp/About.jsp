@@ -11,6 +11,14 @@
 <body>
 	<header class="header">
     <img src="/home/nam/git/DoAnLTweb/test/src/main/java/img/logo.jpg" alt="" class="logo">
+		<img src="./home/nam/git/DoAnLTweb/test/src/main/java/img/logo.jpg"
+			alt="" class="logo">
+		<nav class="menu">
+			<a href="index.jsp"> CỬA HÀNG</a>
+			<a href="#">BỘ SƯU TẬP </a>
+			<a href="gioithieu.jsp"> GIỚI THIỆU</a>
+			<a href="tintuc.jsp">TIN TỨC </a>
+		</nav>
 
   <nav class="menu">
 			<a href="index.jsp"> CỬA HÀNG</a> 
@@ -47,6 +55,24 @@
   
   
 	<footer class="footer">
+
+	<div class="actions">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Tìm kiếm" />
+      </div>
+      <div class="account">
+        <a href="#">ĐĂNG NHẬP</a> |
+        <a href="#">ĐĂNG KÍ</a>
+      </div>
+      <i class="fa-solid fa-cart-shopping"></i>
+    </div>
+  </header>
+  
+  <div class="bodyC">
+ <h1>san </h1>
+ </div>
+  <footer class="footer">
     <div class="footer-top">
         <div class="contact">
             <h3>Đolis</h3>

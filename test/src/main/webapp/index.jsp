@@ -10,7 +10,7 @@
 </head>
 <body>
 <header class="header">
-    <img src="/home/nam/git/DoAnLTweb/test/src/main/java/img/logo.jpg" alt="" class="logo">
+    <img src="img/logo.png" alt="aaaa" class="logo" width="100">
 
     <nav class="menu">
       <a href="#">CỬA HÀNG</a>
