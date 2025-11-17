@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Bộ Sưu Tập - About</title>
+<title>About</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="CSS/About.css"/>
@@ -117,7 +117,7 @@
             </div>
             <div class="catalog">
                 <h4>Danh mục</h4>
-                <ul>S
+                <ul>
                     <li><a href="#">Trang chủ</a></li>
                     <li><a href="#">Cửa hàng</a></li>
                     <li><a href="#">Giới thiệu</a></li>
@@ -128,10 +128,12 @@
             <div class="fangage">
                 <h3>Fanpage</h3>
                 <div class="social-icons">
-                    <a href="#" aria-label="Facebook"><img src="fb-icon.png" alt="FB" width="30"></a>
-                    <a href="#" aria-label="YouTube"><img src="yt-icon.png" alt="YT" width="30"></a>
-                    <a href="#" aria-label="TikTok"><img src="tiktok-icon.png" alt="TikTok" width="30"></a>
-                    <a href="#" aria-label="Instagram"><img src="ig-icon.png" alt="IG" width="30"></a>
+                <i class="bi bi-facebook"></i>
+                
+                    <a href="#" aria-label="Facebook"><img src="img/facebook1.png" alt="FB" width="30"></a>
+                    <a href="#" aria-label="YouTube"><img src="img/youtube.png" alt="YT" width="30"></a>
+                    <a href="#" aria-label="TikTok"><img src="img/tiktok.png" alt="TikTok" width="30"></a>
+                    <a href="#" aria-label="Instagram"><img src="img/instagram.png" alt="IG" width="30"></a>
                 </div>
             </div>
         </div>
