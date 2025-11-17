@@ -1,0 +1,82 @@
+@charset "UTF-8";
+
+/* Container bao quanh danh sách */
+.body-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* 1. CĂN GIỮA TIÊU ĐỀ */
+.collection-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #333;
+    text-transform: uppercase;
+    border-bottom: 2px solid #000;
+    display: inline-block;
+    
+    /* Căn giữa thẻ inline-block */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 2. BỐ CỤC FLEXBOX: ẢNH TRÁI - CHỮ PHẢI */
+.collection-item {
+    display: flex;       /* Xếp hàng ngang */
+    gap: 30px;           /* Khoảng cách giữa ảnh và chữ */
+    margin-bottom: 50px;
+    align-items: center; /* Căn giữa dọc */
+    background-color: #fff; /* Nền trắng hoặc #f9f9f9 tùy thích */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho đẹp */
+}
+
+/* Cột ảnh */
+.item-image {
+    flex: 1;            /* Chiếm 1 phần */
+    max-width: 400px;   
+}
+
+.item-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    display: block;
+}
+
+/* Cột mô tả */
+.item-description {
+    flex: 1.5;          /* Chiếm 1.5 phần (rộng hơn ảnh) */
+    text-align: left;   /* Chữ căn trái */
+}
+
+.item-description h3 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #000;
+}
+
+.btn-view {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+    .collection-item {
+        flex-direction: column; /* Xếp dọc trên mobile */
+    }
+    .item-description {
+        text-align: center;
+    }
+}
