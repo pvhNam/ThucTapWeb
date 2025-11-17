@@ -10,7 +10,7 @@
 </head>
 <body>
 <header class="header">
-    <img src="img/logo.png" alt="aaaa" class="logo" width="100">
+    <img src="img/logo.png" alt="aaaa" class="logo" width="80">
 
     <nav class="menu">
       <a href="#">CỬA HÀNG</a>
