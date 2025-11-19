@@ -1,0 +1,242 @@
+@charset "UTF-8";
+
+/* =========================================
+   1. BANNER SECTION (.body-nd)
+   ========================================= */
+.body-nd {
+    width: 100%;
+    height: 350px;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('../img/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #34495e; /* Màu nền dự phòng */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.body-nd::after {
+    content: "THỜI TRANG MÙA HÈ 2025";
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* =========================================
+   2. GRID CONTAINER (LƯỚI SẢN PHẨM)
+   ========================================= */
+.body-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px 50px;
+    
+    /* Kích hoạt Grid Layout */
+    display: grid;
+    /* Tự động chia cột: Mỗi cột tối thiểu 260px, còn lại tự co giãn */
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px; /* Khoảng cách giữa các thẻ */
+}
+
+/* Tiêu đề nằm full chiều rộng, không bị chia cột */
+.collection-title {
+    grid-column: 1 / -1; /* Bắt buộc tiêu đề chiếm hết hàng ngang */
+    text-align: center;
+    font-size: 2.2rem;
+    color: #333;
+    margin: 30px 0 40px;
+    text-transform: uppercase;
+    font-weight: 800;
+    position: relative;
+}
+
+.collection-title::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #00acc1;
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+/* =========================================
+   3. PRODUCT CARD (THẺ SẢN PHẨM ĐỨNG)
+   ========================================= */
+.collection-item {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+    
+    /* Quan trọng: Xếp dọc (Ảnh trên - Chữ dưới) */
+    display: flex;
+    flex-direction: column; 
+    height: 100%; /* Để các thẻ bằng nhau */
+}
+
+.collection-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* --- Phần Ảnh (Nằm trên) --- */
+.item-image {
+    width: 100%;
+    height: 280px; /* Chiều cao cố định cho ảnh */
+    overflow: hidden;
+    position: relative;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cắt ảnh vừa khung */
+    transition: transform 0.5s ease;
+}
+
+.collection-item:hover .item-image img {
+    transform: scale(1.1); /* Zoom nhẹ khi hover */
+}
+
+/* --- Phần Nội Dung (Nằm dưới) --- */
+.item-description {
+    padding: 20px;
+    flex: 1; /* Đẩy nút xuống đáy nếu nội dung ngắn */
+    display: flex;
+    flex-direction: column;
+    text-align: center; /* Căn giữa nội dung */
+}
+
+.item-description h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 700;
+    /* Giới hạn tên sản phẩm 2 dòng */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.item-description p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.item-description strong {
+    display: block;
+    margin-top: auto; /* Đẩy giá tiền xuống sát nút bấm */
+    color: #e74c3c;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+/* =========================================
+   4. BUTTONS (ACTIONS)
+   ========================================= */
+.item-actions {
+    display: flex;
+    justify-content: center; /* Căn giữa nút */
+    gap: 10px;
+    margin-top: auto;
+}
+
+/* Nút Xem */
+.btn-view {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Nút tròn */
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 0; /* Ẩn chữ "Xem chi tiết", chỉ hiện icon nếu có */
+}
+/* Thêm icon mắt vào CSS giả lập nếu trong HTML không có icon */
+.btn-view::before {
+    content: "\f06e"; /* Mã icon con mắt FontAwesome */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.btn-view:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Nút Thêm giỏ hàng */
+.btn-add-cart {
+    flex: 1; /* Chiếm phần còn lại */
+    padding: 0 15px;
+    height: 40px;
+    background-color: #00acc1;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-add-cart:hover {
+    background-color: #00838f;
+}
+
+/* =========================================
+   5. RESPONSIVE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+    .body-content {
+        /* Trên mobile hiện 2 cột */
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 15px;
+    }
+
+    .body-nd {
+        height: 200px;
+    }
+    
+    .body-nd::after {
+        font-size: 1.5rem;
+    }
+
+    .item-image {
+        height: 200px; /* Ảnh nhỏ hơn trên mobile */
+    }
+
+    .item-description {
+        padding: 15px 10px;
+    }
+
+    .item-description h3 {
+        font-size: 1rem;
+    }
+    
+    /* Ẩn nút xem chi tiết trên mobile cho gọn */
+    .btn-view {
+        display: none;
+    }
+    
+    .btn-add-cart {
+        font-size: 11px;
+    }
+}

@@ -21,6 +21,43 @@ body {
 	padding: 10px 40px;
 	color: black;
 }
+/* CSS cho nút Thêm vào giỏ hàng */
+.btn-add-cart {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e74c3c; /* Màu đỏ nổi bật */
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-add-cart:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px); /* Hiệu ứng nảy lên nhẹ */
+}
+
+.btn-view {
+    /* Cập nhật lại nút Xem chi tiết cho đồng bộ */
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
 .logo {
 	font-size: 24px;

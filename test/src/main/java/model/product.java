@@ -8,9 +8,10 @@ public class product {
 	public String color;
 	public String size;
 	public int stockquantyti;
+	public String image; // THÊM DÒNG NÀY
 
-	public product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti) {
-		super();
+	public product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti,
+			String image) {
 		this.pid = pid;
 		this.pdescription = pdescription;
 		this.price = price;
@@ -18,10 +19,19 @@ public class product {
 		this.color = color;
 		this.size = size;
 		this.stockquantyti = stockquantyti;
+		this.image = image; // THÊM DÒNG NÀY
 	}
 
 	public int getPid() {
 		return pid;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public void setPid(int pid) {
