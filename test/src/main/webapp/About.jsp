@@ -29,9 +29,11 @@
 			<div class="account">
 				<a href="signin.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG
 					KÍ</a>
-			</div>
-			<i class="fa-solid fa-cart-shopping"></i>
 		</div>
+        <a href="cartitem.jsp" aria-label="Giỏ hàng">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+    </div>
 	</header>
 	<div class="body-nd"></div>
 
@@ -108,18 +110,18 @@
 				<div class="payment">
 					<h4>Phương thức thanh toán</h4>
 					<div class="logos">
-						<img src="img/visa.png" alt="VISA" width="60"> <img
-							src="img/jcb.png" alt="JCB" width="60"> <img
-							src="img/paypal.png" alt="PayPal" width="60">
+						<img src="img/visa.png" alt="VISA" width="30"> <img
+							src="img/jcb.png" alt="JCB" > <img
+							src="img/paypal.png" alt="PayPal" >
 					</div>
 				</div>
 				<div class="shipping">
 					<h4>Đơn vị vận chuyển</h4>
-					<div class="logos">
-						<img src="img/vietnampost.png" alt="VietPost" width="60"> <img
-							src="img/ghtk.png" alt="GHN" width="60"> <img
-							src="img/jt.png" alt="J&T Express" width="60"> <img
-							src="img/kerry.png" alt="Kerry" width="60">
+					<div class="logos2">
+						<img src="img/vietnampost.png" alt="VietPost"> <img
+							src="img/ghtk.png" alt="GHN" > <img
+							src="img/jt.png" alt="J&T Express" > <img
+							src="img/kerry.png" alt="Kerry" >
 					</div>
 				</div>
 			</div>

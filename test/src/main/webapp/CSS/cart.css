@@ -1,0 +1,309 @@
+/* ------------------------------------ */
+/* CSS cho Trang Giỏ Hàng (cart.css) - Phiên bản V3 */
+/* ------------------------------------ */
+
+.cart-container-v3 {
+    max-width: 1300px;
+    margin: 50px auto;
+    padding: 0 25px;
+}
+
+.cart-title-v3 {
+    text-align: left;
+    font-size: 2.2em;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 700;
+}
+
+/* Bố cục chính */
+.cart-content-v3 {
+    display: flex;
+    gap: 30px;
+}
+
+.cart-items-list-v3 {
+    flex: 2; /* Chiếm 66% */
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+/* Tiêu đề cột */
+.cart-header-v3 {
+    display: grid;
+    /* 0.5fr: Select, 3fr: Product, 1fr: Price, 1fr: Qty, 1fr: Subtotal, 0.5fr: Action */
+    grid-template-columns: 0.5fr 3fr 1fr 1fr 1fr 0.5fr; 
+    padding: 15px 5px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ddd;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+}
+
+/* Căn chỉnh nội dung trong header */
+.col-product { text-align: left; padding-left: 10px;}
+.col-price, .col-qty, .col-subtotal { text-align: center; }
+
+
+/* Định dạng từng dòng sản phẩm */
+.cart-item-row-v3 {
+    display: grid;
+    grid-template-columns: 0.5fr 3fr 1fr 1fr 1fr 0.5fr;
+    align-items: center;
+    padding: 15px 5px;
+    border-bottom: 1px dashed #eee;
+    transition: background-color 0.2s;
+}
+
+.cart-item-row-v3:hover {
+    background-color: #fcfcfc;
+}
+
+.cart-item-row-v3:last-child {
+    border-bottom: none;
+}
+
+/* Sản phẩm không được tích chọn (Tạo hiệu ứng mờ) */
+.disabled-item {
+    opacity: 0.6;
+    background-color: #fefefe;
+}
+
+/* Tích chọn */
+.col-select, .col-select-v3 {
+    text-align: center;
+}
+.item-select {
+    transform: scale(1.2);
+    cursor: pointer;
+    accent-color: #3498db; /* Màu của checkbox */
+}
+
+/* Chi tiết sản phẩm */
+.col-product-v3 {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.item-img-v3 {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.item-name-v3 {
+    margin: 0 0 3px 0;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.item-variant-v3 {
+    font-size: 0.8em;
+    color: #777;
+    margin: 0;
+}
+
+/* Giá, Số lượng, Thành tiền */
+.col-price-v3, .col-subtotal-v3 {
+    text-align: center;
+    font-weight: 600;
+}
+.col-subtotal-v3 {
+    color: #e74c3c; /* Màu đỏ nổi bật */
+    font-size: 1.1em;
+}
+
+/* Bộ đếm số lượng */
+.col-qty-v3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.qty-btn-v3 {
+    width: 30px;
+    height: 30px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+.qty-input-v3 {
+    width: 40px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+    margin: 0 2px;
+}
+
+/* Nút xóa */
+.col-action-v3 {
+    text-align: center;
+}
+.btn-remove-item-v3 {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.btn-remove-item-v3:hover {
+    color: #e74c3c;
+}
+
+/* Tóm tắt đơn hàng */
+.cart-summary-v3 {
+    flex: 1; /* Chiếm 33% */
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    height: fit-content;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.cart-summary-v3 h3 {
+    margin-top: 0;
+    font-size: 1.4em;
+    font-weight: 700;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #1a1a1a;
+}
+
+.summary-line-v3 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #555;
+}
+.summary-line-v3 .discount-value-v3 {
+    color: green;
+}
+
+
+.summary-total-v3 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #ddd;
+    font-size: 1.5em;
+}
+.total-price-v3 {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+/* Mã giảm giá */
+.coupon-box {
+    display: flex;
+    margin-top: 20px;
+}
+.coupon-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+}
+.btn-apply-coupon {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.btn-apply-coupon:hover {
+    background-color: #2980b9;
+}
+
+.btn-checkout-v3 {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    background-color: #2ecc71; 
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+.btn-checkout-v3:hover {
+    background-color: #27ae60;
+}
+
+.btn-continue-shopping-v3 {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #3498db;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .cart-content-v3 {
+        flex-direction: column;
+    }
+
+    .cart-summary-v3 {
+        order: -1; 
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 700px) {
+    .cart-header-v3 {
+        display: none; /* Ẩn tiêu đề cột */
+    }
+    
+    .cart-item-row-v3 {
+        grid-template-columns: 0.5fr 3fr 1fr 1fr; /* Ẩn cột Giá và Hành động đơn giản hơn */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        padding: 15px;
+    }
+    
+    .col-price-v3, .col-action-v3 {
+        display: none; /* Ẩn trên mobile để tiết kiệm không gian */
+    }
+    
+    .col-product-v3 {
+        grid-column: 2 / 4;
+    }
+    .col-select-v3 {
+        grid-column: 1 / 2;
+    }
+    .col-qty-v3 {
+        grid-column: 2 / 3;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+    .col-subtotal-v3 {
+        grid-column: 3 / 5;
+        text-align: right;
+        font-size: 1em;
+        margin-top: 10px;
+    }
+}

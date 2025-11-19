@@ -167,11 +167,21 @@ body {
 	gap: 10px;
 	flex-wrap: wrap;
 }
-
+.logos2 {
+	display: flex;
+	justify-content: center;
+	gap: 1px;
+	flex-wrap: wrap;
+}
 .logos img {
-	height: 30px;
+	height: 50px;
+	width: 50px
 }
 
+.logos2 img{
+	height:30px;
+	width: 50px
+}
 .social-icons {
 	display: flex;
 	gap: 10px;
@@ -188,15 +198,15 @@ body {
 	transform: scale(1.1);
 }
 
-#NAM
-.body-nd  .tieude {
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	gap: 63px;	
-		text-decoration: none;
-	color: black;
-	font-weight: 600;
-	transition: 0.3s;
 
+/* Trong file CSS của bạn */
+.actions a[aria-label="Giỏ hàng"] {
+	/* Đảm bảo nó vẫn hiển thị như một icon */
+	color: inherit; /* Giữ nguyên màu sắc */
+	display: flex; /* Căn chỉnh icon nếu cần */
+	align-items: center;
+	justify-content: center;	
+	text-decoration: none; /* Bỏ gạch chân nếu có */
+	cursor: pointer;
+	font-size: 1.2rem; /* Hoặc kích thước icon mà bạn đang dùng */
 }
