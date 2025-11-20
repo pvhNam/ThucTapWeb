@@ -1,3 +1,4 @@
+<%@page import="model.cartItem"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.CartItemDTO"%>
@@ -30,13 +31,13 @@
 		</div>
 	</header>
 
-	<div class="body-nd"></div>
+<div class="body-nd"></div>
 
-	<div class="cart-container-v3">
-		<h1 class="cart-title-v3">GIỎ HÀNG CỦA TÔI</h1>
+    <div class="cart-container-v3">
+        <h1 class="cart-title-v3">GIỎ HÀNG CỦA TÔI</h1>
 
-		<div class="cart-content-v3">
-			<div class="cart-items-list-v3">
+        <div class="cart-content-v3">
+            <div class="cart-items-list-v3">
                 <div class="cart-header-v3">
                     <span class="col-select"><input type="checkbox" id="select-all" checked></span>
                     <label for="select-all" class="col-product">SẢN PHẨM (<%= request.getAttribute("totalCount") != null ? request.getAttribute("totalCount") : 0 %>)</label>
@@ -47,39 +48,62 @@
                 </div>
                 
                 <% 
-                    List<CartItemDTO> list = (List<CartItemDTO>) request.getAttribute("cartList");
+                    // SỬA: Ép kiểu về List<CartItem> cho khớp với Controller
+                    List<cartItem> list = (List<cartItem>) request.getAttribute("cartList");
                     DecimalFormat df = new DecimalFormat("#,### VNĐ");
                     
-                    // SỬA: Lấy subtotal và xử lý Null an toàn
                     Double subtotalObj = (Double) request.getAttribute("subtotal");
                     double subtotal = (subtotalObj != null) ? subtotalObj : 0.0;
                     
                     if (list != null && !list.isEmpty()) {
-                        for (CartItemDTO item : list) {
+                        for (cartItem item : list) {
+                            // Lấy đường dẫn ảnh, nếu null thì dùng ảnh mặc định
+                            String imgUrl = (item.getProduct().getImage() != null && !item.getProduct().getImage().isEmpty()) 
+                                            ? item.getProduct().getImage() 
+                                            : "img/no-image.png";
                 %>
                     <div class="cart-item-row-v3">
                         <div class="col-select-v3">
                             <input type="checkbox" class="item-select" checked>
                         </div>
+                        
                         <div class="col-product-v3">
-                            <img src="img/maunangdong.jpg" class="item-img-v3"> 
+                            <img src="<%= imgUrl %>" class="item-img-v3" alt="SP"> 
                             <div class="item-info-v3">
                                 <h4 class="item-name-v3"><%= item.getProduct().getPdescription() %></h4>
                                 <p class="item-variant-v3">Màu: <%= item.getProduct().getColor() %>, Size: <%= item.getProduct().getSize() %></p>
                             </div>
                         </div>
+                        
                         <div class="col-price-v3"><%= df.format(item.getProduct().getPrice()) %></div>
+                        
                         <div class="col-qty-v3">
-                            <button class="qty-btn-v3">-</button>
+                            <form action="cart" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
+                                <input type="hidden" name="quantity" value="<%= item.getQuantity() - 1 %>">
+                                <button type="submit" class="qty-btn-v3">-</button>
+                            </form>
+
                             <input type="text" value="<%= item.getQuantity() %>" readonly class="qty-input-v3">
-                            <button class="qty-btn-v3">+</button>
+
+                            <form action="cart" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
+                                <input type="hidden" name="quantity" value="<%= item.getQuantity() + 1 %>">
+                                <button type="submit" class="qty-btn-v3">+</button>
+                            </form>
                         </div>
+                        
                         <div class="col-subtotal-v3"><%= df.format(item.getTotalPrice()) %></div>
+                        
                         <div class="col-action-v3">
                             <form action="cart" method="post">
                                 <input type="hidden" name="action" value="remove">
                                 <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
-                                <button type="submit" class="btn-remove-item-v3" title="Xóa sản phẩm"><i class="fa-solid fa-trash-can"></i></button>
+                                <button type="submit" class="btn-remove-item-v3" title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc muốn xóa không?')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -87,7 +111,10 @@
                         }
                     } else {
                 %>
-                    <p style="padding: 20px; text-align: center;">Giỏ hàng trống.</p>
+                    <p style="padding: 50px; text-align: center; color: #888;">Giỏ hàng của bạn đang trống.</p>
+                    <div style="text-align:center; margin-bottom: 30px;">
+                        <a href="index.jsp" style="text-decoration: underline; color: black;">Quay lại mua sắm</a>
+                    </div>
                 <% } %>
             </div>
             
@@ -103,15 +130,14 @@
                 </div>
                 <a href="checkout.jsp" class="btn-checkout-v3">TIẾN HÀNH THANH TOÁN</a>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const selectAll = document.getElementById('select-all');
         const itemCheckboxes = document.querySelectorAll('.item-select');
 
-        // Xử lý chọn tất cả
         if(selectAll) {
             selectAll.addEventListener('change', function() {
                 itemCheckboxes.forEach(cb => {
@@ -119,7 +145,6 @@
                 });
             });
         }
-        // (Bạn cần thêm AJAX ở đây nếu muốn cập nhật tiền ngay lập tức mà không load lại trang)
     });
     </script>
 	<footer class="footer">

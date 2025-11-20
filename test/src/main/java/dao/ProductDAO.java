@@ -33,4 +33,30 @@ public class ProductDAO {
 
         return list;
     }
+ // --- THÊM HÀM MỚI NÀY ---
+    // Hàm mới: Lấy 1 sản phẩm theo ID
+    public product getProductById(int pid) {
+        String sql = "SELECT * FROM product WHERE pid = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new product(
+                        rs.getInt("pid"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("cateID"),
+                        rs.getString("color"),
+                        rs.getString("size"),
+                        rs.getInt("amount"),
+                        rs.getString("img")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
