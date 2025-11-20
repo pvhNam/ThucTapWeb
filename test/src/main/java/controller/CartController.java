@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import dao.DataStore;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,31 +16,31 @@ import model.cartItem;
 import model.product;
 import model.user;
 
-@WebServlet("/cart") // URL mapping cho controller này
+@WebServlet("/cart") // URL mapping
 public class CartController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // GET: Dùng để HIỂN THỊ trang giỏ hàng
+    // GET: Khi người dùng bấm vào icon giỏ hàng
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
         user currentUser = (user) session.getAttribute("user"); // Lấy user từ session
 
-        List<cartItem> rawItems = new ArrayList<>();
-
-        // LOGIC: Lấy danh sách item thô
-        if (currentUser != null) {
-            // 1. Nếu ĐÃ ĐĂNG NHẬP -> Lấy từ "Database" (DataStore)
-            rawItems = DataStore.getUserCart(currentUser.getUid());
-        } else {
-            // 2. Nếu CHƯA ĐĂNG NHẬP -> Lấy từ Session (Giỏ hàng tạm)
-            if (session.getAttribute("cart_guest") != null) {
-                rawItems = (List<cartItem>) session.getAttribute("cart_guest");
-            }
+        // --- [SỬA ĐỔI QUAN TRỌNG] ---
+        // Kiểm tra: Nếu chưa đăng nhập (currentUser là null)
+        if (currentUser == null) {
+            // Chuyển hướng sang trang đăng nhập
+            // Kèm tham số ?origin=cart để trang đăng nhập biết cần quay lại đây sau khi xong
+            response.sendRedirect("signin.jsp?origin=cart");
+            return; // Dừng code tại đây, không chạy tiếp phía dưới
         }
+        // -----------------------------
 
-        // LOGIC: Chuyển đổi sang DTO (Kèm thông tin Product đầy đủ) để hiển thị
+        // Nếu đã đăng nhập, code sẽ chạy tiếp xuống dưới để lấy giỏ hàng từ DataStore
+        List<cartItem> rawItems = DataStore.getUserCart(currentUser.getUid());
+
+        // Logic cũ: Chuyển đổi sang DTO để hiển thị
         List<CartItemDTO> displayList = new ArrayList<>();
         double subtotal = 0;
         int totalCount = 0;
@@ -52,7 +51,6 @@ public class CartController extends HttpServlet {
                 CartItemDTO dto = new CartItemDTO(p, item.getQuantyti());
                 displayList.add(dto);
                 
-                // Tính tổng tiền (Mặc định tính hết, nếu có tích chọn JS sẽ xử lý lại ở front-end)
                 subtotal += dto.getTotalPrice();
                 totalCount += item.getQuantyti();
             }
@@ -63,11 +61,10 @@ public class CartController extends HttpServlet {
         request.setAttribute("subtotal", subtotal);
         request.setAttribute("totalCount", totalCount);
         
-        // Chuyển hướng đến trang giao diện
         request.getRequestDispatcher("cartitem.jsp").forward(request, response);
     }
 
-    // POST: Dùng để THÊM, SỬA, XÓA sản phẩm
+    // POST: Khi bấm nút "Thêm vào giỏ" hoặc "Xóa"
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -75,7 +72,15 @@ public class CartController extends HttpServlet {
         HttpSession session = request.getSession();
         user currentUser = (user) session.getAttribute("user");
         
-        String action = request.getParameter("action"); // add, remove, update
+        // --- [SỬA ĐỔI] ---
+        // Nếu chưa đăng nhập mà cố tình thêm giỏ hàng -> Cũng bắt đăng nhập luôn
+        if (currentUser == null) {
+            response.sendRedirect("signin.jsp?origin=cart");
+            return;
+        }
+        // -----------------
+
+        String action = request.getParameter("action"); 
         int pid = Integer.parseInt(request.getParameter("pid"));
         
         if ("add".equals(action)) {
@@ -84,41 +89,15 @@ public class CartController extends HttpServlet {
                 quantity = Integer.parseInt(request.getParameter("quantity"));
             } catch (NumberFormatException e) {}
 
-            if (currentUser != null) {
-                // CASE 1: Đã đăng nhập -> Lưu vào DB (DataStore)
-                DataStore.addItemToUserCart(currentUser.getUid(), pid, quantity);
-            } else {
-                // CASE 2: Chưa đăng nhập -> Lưu vào Session
-                List<cartItem> guestCart = (List<cartItem>) session.getAttribute("cart_guest");
-                if (guestCart == null) guestCart = new ArrayList<>();
-                
-                boolean exists = false;
-                for (cartItem item : guestCart) {
-                    if (item.getPid() == pid) {
-                        item.setQuantyti(item.getQuantyti() + quantity);
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    // Tạo ID tạm cho guest
-                    guestCart.add(new cartItem(guestCart.size() + 1, pid, quantity));
-                }
-                session.setAttribute("cart_guest", guestCart);
-            }
+            // Chỉ còn logic lưu vào DataStore (vì đã bắt buộc đăng nhập)
+            DataStore.addItemToUserCart(currentUser.getUid(), pid, quantity);
         } 
         else if ("remove".equals(action)) {
-            if (currentUser != null) {
-                DataStore.removeUserCartItem(currentUser.getUid(), pid);
-            } else {
-                List<cartItem> guestCart = (List<cartItem>) session.getAttribute("cart_guest");
-                if (guestCart != null) {
-                    guestCart.removeIf(item -> item.getPid() == pid);
-                }
-            }
+            // Xóa khỏi DataStore
+            DataStore.removeUserCartItem(currentUser.getUid(), pid);
         }
 
-        // Sau khi xử lý xong, quay lại trang giỏ hàng
+        // Quay lại trang giỏ hàng (sẽ kích hoạt doGet ở trên)
         response.sendRedirect("cart"); 
     }
 }
