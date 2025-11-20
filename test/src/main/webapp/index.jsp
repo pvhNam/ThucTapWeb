@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.DecimalFormat" %>
-<%@ page import="dao.DataStore" %>
+<%@ page import="dao.ProductDAO" %>
 <%@ page import="model.product" %>
 <!DOCTYPE html>
 <html>
@@ -9,7 +9,6 @@
 <meta charset="UTF-8">
 <title>Trang Chủ</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/index.css" />
 
@@ -42,31 +41,36 @@
 
 		<h1 class="collection-title">BỘ SƯU TẬP MỚI</h1>
 
-        <%
-            // 1. Lấy danh sách sản phẩm từ DataStore
-            List<product> products = DataStore.listProduct;
+       <%
+            ProductDAO pdao = new ProductDAO();
+            List<product> products = pdao.getAllProducts();
             DecimalFormat df = new DecimalFormat("#,### VNĐ");
 
-            // 2. Duyệt qua từng sản phẩm
-            if (products != null) {
+            // --- ĐOẠN CODE KIỂM TRA LỖI ---
+            if (products == null || products.isEmpty()) {
+        %>
+            <div style="text-align:center; color: red; padding: 50px;">
+                <h3>Không tìm thấy sản phẩm nào!</h3>
+                <p>Hãy kiểm tra lại kết nối Database hoặc chạy lệnh INSERT dữ liệu mẫu.</p>
+            </div>
+        <%
+            } else {
                 for (product p : products) {
         %>
         
-		<div class="collection-item">
-			<div class="item-image">
-                <img src="<%= p.getImage() %>" alt="<%= p.getPdescription() %>">
-			</div>
+        <div class="collection-item">
+            <div class="item-image">
+                <img src="<%= (p.getImage() != null && !p.getImage().isEmpty()) ? p.getImage() : "img/no-image.png" %>" 
+                     alt="<%= p.getPdescription() %>">
+            </div>
             
-			<div class="item-description">
-				<h3><%= p.getPdescription() %></h3>
-				<p>Mô tả ngắn: Thiết kế hiện đại, chất liệu cao cấp (Size: <%= p.getSize() %>, Màu: <%= p.getColor() %>).</p>
-				<p>
-					Giá tham khảo: <strong><%= df.format(p.getPrice()) %></strong>
-				</p>
-				
+            <div class="item-description">
+                <h3><%= p.getPdescription() %></h3>
+                <p>Mô tả ngắn: Thiết kế hiện đại (Size: <%= p.getSize() %>, Màu: <%= p.getColor() %>).</p>
+                <p>Giá tham khảo: <strong><%= df.format(p.getPrice()) %></strong></p>
+                
                 <div class="item-actions">
                     <a href="product-detail.jsp?pid=<%= p.getPid() %>" class="btn-view">Xem chi tiết</a>
-
                     <form action="cart" method="post">
                         <input type="hidden" name="action" value="add">
                         <input type="hidden" name="pid" value="<%= p.getPid() %>">
@@ -76,12 +80,12 @@
                         </button>
                     </form>
                 </div>
-			</div>
-		</div>
+            </div>
+        </div>
 
         <%
                 } // Kết thúc vòng lặp
-            } // Kết thúc if
+            } // Kết thúc else
         %>
 
 	</div>

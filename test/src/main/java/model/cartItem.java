@@ -1,33 +1,35 @@
 package model;
 
 public class cartItem {
-	public int Ciid;
-	public int pid;
-	public int quantyti;
-	public cartItem(int ciid, int pid, int quantyti) {
-		super();
-		Ciid = ciid;
-		this.pid = pid;
-		this.quantyti = quantyti;
-	}
-	public int getCiid() {
-		return Ciid;
-	}
-	public void setCiid(int ciid) {
-		Ciid = ciid;
-	}
-	public int getPid() {
-		return pid;
-	}
-	public void setPid(int pid) {
-		this.pid = pid;
-	}
-	public int getQuantyti() {
-		return quantyti;
-	}
-	public void setQuantyti(int quantyti) {
-		this.quantyti = quantyti;
-	}
-	
+    private product product; // Chứa thông tin sản phẩm
+    private int quantity;    // Số lượng mua
 
+    public cartItem() {
+    }
+
+    public cartItem(product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public product getProduct() {
+        return product;
+    }
+
+    public void setProduct(product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    
+    // Tính tổng tiền của riêng item này = giá * số lượng
+    public double getTotalPrice() {
+        return product.getPrice() * quantity;
+    }
 }
