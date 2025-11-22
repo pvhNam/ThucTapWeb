@@ -14,10 +14,10 @@
 
 </head>
 <body> <header class="header">
-		<img src="img/logo.png" alt="Logo" class="logo" width="80">
+		<img src="img/logover2_5.png" alt="Logo" class="logo" width="80">
 
 		<nav class="menu">
-			<a href="#">CỬA HÀNG</a> 
+			<a href="#" class="active">CỬA HÀNG</a> 
             <a href="About.jsp">BỘ SƯU TẬP</a> 
             <a href="gioithieu.jsp"> GIỚI THIỆU</a> 
             <a href="tintuc.jsp">TIN TỨC </a>

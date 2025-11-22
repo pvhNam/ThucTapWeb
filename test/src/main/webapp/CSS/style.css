@@ -247,3 +247,8 @@ body {
 	cursor: pointer;
 	font-size: 1.2rem; /* Hoặc kích thước icon mà bạn đang dùng */
 }
+.menu a.active {
+    color: #ffffff;       /* Đổi chữ thành màu trắng để nổi bật trên nền xanh */
+    font-weight: 800;     /* In đậm hơn */
+    border-bottom: 2px solid #ffffff; /* Gạch chân màu trắng */
+}

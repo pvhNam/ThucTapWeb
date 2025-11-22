@@ -16,7 +16,7 @@
 		<img src="img/logo.png" alt="" class="logo" width="80">
 
 		<nav class="menu">
-			<a href="index.jsp"> CỬA HÀNG</a> <a href="#">BỘ SƯU TẬP </a> <a
+			<a href="index.jsp"> CỬA HÀNG</a> <a href="#" class="active">BỘ SƯU TẬP </a> <a
 				href="gioithieu.jsp"> GIỚI THIỆU</a> <a href="tintuc.jsp">TIN
 				TỨC </a>
 		</nav>
