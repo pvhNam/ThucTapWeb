@@ -19,15 +19,15 @@
 		<nav class="menu">
 			<a href="index.jsp"> CỬA HÀNG</a>
 			<a href="collection.jsp">BỘ SƯU TẬP </a> 
-			<a href="gioithieu.jsp"> GIỚI THIỆU</a> 
-			<a href="tintuc.jsp">TIN TỨC </a>
+			<a href="about.jsp"> GIỚI THIỆU</a> 
+			<a href="news.jsp">TIN TỨC </a>
 		</nav>
 		<div class="actions">
 			<div class="search-box">
 				<i class="fa-solid fa-magnifying-glass"></i> <input type="text" placeholder="Tìm Kiếm" />
 			</div>
 			<div class="account">
-				<a href="signin.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
+				<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
 			</div>
 			<a href="cart" aria-label="Giỏ hàng"> <i class="fa-solid fa-cart-shopping"></i> </a>
 		</div>

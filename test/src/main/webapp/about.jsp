@@ -1,23 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>collection</title>
+<title>About</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/collection.css" />
-
+<link rel="stylesheet" href="CSS/about.css" />
 </head>
 <body>
-	<header class="header">
+<header class="header">
 		<img src="img/logover2_5.png" alt="" class="logo" width="80">
 
 		<nav class="menu">
 			<a href="index.jsp"> CỬA HÀNG</a>
-			<a href="#" class="active">BỘ SƯU TẬP </a>
-			<a href="about.jsp"> GIỚI THIỆU</a> 
+			<a href="collection" >BỘ SƯU TẬP </a>
+			<a href="#" class="active"> GIỚI THIỆU</a> 
 			<a href="news.jsp">TIN TỨC </a>
 		</nav>
 
@@ -27,68 +26,13 @@
 					placeholder="Tìm Kiếm" />
 			</div>
 			<div class="account">
-				<a href=login.jsp>ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
+				<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
 			</div>
 			<a href="cartitem.jsp" aria-label="Giỏ hàng"> <i
 				class="fa-solid fa-cart-shopping"></i>
 			</a>
 		</div>
 	</header>
-	<div class="body-nd"></div>
-
-	<div class="body-content">
-
-		<h1 class="collection-title">BỘ SƯU TẬP</h1>
-
-		<div class="collection-item">
-			<div class="item-image">
-				<img src="img/maunangdong.jpg" alt="Bộ sưu tập 1">
-			</div>
-			<div class="item-description">
-				<h3>Street Style Năng Động</h3>
-				<p>Khám phá bộ sưu tập thời trang đường phố mới nhất với chất
-					liệu thoáng mát, thiết kế hiện đại phù hợp cho những buổi dạo phố
-					cuối tuần. Sự kết hợp hoàn hảo giữa phong cách bụi bặm và sự thoải
-					mái tối đa.</p>
-				<p>
-					Giá tham khảo: <strong>500.000 VNĐ</strong>
-				</p>
-				<a href="#" class="btn-view">Xem chi tiết</a>
-			</div>
-		</div>
-
-		<div class="collection-item">
-			<div class="item-image">
-				<img src="img/congso.jpg" alt="Bộ sưu tập 2">
-			</div>
-			<div class="item-description">
-				<h3>Công Sở Thanh Lịch</h3>
-				<p>Vẻ đẹp sang trọng và chuyên nghiệp dành cho môi trường công
-					sở. Các thiết kế tối giản nhưng tinh tế, giúp bạn tự tin trong mọi
-					cuộc họp.</p>
-				<p>
-					Giá tham khảo: <strong>750.000 VNĐ</strong>
-				</p>
-				<a href="#" class="btn-view">Xem chi tiết</a>
-			</div>
-		</div>
-
-		<div class="collection-item">
-			<div class="item-image">
-				<img src="img/dangcap.jpg" alt="Bộ sưu tập 3">
-			</div>
-			<div class="item-description">
-				<h3>Dạ Hội Quý Phái</h3>
-				<p>Những chiếc đầm dạ hội lộng lẫy được thiết kế thủ công tỉ mỉ.
-					Điểm nhấn là các chi tiết đính đá và đường cắt may táo bạo.</p>
-				<p>
-					Giá tham khảo: <strong>1.200.000 VNĐ</strong>
-				</p>
-				<a href="#" class="btn-view">Xem chi tiết</a>
-			</div>
-		</div>
-
-	</div>
 	<footer class="footer">
 		<div class="footer-top">
 			<div class="contact">

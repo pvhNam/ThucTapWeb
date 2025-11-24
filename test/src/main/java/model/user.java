@@ -2,16 +2,16 @@ package model;
 
 public class user {
 	public int uid;
-	public String uname;
+	public String username;
 	public String passwordHash; // cái này dùn mã băm để cho an toàn
 	public String email;
 	public String fullname;
-	public int phonenumber;
+	public String phonenumber;
 
-	public user(int uid, String uname, String passwordHash, String email, String fullname, int phonenumber) {
+	public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber) {
 		super();
 		this.uid = uid;
-		this.uname = uname;
+		this.username = username;
 		this.passwordHash = passwordHash;
 		this.email = email;
 		this.fullname = fullname;
@@ -26,12 +26,12 @@ public class user {
 		this.uid = uid;
 	}
 
-	public String getUname() {
-		return uname;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUname(String uname) {
-		this.uname = uname;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPasswordHash() {
@@ -58,11 +58,11 @@ public class user {
 		this.fullname = fullname;
 	}
 
-	public int getPhonenumber() {
+	public String getPhonenumber() {
 		return phonenumber;
 	}
 
-	public void setPhonenumber(int phonenumber) {
+	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
 

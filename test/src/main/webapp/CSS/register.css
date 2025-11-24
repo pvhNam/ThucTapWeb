@@ -1,0 +1,26 @@
+/* --- Thêm vào cuối file CSS/login.css --- */
+
+/* Điều chỉnh riêng cho khung đăng ký */
+.register-wrapper {
+    max-width: 500px; /* Rộng hơn form login một chút */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Nút đăng ký có thể đổi màu để phân biệt (Tùy chọn) */
+.btn-register {
+    background-color: #333; /* Màu đen hoặc màu khác chủ đạo */
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    background-color: #555;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 600px) {
+    .register-wrapper {
+        padding: 30px 20px;
+        width: 100%;
+    }
+}
