@@ -18,7 +18,7 @@
 
 		<nav class="menu">
 			<a href="#" class="active">CỬA HÀNG</a> 
-            <a href="About.jsp">BỘ SƯU TẬP</a> 
+            <a href="collection.jsp">BỘ SƯU TẬP</a> 
             <a href="gioithieu.jsp"> GIỚI THIỆU</a> 
             <a href="tintuc.jsp">TIN TỨC </a>
 		</nav>
