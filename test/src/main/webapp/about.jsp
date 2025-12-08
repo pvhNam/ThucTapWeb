@@ -56,7 +56,7 @@
         } 
     %>
 </div>
-			<a href="cartitem.jsp" aria-label="Giỏ hàng"> <i
+			<a href="cart" aria-label="Giỏ hàng"> <i
 				class="fa-solid fa-cart-shopping"></i>
 			</a>
 		</div>
