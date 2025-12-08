@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.cartItem;
 import model.product;
+import model.user;
 
 @WebServlet("/cart")
 public class CartController extends HttpServlet {
@@ -23,7 +24,14 @@ public class CartController extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        
+     // --- BỔ SUNG: KIỂM TRA ĐĂNG NHẬP ---
+        user currentUser = (user) session.getAttribute("user");
+        if (currentUser == null) {
+            // Nếu chưa đăng nhập -> Chuyển hướng sang trang Login 
+            // Kèm tham số ?origin=cart để sau khi login xong tự quay lại đây
+            response.sendRedirect("login.jsp?origin=cart");
+            return; // Dừng xử lý, không chạy code bên dưới nữa
+        }
         // Lấy giỏ hàng từ Session
         List<cartItem> cart = (List<cartItem>) session.getAttribute("cart");
         if (cart == null) {
