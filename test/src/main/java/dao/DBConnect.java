@@ -6,8 +6,8 @@ import java.sql.DriverManager;
 public class DBConnect {
     // Đảm bảo tên database là "ten_database" hoặc sửa lại cho đúng với SQL bên trên
     private static final String url = "jdbc:mysql://localhost:3306/ltweb?useSSL=false&allowPublicKeyRetrieval=true";
-    private static final String user = "admin"; // Thường mặc định là root
-    private static final String pass = "2123";     // Mặc định thường để trống hoặc "123456"
+    private static final String user = "admin"; 
+    private static final String pass = "2123"; 
 
     public static Connection getConnection() {
         Connection conn = null;
@@ -22,7 +22,7 @@ public class DBConnect {
         return conn;
     }
     
-    // Main để test nhanh kết nối
+    // test
 public static void main(String[] args) {
 	getConnection();
 }
