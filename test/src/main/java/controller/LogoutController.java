@@ -28,6 +28,7 @@ public class LogoutController extends HttpServlet {
             session.invalidate(); // Lệnh này xóa sạch dữ liệu "user" đã lưu
         }
         
+        
         // 3. Chuyển hướng về trang chủ
         // Sau khi redirect, trang index.jsp sẽ kiểm tra lại session -> thấy null -> hiện nút Đăng nhập
         response.sendRedirect("index.jsp");
