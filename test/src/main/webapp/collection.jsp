@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="model.user"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>collection</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/collection.css" />
 
@@ -15,10 +17,9 @@
 		<img src="img/logover2_5.png" alt="" class="logo" width="80">
 
 		<nav class="menu">
-			<a href="index.jsp"> CỬA HÀNG</a>
-			<a href="#" class="active">BỘ SƯU TẬP </a>
-			<a href="about.jsp"> GIỚI THIỆU</a> 
-			<a href="news.jsp">TIN TỨC </a>
+			<a href="index.jsp"> CỬA HÀNG</a> <a href="#" class="active">BỘ
+				SƯU TẬP </a> <a href="about.jsp"> GIỚI THIỆU</a> <a href="news.jsp">TIN
+				TỨC </a>
 		</nav>
 
 		<div class="actions">
@@ -27,12 +28,40 @@
 					placeholder="Tìm Kiếm" />
 			</div>
 			<div class="account">
-				<a href=login.jsp>ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
+				<div class="account">
+					<%
+					// 1. Lấy đối tượng user từ session
+					user currentUser = (user) session.getAttribute("user");
+
+					// 2. Kiểm tra điều kiện
+					if (currentUser == null) {
+						// CHƯA ĐĂNG NHẬP -> Hiện nút Login/Register
+					%>
+					<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG
+						KÍ</a>
+					<%
+					} else {
+					// ĐÃ ĐĂNG NHẬP -> Hiện Avatar và Tên
+					String displayName = currentUser.getUsername();
+					// Nếu user có fullname thì hiện fullname cho thân thiện (tùy chọn)
+					if (currentUser.getFullname() != null)
+						displayName = currentUser.getFullname();
+					%>
+					<div class="user-info">
+						<span>Xin chào, <%=displayName%></span> <a href="profile.jsp"
+							title="Trang cá nhân"> <img src="img/default-user.png"
+							alt="User" class="user-avatar">
+						</a> <a href="${pageContext.request.contextPath}/logout"
+							class="logout-btn">(Thoát)</a>
+					</div>
+					<%
+					}
+					%>
+				</div>
+				<a href="cartitem.jsp" aria-label="Giỏ hàng"> <i
+					class="fa-solid fa-cart-shopping"></i>
+				</a>
 			</div>
-			<a href="cartitem.jsp" aria-label="Giỏ hàng"> <i
-				class="fa-solid fa-cart-shopping"></i>
-			</a>
-		</div>
 	</header>
 	<div class="body-nd"></div>
 
@@ -109,18 +138,16 @@
 				<div class="payment">
 					<h4>Phương thức thanh toán</h4>
 					<div class="logos">
-						<img src="img/visa.png" alt="VISA"> 
-						<img src="img/jcb.png"alt="JCB"> 
-						<img src="img/paypal.png" alt="PayPal">
+						<img src="img/visa.png" alt="VISA"> <img src="img/jcb.png"
+							alt="JCB"> <img src="img/paypal.png" alt="PayPal">
 					</div>
 				</div>
 				<div class="shipping">
 					<h4>Đơn vị vận chuyển</h4>
 					<div class="logos2">
-						<img src="img/vietnampost.png" alt="VietPost"> 
-						<img src="img/ghtk.png" alt="GHN"> 
-						<img src="img/jt.png" alt="J&T Express"> 
-						<img src="img/kerry.png" alt="Kerry">
+						<img src="img/vietnampost.png" alt="VietPost"> <img
+							src="img/ghtk.png" alt="GHN"> <img src="img/jt.png"
+							alt="J&T Express"> <img src="img/kerry.png" alt="Kerry">
 					</div>
 				</div>
 			</div>
@@ -137,11 +164,13 @@
 			<div class="fangage">
 				<h3>Fanpage</h3>
 				<div class="social-icons">
-						<i class="bi bi-facebook"></i> 
-					<a href="#" aria-label="Facebook"> <img src="img/facebook1.png" alt="FB" width="30"></a> 
-					<a href="#" aria-label="YouTube"><img src="img/youtube.png" alt="YT" width="30"></a> 
-					<a href="#" aria-label="TikTok"><img src="img/tiktok.png" alt="TikTok" width="30"></a> 
-					<a href="#" aria-label="Instagram"><img src="img/instagram.png" alt="IG" width="30"></a>
+					<i class="bi bi-facebook"></i> <a href="#" aria-label="Facebook">
+						<img src="img/facebook1.png" alt="FB" width="30">
+					</a> <a href="#" aria-label="YouTube"><img src="img/youtube.png"
+						alt="YT" width="30"></a> <a href="#" aria-label="TikTok"><img
+						src="img/tiktok.png" alt="TikTok" width="30"></a> <a href="#"
+						aria-label="Instagram"><img src="img/instagram.png" alt="IG"
+						width="30"></a>
 				</div>
 			</div>
 		</div>
