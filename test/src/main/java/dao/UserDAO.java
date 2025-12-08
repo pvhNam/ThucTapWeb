@@ -100,4 +100,38 @@ public class UserDAO {
         }
     
     }
+ // 1. Hàm cập nhật thông tin chung
+    public boolean updateUserInfo(user u) {
+        String sql = "UPDATE users SET fullname = ?, email = ?, phone = ? WHERE username = ?";
+        try {
+            // Giả sử bạn có hàm kết nối connection tên là conn
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, u.getFullname());
+            ps.setString(2, u.getEmail());
+            ps.setString(3, u.getPhonenumber());
+            ps.setString(4, u.getUsername());
+            
+            int row = ps.executeUpdate();
+            return row > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // 2. Hàm đổi mật khẩu
+    public boolean changePassword(String username, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE username = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, username);
+            
+            int row = ps.executeUpdate();
+            return row > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
