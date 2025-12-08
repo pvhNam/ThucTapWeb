@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.CartDAO;
 import dao.ProductDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,23 +20,24 @@ import model.user;
 public class CartController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // GET: Hiển thị giỏ hàng
+    // --- GET: HIỂN THỊ GIỎ HÀNG ---
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-     // --- BỔ SUNG: KIỂM TRA ĐĂNG NHẬP ---
         user currentUser = (user) session.getAttribute("user");
-        if (currentUser == null) {
-            // Nếu chưa đăng nhập -> Chuyển hướng sang trang Login 
-            // Kèm tham số ?origin=cart để sau khi login xong tự quay lại đây
-            response.sendRedirect("login.jsp?origin=cart");
-            return; // Dừng xử lý, không chạy code bên dưới nữa
-        }
-        // Lấy giỏ hàng từ Session
-        List<cartItem> cart = (List<cartItem>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
+        List<cartItem> cart = new ArrayList<>();
+
+        // Kiểm tra xem có đang đăng nhập không
+        if (currentUser != null) {
+            // CÁCH 1: ĐÃ ĐĂNG NHẬP -> Lấy dữ liệu từ DATABASE
+            CartDAO dao = new CartDAO();
+            // LƯU Ý: Kiểm tra class User của bạn là getId() hay getUid()
+            cart = dao.getCartByUid(currentUser.getUid()); 
+        } else {
+            // CÁCH 2: CHƯA ĐĂNG NHẬP -> Lấy dữ liệu từ SESSION
+            cart = (List<cartItem>) session.getAttribute("cart");
+            if (cart == null) cart = new ArrayList<>();
         }
 
         // Tính tổng tiền
@@ -44,78 +46,106 @@ public class CartController extends HttpServlet {
             subtotal += item.getTotalPrice();
         }
 
-        // Gửi dữ liệu sang trang JSP
+        // Đẩy dữ liệu sang JSP
         request.setAttribute("cartList", cart);
         request.setAttribute("subtotal", subtotal);
+        request.setAttribute("totalCount", cart.size());
         
-        // Chuyển hướng về trang giao diện giỏ hàng
         request.getRequestDispatcher("cartitem.jsp").forward(request, response);
     }
 
-    // POST: Xử lý Thêm / Xóa / Cập nhật
+    // --- POST: XỬ LÝ THÊM / SỬA / XÓA ---
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        String action = request.getParameter("action"); // add, remove, update
-        int pid = Integer.parseInt(request.getParameter("pid"));
+        user currentUser = (user) session.getAttribute("user");
         
-        // Lấy giỏ hàng hiện tại
-        List<cartItem> cart = (List<cartItem>) session.getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
+        String action = request.getParameter("action");
+        int pid = 0;
+        try {
+            pid = Integer.parseInt(request.getParameter("pid"));
+        } catch (NumberFormatException e) {
+            // Xử lý lỗi nếu không parse được ID
         }
 
-        if ("add".equals(action)) {
-            int quantity = 1;
-            // Kiểm tra sản phẩm đã có trong giỏ chưa
-            boolean exist = false;
-            for (cartItem item : cart) {
-                if (item.getProduct().getPid() == pid) {
-                    item.setQuantity(item.getQuantity() + quantity);
-                    exist = true;
-                    break;
-                }
+        // =========================================================
+        // TRƯỜNG HỢP 1: NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (Lưu vào DB)
+        // =========================================================
+        if (currentUser != null) {
+            CartDAO dao = new CartDAO();
+            int uid = currentUser.getUid(); // Lấy ID của user hiện tại
+
+            if ("add".equals(action)) {
+                int quantity = 1;
+                if (request.getParameter("quantity") != null)
+                    quantity = Integer.parseInt(request.getParameter("quantity"));
+                
+                // Gọi DAO để thêm/cộng dồn vào DB
+                dao.addToCart(uid, pid, quantity);
+            } 
+            else if ("remove".equals(action)) {
+                dao.removeItem(uid, pid);
             }
-            
-            // Nếu chưa có, gọi Database lấy thông tin sp và thêm mới
-            if (!exist) {
-                ProductDAO dao = new ProductDAO();
-                product p = dao.getProductById(pid);
-                if (p != null) {
-                    cart.add(new cartItem(p, quantity));
+            else if ("update".equals(action)) {
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                if (quantity > 0) {
+                    dao.updateQuantity(uid, pid, quantity);
+                } else {
+                    dao.removeItem(uid, pid);
                 }
             }
         } 
-        else if ("remove".equals(action)) {
-            // Xóa sản phẩm khỏi list
-            for (int i = 0; i < cart.size(); i++) {
-                if (cart.get(i).getProduct().getPid() == pid) {
-                    cart.remove(i);
-                    break;
-                }
-            }
-        }
-        else if ("update".equals(action)) {
-            // Cập nhật số lượng (ví dụ từ ô input số lượng trong giỏ)
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            for (cartItem item : cart) {
-                if (item.getProduct().getPid() == pid) {
-                    if (quantity > 0) {
-                        item.setQuantity(quantity);
-                    } else {
-                        // Nếu số lượng về 0 thì xóa luôn
-                        cart.remove(item);
+        
+        // =========================================================
+        // TRƯỜNG HỢP 2: KHÁCH VÃNG LAI (Lưu vào Session)
+        // =========================================================
+        else {
+            List<cartItem> cart = (List<cartItem>) session.getAttribute("cart");
+            if (cart == null) cart = new ArrayList<>();
+
+            if ("add".equals(action)) {
+                int quantity = 1;
+                if (request.getParameter("quantity") != null)
+                    quantity = Integer.parseInt(request.getParameter("quantity"));
+
+                boolean exist = false;
+                for (cartItem item : cart) {
+                    if (item.getProduct().getPid() == pid) {
+                        item.setQuantity(item.getQuantity() + quantity);
+                        exist = true;
+                        break;
                     }
-                    break;
+                }
+                if (!exist) {
+                    ProductDAO dao = new ProductDAO();
+                    product p = dao.getProductById(pid);
+                    if (p != null) cart.add(new cartItem(p, quantity));
+                }
+            } 
+            else if ("remove".equals(action)) {
+                for (int i = 0; i < cart.size(); i++) {
+                    if (cart.get(i).getProduct().getPid() == pid) {
+                        cart.remove(i);
+                        break;
+                    }
                 }
             }
+            else if ("update".equals(action)) {
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                for (cartItem item : cart) {
+                    if (item.getProduct().getPid() == pid) {
+                        if (quantity > 0) item.setQuantity(quantity);
+                        else cart.remove(item);
+                        break;
+                    }
+                }
+            }
+            // Cập nhật lại session
+            session.setAttribute("cart", cart);
         }
 
-        // Lưu ngược lại vào Session
-        session.setAttribute("cart", cart);
-        
-        // Quay lại trang xem giỏ hàng
+        // Quay lại trang giỏ hàng
         response.sendRedirect("cart");
     }
 }

@@ -3,6 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.CartItemDTO"%>
 <%@ page import="java.text.DecimalFormat"%>
+<%@ page import="model.user"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +28,34 @@
 				<i class="fa-solid fa-magnifying-glass"></i> <input type="text" placeholder="Tìm Kiếm" />
 			</div>
 			<div class="account">
-				<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
+				<%
+				// 1. Lấy đối tượng user từ session
+				user currentUser = (user) session.getAttribute("user");
+
+				// 2. Kiểm tra điều kiện
+				if (currentUser == null) {
+					// CHƯA ĐĂNG NHẬP -> Hiện nút Login/Register
+				%>
+				<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG
+					KÍ</a>
+				<%
+				} else {
+				// ĐÃ ĐĂNG NHẬP -> Hiện Avatar và Tên
+				String displayName = currentUser.getUsername();
+				// Nếu user có fullname thì hiện fullname cho thân thiện (tùy chọn)
+				if (currentUser.getFullname() != null)
+					displayName = currentUser.getFullname();
+				%>
+				<div class="user-info">
+					<span>Xin chào, <%=displayName%></span> <a href="profile.jsp"
+						title="Trang cá nhân"> <img src="img/default-user.png"
+						alt="User" class="user-avatar"> <a
+						href="${pageContext.request.contextPath}/logout"
+						class="logout-btn">(Thoát)</a>
+				</div>
+				<%
+				}
+				%>
 			</div>
 			<a href="cart" aria-label="Giỏ hàng"> <i class="fa-solid fa-cart-shopping"></i> </a>
 		</div>
