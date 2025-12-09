@@ -1,235 +1,182 @@
-<%@page import="model.cartItem"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.CartItemDTO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, model.cartItem, model.user, model.Voucher"%>
 <%@ page import="java.text.DecimalFormat"%>
-<%@ page import="model.user"%>
+
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Giỏ Hàng Của Bạn</title>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/cart.css" />
+    <meta charset="UTF-8">
+    <title>Giỏ Hàng | Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="CSS/style.css" />
+    <link rel="stylesheet" href="CSS/cart.css" />
 </head>
 <body>
-	<header class="header">
-		<img src="img/logo.png" alt="" class="logo" width="80">
-		<nav class="menu">
-			<a href="index.jsp"> CỬA HÀNG</a>
-			<a href="collection.jsp">BỘ SƯU TẬP </a> 
-			<a href="about.jsp"> GIỚI THIỆU</a> 
-			<a href="news.jsp">TIN TỨC </a>
-		</nav>
-		<div class="actions">
-			<div class="search-box">
-				<i class="fa-solid fa-magnifying-glass"></i> <input type="text" placeholder="Tìm Kiếm" />
-			</div>
-			<div class="account">
-				<%
-				// 1. Lấy đối tượng user từ session
-				user currentUser = (user) session.getAttribute("user");
-
-				// 2. Kiểm tra điều kiện
-				if (currentUser == null) {
-					// CHƯA ĐĂNG NHẬP -> Hiện nút Login/Register
-				%>
-				<a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG
-					KÍ</a>
-				<%
-				} else {
-				// ĐÃ ĐĂNG NHẬP -> Hiện Avatar và Tên
-				String displayName = currentUser.getUsername();
-				// Nếu user có fullname thì hiện fullname cho thân thiện (tùy chọn)
-				if (currentUser.getFullname() != null)
-					displayName = currentUser.getFullname();
-				%>
-				<div class="user-info">
-					<span>Xin chào, <%=displayName%></span> <a href="profile.jsp"
-						title="Trang cá nhân"> <img src="img/default-user.png"
-						alt="User" class="user-avatar"> <a
-						href="${pageContext.request.contextPath}/logout"
-						class="logout-btn">(Thoát)</a>
-				</div>
-				<%
-				}
-				%>
-			</div>
-			<a href="cart" aria-label="Giỏ hàng"> <i class="fa-solid fa-cart-shopping"></i> </a>
-		</div>
-	</header>
-
-<div class="body-nd"></div>
-
-    <div class="cart-container-v3">
-        <h1 class="cart-title-v3">GIỎ HÀNG CỦA TÔI</h1>
-
-        <div class="cart-content-v3">
-            <div class="cart-items-list-v3">
-                <div class="cart-header-v3">
-                    <span class="col-select"><input type="checkbox" id="select-all" checked></span>
-                    <label for="select-all" class="col-product">SẢN PHẨM (<%= request.getAttribute("totalCount") != null ? request.getAttribute("totalCount") : 0 %>)</label>
-                    <span class="col-price">GIÁ</span>
-                    <span class="col-qty">SỐ LƯỢNG</span>
-                    <span class="col-subtotal">THÀNH TIỀN</span>
-                    <span class="col-action"></span>
-                </div>
-                
-                <% 
-                    // SỬA: Ép kiểu về List<CartItem> cho khớp với Controller
-                    List<cartItem> list = (List<cartItem>) request.getAttribute("cartList");
-                    DecimalFormat df = new DecimalFormat("#,### VNĐ");
-                    
-                    Double subtotalObj = (Double) request.getAttribute("subtotal");
-                    double subtotal = (subtotalObj != null) ? subtotalObj : 0.0;
-                    
-                    if (list != null && !list.isEmpty()) {
-                        for (cartItem item : list) {
-                            // Lấy đường dẫn ảnh, nếu null thì dùng ảnh mặc định
-                            String imgUrl = (item.getProduct().getImage() != null && !item.getProduct().getImage().isEmpty()) 
-                                            ? item.getProduct().getImage() 
-                                            : "img/no-image.png";
-                %>
-                    <div class="cart-item-row-v3">
-                        <div class="col-select-v3">
-                            <input type="checkbox" class="item-select" checked>
-                        </div>
-                        
-                        <div class="col-product-v3">
-                            <img src="<%= imgUrl %>" class="item-img-v3" alt="SP"> 
-                            <div class="item-info-v3">
-                                <h4 class="item-name-v3"><%= item.getProduct().getPdescription() %></h4>
-                                <p class="item-variant-v3">Màu: <%= item.getProduct().getColor() %>, Size: <%= item.getProduct().getSize() %></p>
-                            </div>
-                        </div>
-                        
-                        <div class="col-price-v3"><%= df.format(item.getProduct().getPrice()) %></div>
-                        
-                        <div class="col-qty-v3">
-                            <form action="cart" method="post" style="display:inline;">
-                                <input type="hidden" name="action" value="update">
-                                <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
-                                <input type="hidden" name="quantity" value="<%= item.getQuantity() - 1 %>">
-                                <button type="submit" class="qty-btn-v3">-</button>
-                            </form>
-
-                            <input type="text" value="<%= item.getQuantity() %>" readonly class="qty-input-v3">
-
-                            <form action="cart" method="post" style="display:inline;">
-                                <input type="hidden" name="action" value="update">
-                                <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
-                                <input type="hidden" name="quantity" value="<%= item.getQuantity() + 1 %>">
-                                <button type="submit" class="qty-btn-v3">+</button>
-                            </form>
-                        </div>
-                        
-                        <div class="col-subtotal-v3"><%= df.format(item.getTotalPrice()) %></div>
-                        
-                        <div class="col-action-v3">
-                            <form action="cart" method="post">
-                                <input type="hidden" name="action" value="remove">
-                                <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
-                                <button type="submit" class="btn-remove-item-v3" title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc muốn xóa không?')">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <% 
-                        }
-                    } else {
-                %>
-                    <p style="padding: 50px; text-align: center; color: #888;">Giỏ hàng của bạn đang trống.</p>
-                    <div style="text-align:center; margin-bottom: 30px;">
-                        <a href="index.jsp" style="text-decoration: underline; color: black;">Quay lại mua sắm</a>
+    <header class="header">
+        <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
+        <nav class="menu">
+            <a href="index.jsp">CỬA HÀNG</a>
+            <a href="collection.jsp">BỘ SƯU TẬP</a> 
+            <a href="about.jsp">GIỚI THIỆU</a> 
+            <a href="news.jsp">TIN TỨC</a>
+        </nav>
+        <div class="actions">
+            <div class="account">
+                <% user currentUser = (user) session.getAttribute("user");
+                   if (currentUser == null) { %>
+                    <a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
+                <% } else { %>
+                    <div class="user-info">
+                        <span>Hi, <%=currentUser.getUsername()%></span> 
+                        <a href="profile.jsp"><img src="img/default-user.png" class="user-avatar" width="30"></a>
+                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn">(Thoát)</a>
                     </div>
                 <% } %>
             </div>
+            <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+    </header>
+
+    <div class="cart-wrapper">
+        <h1 class="page-title">GIỎ HÀNG CỦA BẠN</h1>
+
+        <div class="cart-layout">
             
-            <div class="cart-summary-v3">
-                <h3>TÓM TẮT ĐƠN HÀNG</h3>
-                <div class="summary-line-v3">
-                    <span>Tạm tính:</span>
-                    <span class="summary-value-v3"><%= df.format(subtotal) %></span>
-                </div>
-                <div class="summary-total-v3">
-                    <strong>TỔNG THANH TOÁN:</strong>
-                    <strong class="total-price-v3"><%= df.format(subtotal) %></strong>
-                </div>
-                <a href="checkout.jsp" class="btn-checkout-v3">TIẾN HÀNH THANH TOÁN</a>
+            <div class="cart-items-section">
+                <% 
+                    List<cartItem> list = (List<cartItem>) request.getAttribute("cartList");
+                    DecimalFormat df = new DecimalFormat("#,### VNĐ");
+                    
+                    if (list != null && !list.isEmpty()) {
+                        for (cartItem item : list) {
+                            String imgUrl = (item.getProduct().getImage() != null) ? item.getProduct().getImage() : "img/no-image.png";
+                %>
+                    <div class="cart-card">
+                        <div class="card-img">
+                            <img src="<%= imgUrl %>" alt="Product">
+                        </div>
+                        <div class="card-details">
+                            <div class="card-info">
+                                <h3><%= item.getProduct().getPdescription() %></h3>
+                                <p class="variant">Size: <%= item.getProduct().getSize() %> | Màu: <%= item.getProduct().getColor() %></p>
+                                <p class="price"><%= df.format(item.getProduct().getPrice()) %></p>
+                            </div>
+                            
+                            <div class="card-actions">
+                                <div class="qty-control">
+                                    <form action="cart" method="post">
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
+                                        <input type="hidden" name="quantity" value="<%= item.getQuantity() - 1 %>">
+                                        <button class="qty-btn minus">-</button>
+                                    </form>
+                                    <span class="qty-val"><%= item.getQuantity() %></span>
+                                    <form action="cart" method="post">
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
+                                        <input type="hidden" name="quantity" value="<%= item.getQuantity() + 1 %>">
+                                        <button class="qty-btn plus">+</button>
+                                    </form>
+                                </div>
+                                
+                                <div class="item-total-group">
+                                    <span class="item-total"><%= df.format(item.getTotalPrice()) %></span>
+                                    <form action="cart" method="post">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="hidden" name="pid" value="<%= item.getProduct().getPid() %>">
+                                        <button class="remove-btn" onclick="return confirm('Xóa sản phẩm này?')"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% 
+                        }
+                    } else {
+                %>
+                    <div class="empty-cart">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <p>Giỏ hàng của bạn đang trống.</p>
+                        <a href="index.jsp" class="btn-shop-now">MUA SẮM NGAY</a>
+                    </div>
+                <% } %>
             </div>
+
+            <div class="cart-summary-section">
+                <div class="summary-box">
+                    <h3>THÔNG TIN ĐƠN HÀNG</h3>
+                    
+                    <% if(currentUser != null) { 
+                       int walletCount = (Integer) request.getAttribute("walletCount");
+                    %>
+                    <div class="wallet-badge">
+                        <i class="fa-solid fa-ticket"></i> Bạn có <b><%= walletCount %></b> mã ưu đãi
+                    </div>
+                    <% } %>
+
+                    <% 
+                        Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
+                        String voucherError = (String) request.getAttribute("voucherError");
+                        String flashMsg = (String) session.getAttribute("flashMsg");
+                        session.removeAttribute("flashMsg"); // Xóa msg sau khi hiện
+                    %>
+                    <div class="voucher-box">
+                        <label>Mã giảm giá</label>
+                        <% if(appliedVoucher == null) { %>
+                            <form action="cart" method="post" class="voucher-form">
+                                <input type="hidden" name="action" value="apply_voucher">
+                                <input type="text" name="voucherCode" placeholder="Nhập mã (VD: WELCOME10)" required>
+                                <button type="submit">ÁP DỤNG</button>
+                            </form>
+                            <% if(flashMsg != null) { %> <p class="msg-error"><%= flashMsg %></p> <% } %>
+                            <% if(voucherError != null) { %> <p class="msg-error"><%= voucherError %></p> <% } %>
+                        <% } else { %>
+                            <div class="voucher-active">
+                                <span><i class="fa-solid fa-tag"></i> <%= appliedVoucher.getCode() %></span>
+                                <form action="cart" method="post">
+                                    <input type="hidden" name="action" value="remove_voucher">
+                                    <button class="remove-voucher">Hủy</button>
+                                </form>
+                            </div>
+                            <p class="msg-success">Đã áp dụng mã giảm giá!</p>
+                        <% } %>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <% 
+                        double subtotal = (Double) request.getAttribute("subtotal");
+                        double discount = (Double) request.getAttribute("discountAmount");
+                        double finalTotal = (Double) request.getAttribute("finalTotal");
+                    %>
+                    <div class="summary-row">
+                        <span>Tạm tính</span>
+                        <span><%= df.format(subtotal) %></span>
+                    </div>
+                    <% if(discount > 0) { %>
+                    <div class="summary-row discount">
+                        <span>Giảm giá</span>
+                        <span>- <%= df.format(discount) %></span>
+                    </div>
+                    <% } %>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="summary-row total">
+                        <span>Tổng cộng</span>
+                        <span><%= df.format(finalTotal) %></span>
+                    </div>
+
+                    <a href="checkout" class="btn-checkout">TIẾN HÀNH THANH TOÁN</a>
+                </div>
+            </div>
+
         </div>
     </div>
     
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectAll = document.getElementById('select-all');
-        const itemCheckboxes = document.querySelectorAll('.item-select');
-
-        if(selectAll) {
-            selectAll.addEventListener('change', function() {
-                itemCheckboxes.forEach(cb => {
-                    cb.checked = this.checked;
-                });
-            });
-        }
-    });
-    </script>
-	<footer class="footer">
-		<div class="footer-top">
-			<div class="contact">
-				<h3>Liên Hệ</h3>
-				<p>
-					<strong>☎️</strong> 0981774313
-				</p>
-				<p>
-					<strong>✉️</strong> tranthanglo@gmail.com
-				</p>
-				<p> <strong>📍</strong> S2, đường Hải Triều, phường Bến Nghé, Quận 1, TP HCM </p>
-			</div>
-
-			<div class="payandship">
-				<div class="payment">
-					<h4>Phương thức thanh toán</h4>
-					<div class="logos">
-						<img src="img/visa.png" alt="VISA"> 
-						<img src="img/jcb.png"alt="JCB"> 
-						<img src="img/paypal.png" alt="PayPal">
-					</div>
-				</div>
-				<div class="shipping">
-					<h4>Đơn vị vận chuyển</h4>
-					<div class="logos2">
-						<img src="img/vietnampost.png" alt="VietPost"> 
-						<img src="img/ghtk.png" alt="GHN"> 
-						<img src="img/jt.png" alt="J&T Express"> 
-						<img src="img/kerry.png" alt="Kerry">
-					</div>
-				</div>
-			</div>
-			<div class="catalog">
-				<h4>Danh mục</h4>
-				<ul>
-					<li><a href="#">Trang chủ</a></li>
-					<li><a href="#">Cửa hàng</a></li>
-					<li><a href="#">Giới thiệu</a></li>
-					<li><a href="#">Tin tức</a></li>
-					<li><a href="#">Liên hệ</a></li>
-				</ul>
-			</div>
-			<div class="fangage">
-				<h3>Fanpage</h3>
-				<div class="social-icons">
-					<i class="bi bi-facebook"></i> 
-					<a href="#" aria-label="Facebook"> <img src="img/facebook1.png" alt="FB" width="30"></a> 
-					<a href="#" aria-label="YouTube"><img src="img/youtube.png" alt="YT" width="30"></a> 
-					<a href="#" aria-label="TikTok"><img src="img/tiktok.png" alt="TikTok" width="30"></a> 
-					<a href="#" aria-label="Instagram"><img src="img/instagram.png" alt="IG" width="30"></a>
-				</div>
-			</div>
-		</div>
-	</footer>
+    <footer class="footer">
+        </footer>
 </body>
 </html>
