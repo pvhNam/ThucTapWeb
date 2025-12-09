@@ -80,7 +80,6 @@
                                         <button class="qty-btn plus">+</button>
                                     </form>
                                 </div>
-                                
                                 <div class="item-total-group">
                                     <span class="item-total"><%= df.format(item.getTotalPrice()) %></span>
                                     <form action="cart" method="post">
@@ -107,41 +106,70 @@
             <div class="cart-summary-section">
                 <div class="summary-box">
                     <h3>THÔNG TIN ĐƠN HÀNG</h3>
-                    
-                    <% if(currentUser != null) { 
-                       int walletCount = (Integer) request.getAttribute("walletCount");
-                    %>
-                    <div class="wallet-badge">
-                        <i class="fa-solid fa-ticket"></i> Bạn có <b><%= walletCount %></b> mã ưu đãi
-                    </div>
-                    <% } %>
 
-                    <% 
-                        Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
-                        String voucherError = (String) request.getAttribute("voucherError");
-                        String flashMsg = (String) session.getAttribute("flashMsg");
-                        session.removeAttribute("flashMsg"); // Xóa msg sau khi hiện
-                    %>
-                    <div class="voucher-box">
-                        <label>Mã giảm giá</label>
-                        <% if(appliedVoucher == null) { %>
-                            <form action="cart" method="post" class="voucher-form">
-                                <input type="hidden" name="action" value="apply_voucher">
-                                <input type="text" name="voucherCode" placeholder="Nhập mã (VD: WELCOME10)" required>
-                                <button type="submit">ÁP DỤNG</button>
-                            </form>
-                            <% if(flashMsg != null) { %> <p class="msg-error"><%= flashMsg %></p> <% } %>
-                            <% if(voucherError != null) { %> <p class="msg-error"><%= voucherError %></p> <% } %>
-                        <% } else { %>
-                            <div class="voucher-active">
-                                <span><i class="fa-solid fa-tag"></i> <%= appliedVoucher.getCode() %></span>
-                                <form action="cart" method="post">
-                                    <input type="hidden" name="action" value="remove_voucher">
-                                    <button class="remove-voucher">Hủy</button>
-                                </form>
-                            </div>
-                            <p class="msg-success">Đã áp dụng mã giảm giá!</p>
+                    <div class="voucher-container">
+                        <label class="voucher-label"><i class="fa-solid fa-ticket"></i> Mã ưu đãi của bạn</label>
+                        
+                        <% 
+                            List<Voucher> myVouchers = (List<Voucher>) request.getAttribute("myVouchers");
+                            Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
+                            String voucherError = (String) request.getAttribute("voucherError");
+                        %>
+
+                        <% if(voucherError != null) { %> 
+                            <p class="msg-error"><i class="fa-solid fa-circle-exclamation"></i> <%= voucherError %></p> 
                         <% } %>
+
+                        <div class="voucher-list">
+                            <% 
+                            if (currentUser == null) { 
+                            %>
+                                <p class="empty-voucher-text">Vui lòng <a href="login.jsp">đăng nhập</a> để xem mã ưu đãi.</p>
+                            <% 
+                            } else if (myVouchers == null || myVouchers.isEmpty()) { 
+                            %>
+                                <p class="empty-voucher-text">Bạn chưa lưu mã giảm giá nào.<br>
+                                <a href="index.jsp" style="font-size:12px; text-decoration:underline;">Săn mã ngay</a></p>
+                            <% 
+                            } else {
+                                for (Voucher v : myVouchers) {
+                                    // Kiểm tra xem mã này có đang được áp dụng không
+                                    boolean isApplied = (appliedVoucher != null && appliedVoucher.getCode().equals(v.getCode()));
+                            %>
+                                <div class="voucher-item <%= isApplied ? "active" : "" %>">
+                                    <div class="v-left">
+                                        <span class="v-code"><%= v.getCode() %></span>
+                                        <span class="v-desc"><%= v.getDescription() %></span>
+                                    </div>
+                                    <div class="v-right">
+                                        <% if (isApplied) { %>
+                                            <form action="cart" method="post">
+                                                <input type="hidden" name="action" value="remove_voucher">
+                                                <button class="btn-voucher remove">Hủy</button>
+                                            </form>
+                                        <% } else { %>
+                                            <form action="cart" method="post">
+                                                <input type="hidden" name="action" value="apply_voucher">
+                                                <input type="hidden" name="voucherCode" value="<%= v.getCode() %>">
+                                                <button class="btn-voucher apply">Dùng</button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% 
+                                } 
+                            } 
+                            %>
+                        </div>
+                        
+                        <details class="manual-input">
+                            <summary>Nhập mã khác</summary>
+                            <form action="cart" method="post" class="voucher-form-manual">
+                                <input type="hidden" name="action" value="apply_voucher">
+                                <input type="text" name="voucherCode" placeholder="Nhập mã..." required>
+                                <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                            </form>
+                        </details>
                     </div>
 
                     <div class="divider"></div>
@@ -157,7 +185,7 @@
                     </div>
                     <% if(discount > 0) { %>
                     <div class="summary-row discount">
-                        <span>Giảm giá</span>
+                        <span>Đã giảm (<%= appliedVoucher.getCode() %>)</span>
                         <span>- <%= df.format(discount) %></span>
                     </div>
                     <% } %>
@@ -169,7 +197,7 @@
                         <span><%= df.format(finalTotal) %></span>
                     </div>
 
-                    <a href="checkout" class="btn-checkout">TIẾN HÀNH THANH TOÁN</a>
+                    <a href="checkout" class="btn-checkout">THANH TOÁN</a>
                 </div>
             </div>
 
