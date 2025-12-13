@@ -278,3 +278,26 @@ body {
 @media (max-width: 900px) {
     .cart-layout { flex-direction: column; }
 }
+.btn-checkout {
+    display: block;
+    width: 100%;
+    padding: 15px; /* Tăng padding chút cho đẹp */
+    background: var(--gold);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 25px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    
+    /* Thêm các dòng này để button giống thẻ a */
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.btn-checkout:hover {
+    background: var(--black);
+}

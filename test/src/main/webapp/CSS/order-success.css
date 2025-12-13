@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+body {
+    background-color: #fcfcfc;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.success-container {
+    max-width: 600px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 50px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    animation: slideUp 0.8s ease;
+}
+
+.icon-box {
+    width: 80px;
+    height: 80px;
+    background-color: #27ae60;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto 30px;
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+}
+
+.success-desc {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.btn-home {
+    padding: 12px 30px;
+    background-color: #1a1a1a;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: 0.3s;
+    border: 1px solid #1a1a1a;
+}
+
+.btn-home:hover {
+    background-color: #d4af37; /* Màu vàng Gold */
+    border-color: #d4af37;
+    color: #fff;
+}
+
+.btn-order {
+    padding: 12px 30px;
+    background-color: #fff;
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+.btn-order:hover {
+    border-color: #1a1a1a;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

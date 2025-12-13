@@ -12,7 +12,7 @@ public class VoucherDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // 1. Lấy thông tin Voucher theo mã Code
+    // 1. Lấy thông tin Voucher
     public Voucher getVoucherByCode(String code) {
         String query = "SELECT * FROM vouchers WHERE code = ?";
         try {
@@ -37,7 +37,7 @@ public class VoucherDAO {
         return null;
     }
 
-    // 2. Kiểm tra User có sở hữu mã này trong ví không
+    // 2. Kiểm tra sở hữu
     public boolean checkUserHasVoucher(int userId, int voucherId) {
         String query = "SELECT * FROM user_wallet WHERE user_id = ? AND voucher_id = ? AND is_used = FALSE";
         try {
@@ -53,7 +53,7 @@ public class VoucherDAO {
         return false;
     }
 
-    // 3. Lấy danh sách Voucher hợp lệ trong ví của User (để đếm số lượng)
+    // 3. Lấy danh sách voucher của user
     public List<Voucher> getVouchersByUid(int uid) {
         List<Voucher> list = new ArrayList<>();
         String query = "SELECT v.* FROM vouchers v " +
@@ -81,11 +81,9 @@ public class VoucherDAO {
         return list;
     }
     
-    // 4. Lưu Voucher vào ví (dùng cho nút Lưu ở trang chủ)
+    // 4. Lưu voucher
     public boolean saveVoucherToWallet(int userId, int voucherId) {
-         // Kiểm tra đã có chưa, nếu có rồi thì không lưu nữa
          if(checkUserHasVoucher(userId, voucherId)) return false;
-         
          String query = "INSERT INTO user_wallet (user_id, voucher_id, is_used) VALUES (?, ?, FALSE)";
          try {
              conn = DBConnect.getConnection();
@@ -100,8 +98,17 @@ public class VoucherDAO {
          return false;
     }
 
-	public void markVoucherUsed(int uid, int id) {
-		// TODO Auto-generated method stub
-		
-	}
+    // 5. [MỚI] Đánh dấu voucher đã sử dụng (Dùng cho Checkout)
+    public void markVoucherUsed(int userId, int voucherId) {
+        String query = "UPDATE user_wallet SET is_used = TRUE WHERE user_id = ? AND voucher_id = ?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, userId);
+            ps.setInt(2, voucherId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

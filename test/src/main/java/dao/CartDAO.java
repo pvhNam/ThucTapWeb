@@ -15,10 +15,9 @@ public class CartDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // 1. Lấy danh sách giỏ hàng của User từ Database
+    // 1. Lấy danh sách giỏ hàng
     public List<cartItem> getCartByUid(int uid) {
         List<cartItem> list = new ArrayList<>();
-        // Join bảng cart với bảng product để lấy đầy đủ thông tin hiển thị
         String query = "SELECT c.quantity, p.* FROM cart c " +
                        "JOIN product p ON c.product_id = p.pid " +
                        "WHERE c.user_id = ?";
@@ -28,10 +27,9 @@ public class CartDAO {
             ps.setInt(1, uid);
             rs = ps.executeQuery();
             while (rs.next()) {
-                // Tạo đối tượng Product từ dữ liệu DB
                 product p = new product(
                     rs.getInt("pid"),
-                    rs.getString("name"), // Lưu ý: Tên cột phải khớp với DB của bạn (name/pdescription)
+                    rs.getString("name"), // name hoặc pdescription tùy DB của bạn
                     rs.getDouble("price"),
                     rs.getInt("cateID"),
                     rs.getString("color"),
@@ -39,10 +37,7 @@ public class CartDAO {
                     rs.getInt("amount"),
                     rs.getString("img")
                 );
-                
                 int quantity = rs.getInt("quantity");
-                
-                // Thêm vào list kết quả
                 list.add(new cartItem(p, quantity));
             }
         } catch (Exception e) {
@@ -51,23 +46,19 @@ public class CartDAO {
         return list;
     }
 
-    // 2. Thêm sản phẩm vào giỏ (Logic: Có rồi thì cộng dồn, chưa có thì thêm mới)
+    // 2. Thêm vào giỏ
     public void addToCart(int uid, int pid, int quantity) {
         String checkQuery = "SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?";
         try {
             conn = DBConnect.getConnection();
-            
-            // Kiểm tra xem user này đã thêm sản phẩm này chưa
             ps = conn.prepareStatement(checkQuery);
             ps.setInt(1, uid);
             ps.setInt(2, pid);
             rs = ps.executeQuery();
             
             if (rs.next()) {
-                // TRƯỜNG HỢP 1: Đã có -> Cộng dồn số lượng
                 int oldQty = rs.getInt("quantity");
                 int newQty = oldQty + quantity;
-                
                 String updateQuery = "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
                 PreparedStatement psUpdate = conn.prepareStatement(updateQuery);
                 psUpdate.setInt(1, newQty);
@@ -75,7 +66,6 @@ public class CartDAO {
                 psUpdate.setInt(3, pid);
                 psUpdate.executeUpdate();
             } else {
-                // TRƯỜNG HỢP 2: Chưa có -> Insert dòng mới
                 String insertQuery = "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
                 PreparedStatement psInsert = conn.prepareStatement(insertQuery);
                 psInsert.setInt(1, uid);
@@ -88,7 +78,7 @@ public class CartDAO {
         }
     }
 
-    // 3. Cập nhật số lượng (khi bấm nút + - trong giỏ hàng)
+    // 3. Cập nhật số lượng
     public void updateQuantity(int uid, int pid, int quantity) {
         String query = "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
         try {
@@ -103,7 +93,7 @@ public class CartDAO {
         }
     }
 
-    // 4. Xóa sản phẩm khỏi giỏ
+    // 4. Xóa sản phẩm
     public void removeItem(int uid, int pid) {
         String query = "DELETE FROM cart WHERE user_id = ? AND product_id = ?";
         try {
@@ -111,6 +101,19 @@ public class CartDAO {
             ps = conn.prepareStatement(query);
             ps.setInt(1, uid);
             ps.setInt(2, pid);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 5. [MỚI] Xóa sạch giỏ hàng (Dùng cho Checkout)
+    public void clearCart(int uid) {
+        String query = "DELETE FROM cart WHERE user_id = ?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, uid);
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

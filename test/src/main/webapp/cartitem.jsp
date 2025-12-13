@@ -197,7 +197,9 @@
                         <span><%= df.format(finalTotal) %></span>
                     </div>
 
-                    <a href="checkout" class="btn-checkout">THANH TOÁN</a>
+                    <form action="checkout" method="post">
+    <button type="submit" class="btn-checkout">THANH TOÁN</button>
+</form>
                 </div>
             </div>
 
