@@ -1,82 +1,188 @@
 @charset "UTF-8";
 
-/* Container bao quanh danh sách */
-.body-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
+/* --- CẤU HÌNH CHUNG --- */
+:root {
+    --gold: #d4af37;
+    --black: #1a1a1a;
+    --gray-light: #f4f4f4;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
 }
 
-/* 1. CĂN GIỮA TIÊU ĐỀ */
-.collection-title {
+body {
+    background-color: #fff;
+    font-family: var(--font-body);
+}
+
+.collection-wrapper {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+/* --- HEADER & FILTERS --- */
+.collection-header {
     text-align: center;
-    font-size: 32px;
-    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.collection-header h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--black);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+/* Thanh bộ lọc (Tabs) */
+.filter-menu {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
     margin-bottom: 40px;
-    color: #333;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
     text-transform: uppercase;
-    border-bottom: 2px solid #000;
-    display: inline-block;
-    
-    /* Căn giữa thẻ inline-block */
+    letter-spacing: 1px;
+    padding-bottom: 5px;
+    transition: 0.3s;
     position: relative;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    color: var(--black);
+}
+
+/* Gạch chân khi active */
+.filter-btn::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: var(--gold);
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+    transition: width 0.3s;
 }
 
-/* 2. BỐ CỤC FLEXBOX: ẢNH TRÁI - CHỮ PHẢI */
-.collection-item {
-    display: flex;       /* Xếp hàng ngang */
-    gap: 30px;           /* Khoảng cách giữa ảnh và chữ */
-    margin-bottom: 50px;
-    align-items: center; /* Căn giữa dọc */
-    background-color: #fff; /* Nền trắng hoặc #f9f9f9 tùy thích */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Đổ bóng nhẹ cho đẹp */
-}
-
-/* Cột ảnh */
-.item-image {
-    flex: 1;            /* Chiếm 1 phần */
-    max-width: 400px;   
-}
-
-.item-image img {
+.filter-btn.active::after {
     width: 100%;
-    height: auto;
-    border-radius: 5px;
+}
+
+/* --- GALLERY GRID --- */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+/* Card Bộ sưu tập */
+.gallery-item {
+    position: relative;
+    height: 450px; /* Chiều cao cố định */
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    /* Animation khi ẩn/hiện */
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Ẩn item khi filter */
+.gallery-item.hide {
+    display: none;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1); /* Zoom ảnh khi hover */
+}
+
+/* Lớp phủ thông tin */
+.item-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    padding: 30px 20px;
+    color: #fff;
+    transform: translateY(20px);
+    opacity: 0.9;
+    transition: 0.4s;
+}
+
+.gallery-item:hover .item-overlay {
+    transform: translateY(0);
+}
+
+.collection-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
     display: block;
+    margin-bottom: 5px;
 }
 
-/* Cột mô tả */
-.item-description {
-    flex: 1.5;          /* Chiếm 1.5 phần (rộng hơn ảnh) */
-    text-align: left;   /* Chữ căn trái */
+.collection-name {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    margin: 0 0 10px 0;
 }
 
-.item-description h3 {
-    margin-top: 0;
-    font-size: 24px;
-    color: #000;
+.collection-desc {
+    font-size: 0.9rem;
+    color: #ddd;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.btn-view {
+.btn-discover {
     display: inline-block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background: #000;
     color: #fff;
     text-decoration: none;
-    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+    transition: 0.3s;
 }
 
-/* Responsive cho điện thoại */
+.btn-discover:hover {
+    color: var(--gold);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .collection-item {
-        flex-direction: column; /* Xếp dọc trên mobile */
+    .gallery-grid {
+        grid-template-columns: 1fr;
     }
-    .item-description {
-        text-align: center;
+    .collection-header h1 {
+        font-size: 2rem;
     }
 }
