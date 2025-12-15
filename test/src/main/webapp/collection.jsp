@@ -30,13 +30,26 @@
                 <input type="text" placeholder="Tìm kiếm" />
             </div>
             <div class="account">
-                <% user currentUser = (user) session.getAttribute("user");
-                   if (currentUser == null) { %>
-                    <a href="login.jsp">ĐĂNG NHẬP</a> | <a href="register.jsp">ĐĂNG KÍ</a>
-                <% } else { %>
+            	<%user currentUser = (user) session.getAttribute("user");
+                boolean isLoggedIn = (currentUser != null); %>
+                <% if (!isLoggedIn) { %>
+                    <a href="login.jsp">ĐĂNG NHẬP</a> <span style="color:#ccc">|</span> <a href="register.jsp">ĐĂNG KÍ</a>
+                <% } else { 
+                	String fullName = currentUser.getFullname();
+                    String displayName = fullName;
+                    
+                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
+                    if (fullName == null) {
+                        displayName = "Member";
+                    } else if (fullName.length() > 15) {
+                        displayName = fullName.substring(0, 15) + "...";
+                    }
+                %>
                     <div class="user-info">
-                        <span>Hi, <%=currentUser.getUsername()%></span> 
-                        <a href="profile.jsp"><img src="img/default-user.png" class="user-avatar"></a>
+                        <span>Hi, <%=displayName%></span> 
+                        <a href="profile.jsp" title="Trang cá nhân"> 
+                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
+                        </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
                 <% } %>

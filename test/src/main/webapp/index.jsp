@@ -12,9 +12,7 @@
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
 
-    // 2. Lấy User hiện tại
-    user currentUser = (user) session.getAttribute("user");
-    boolean isLoggedIn = (currentUser != null);
+
 %>
 
 <!DOCTYPE html>
@@ -51,11 +49,20 @@
             </div>
 
             <div class="account">
+            	<%user currentUser = (user) session.getAttribute("user");
+                boolean isLoggedIn = (currentUser != null); %>
                 <% if (!isLoggedIn) { %>
                     <a href="login.jsp">ĐĂNG NHẬP</a> <span style="color:#ccc">|</span> <a href="register.jsp">ĐĂNG KÍ</a>
                 <% } else { 
-                    String displayName = currentUser.getUsername();
-                    if (currentUser.getFullname() != null) displayName = currentUser.getFullname();
+                	String fullName = currentUser.getFullname();
+                    String displayName = fullName;
+                    
+                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
+                    if (fullName == null) {
+                        displayName = "Member";
+                    } else if (fullName.length() > 15) {
+                        displayName = fullName.substring(0, 15) + "...";
+                    }
                 %>
                     <div class="user-info">
                         <span>Hi, <%=displayName%></span> 

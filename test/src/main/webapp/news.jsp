@@ -31,27 +31,29 @@
             </div>
             
             <div class="account">
-                <%
-                    user currentUser = (user) session.getAttribute("user");
-                    if (currentUser == null) { 
+            	<%user currentUser = (user) session.getAttribute("user");
+                boolean isLoggedIn = (currentUser != null); %>
+                <% if (!isLoggedIn) { %>
+                    <a href="login.jsp">ĐĂNG NHẬP</a> <span style="color:#ccc">|</span> <a href="register.jsp">ĐĂNG KÍ</a>
+                <% } else { 
+                	String fullName = currentUser.getFullname();
+                    String displayName = fullName;
+                    
+                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
+                    if (fullName == null) {
+                        displayName = "Member";
+                    } else if (fullName.length() > 15) {
+                        displayName = fullName.substring(0, 15) + "...";
+                    }
                 %>
-                    <a href="login.jsp">ĐĂNG NHẬP</a> |
-                    <a href="register.jsp">ĐĂNG KÍ</a>
-                <% 
-                    } else { 
-                        String displayName = currentUser.getUsername();
-                        if(currentUser.getFullname() != null) displayName = currentUser.getFullname();
-                %>
-                    <div class="user-info" style="display:flex; align-items:center; gap:10px;">
-                        <span>Xin chào, <%= displayName %></span>
-                        <a href="profile.jsp" title="Trang cá nhân">
-                            <img src="img/default-user.png" alt="User" class="user-avatar" style="width:30px; border-radius:50%;">
+                    <div class="user-info">
+                        <span>Hi, <%=displayName%></span> 
+                        <a href="profile.jsp" title="Trang cá nhân"> 
+                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
                         </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
-                <% 
-                    } 
-                %>
+                <% } %>
             </div>
             
             <a href="cart" aria-label="Giỏ hàng"> 
