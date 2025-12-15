@@ -1,25 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="dao.ProductDAO, model.product, model.user, java.text.DecimalFormat" %>
+<%@ page import="model.product, model.user, java.text.DecimalFormat" %>
 
 <%
-    // Lấy ID sản phẩm từ URL (vd: product-detail.jsp?pid=1)
-    String pidParam = request.getParameter("pid");
-    if (pidParam == null) {
-        response.sendRedirect("index.jsp");
-        return;
-    }
+//Lấy dữ liệu sản phẩm được gửi từ Controller sang
+product p = (product) request.getAttribute("p");
 
-    int pid = Integer.parseInt(pidParam);
-    ProductDAO pDao = new ProductDAO();
-    product p = pDao.getProductById(pid); // Lấy thông tin SP
+// Bảo vệ: Nếu truy cập trực tiếp file jsp mà không qua controller thì p sẽ null
+if (p == null) {
+    response.sendRedirect("index.jsp");
+    return;
+}
 
-    if (p == null) {
-        response.sendRedirect("index.jsp"); // Không tìm thấy thì về trang chủ
-        return;
-    }
-    
-    DecimalFormat df = new DecimalFormat("#,### VNĐ");
-    user currentUser = (user) session.getAttribute("user");
+DecimalFormat df = new DecimalFormat("#,### VNĐ");
+user currentUser = (user) session.getAttribute("user");
 %>
 
 <!DOCTYPE html>
@@ -74,7 +67,7 @@
     <header class="header">
         <a href="index.jsp"><img src="img/logover2_5.png" class="logo" width="80"></a>
         <nav class="menu">
-            <a href="index.jsp">TRANG CHỦ</a>
+            <a href="index.jsp" >TRANG CHỦ</a>
             <a href="collection.jsp">BỘ SƯU TẬP</a> 
             <a href="about.jsp">GIỚI THIỆU</a> 
             <a href="news.jsp">TIN TỨC</a>

@@ -70,11 +70,28 @@
     padding: 0 20px;
 }
 
+/* --- CĂN GIỮA TIÊU ĐỀ & GẠCH CHÂN --- */
+
+.section-header {
+    text-align: center;      /* Căn giữa toàn bộ nội dung bên trong */
+    margin-bottom: 40px;     /* Đẩy nội dung bên dưới xuống cho thoáng */
+    margin-top: 20px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;       /* Tăng kích thước chữ cho rõ */
+    font-weight: 700;        /* In đậm */
+    text-transform: uppercase; /* In hoa toàn bộ nhìn cho sang */
+    color: #1a1a1a;          /* Màu đen đậm */
+    margin-bottom: 15px;     /* Khoảng cách giữa chữ và gạch vàng */
+    letter-spacing: 1px;     /* Giãn chữ nhẹ */
+}
+
 .section-line {
-    width: 60px;
-    height: 3px;
-    background-color: var(--gold);
-    margin: 0 auto;
+    width: 80px;             /* Độ dài gạch */
+    height: 2px;             /* Độ dày gạch (mảnh vừa phải) */
+    background-color: #d4af37; /* Màu vàng */
+    margin: 0 auto;          /* LỆNH QUAN TRỌNG: Căn gạch ra giữa */
 }
 
 /* --- VOUCHER SECTION (BLACK & GOLD) --- */

@@ -214,8 +214,9 @@
                     </div>
 
                     <form action="checkout" method="post">
-    <button type="submit" class="btn-checkout">THANH TOÁN</button>
-</form>
+                    <input type="text" name="address" placeholder="Nhập địa chỉ nhận hàng" required>
+    				<button type="submit" class="btn-checkout">THANH TOÁN</button>
+					</form>
                 </div>
             </div>
 

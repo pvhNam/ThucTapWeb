@@ -166,17 +166,17 @@
             // Xử lý ảnh null
             String imgPath = (p.getImage() != null && !p.getImage().isEmpty()) ? p.getImage() : "img/no-image.png";
 %>
-    <div class="product-card" onclick="window.location.href='product-detail.jsp?pid=<%=p.getPid()%>'" style="cursor: pointer;">
+    <div class="product-card" onclick="window.location.href='product-detail?pid=<%=p.getPid()%>'" style="cursor: pointer;">
         
         <div class="product-image">
             <img src="<%=imgPath%>" alt="<%=p.getPdescription()%>">
-            <a href="product-detail.jsp?pid=<%=p.getPid()%>" class="overlay-btn view-btn"><i class="fa-regular fa-eye"></i></a>
+            <a href="product-detail?pid=<%=p.getPid()%>" class="overlay-btn view-btn"><i class="fa-regular fa-eye"></i></a>
         </div>
 
         <div class="product-details">
             <span class="product-cat">Size: <%=p.getSize()%> | <%=p.getColor()%></span>
             
-            <h3 class="product-name"><a href="product-detail.jsp?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a></h3>
+            <h3 class="product-name"><a href="product-detail?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a></h3>
             
             <div class="price-row">
                 <span class="price"><%=df.format(p.getPrice())%></span>
