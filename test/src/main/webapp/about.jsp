@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/about.css" />
+
 </head>
 <body>
 <header class="header">
@@ -48,7 +49,7 @@
                     <div class="user-info">
                         <span>Hi, <%=displayName%></span> 
                         <a href="profile.jsp" title="Trang cá nhân"> 
-                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
+                            <img src="${pageContext.request.contextPath}/img/images.jpg" alt="User" class="user-avatar">
                         </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>

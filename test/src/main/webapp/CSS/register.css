@@ -3,19 +3,20 @@
 /* --- BIẾN MÀU SẮC & FONT --- */
 /* Điều chỉnh riêng cho khung đăng ký */
 .register-wrapper {
-    max-width: 500px; /* Rộng hơn form login một chút */
+    max-width: 500px; 
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
-/* Nút đăng ký có thể đổi màu để phân biệt (Tùy chọn) */
+/* Nút đăng ký */
 .btn-register {
-    background-color: #333; /* Màu đen hoặc màu khác chủ đạo */
+    background-color: #1a1a1a; /* Nút màu đen */
     margin-top: 10px;
+    transition: 0.3s;
 }
 
 .btn-register:hover {
-    background-color: #555;
+    background-color: #d4af37; /* Hover ra màu vàng */
 }
 
 /* Responsive cho màn hình nhỏ */

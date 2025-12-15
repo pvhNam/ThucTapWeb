@@ -2,15 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
 /* --- BIẾN MÀU SẮC & FONT --- */
 /* =========================================
-   1. HERO BANNER (Phần ảnh bìa đầu trang)
+   1. HERO BANNER
    ========================================= */
 .news-hero {
     width: 100%;
     height: 300px;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/news-banner.jpg'); /* Bạn cần thêm ảnh news-banner.jpg vào thư mục img */
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../img/news-banner.jpg');
     background-size: cover;
     background-position: center;
-    background-color: #333; /* Màu dự phòng */
+    background-color: #1a1a1a; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,6 +25,7 @@
     font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: 2px;
+    color: #d4af37; /* Tiêu đề màu vàng */
 }
 
 .news-hero p {
@@ -50,7 +51,7 @@
 
 .section-heading h2 {
     font-size: 2rem;
-    color: #333;
+    color: #1a1a1a; /* Màu đen */
     text-transform: uppercase;
     font-weight: 700;
 }
@@ -60,25 +61,25 @@
     display: block;
     width: 60px;
     height: 4px;
-    background-color: #00acc1; /* Màu chủ đạo của web bạn */
+    background-color: #d4af37; /* Gạch chân màu vàng */
     margin: 10px auto 0;
 }
 
 /* =========================================
-   3. NEWS GRID (Lưới tin tức)
+   3. NEWS GRID
    ========================================= */
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Tự động chia cột */
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
     gap: 30px;
 }
 
 /* =========================================
-   4. NEWS CARD (Thẻ tin tức)
+   4. NEWS CARD
    ========================================= */
 .news-card {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 4px; /* Bo góc ít hơn cho sang */
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -90,6 +91,7 @@
 .news-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-color: #d4af37; /* Viền vàng khi hover */
 }
 
 /* Ảnh tin tức */
@@ -108,7 +110,7 @@
 }
 
 .news-card:hover .news-img img {
-    transform: scale(1.1); /* Zoom ảnh khi hover */
+    transform: scale(1.1); 
 }
 
 /* Tag ngày tháng */
@@ -116,10 +118,10 @@
     position: absolute;
     top: 15px;
     left: 15px;
-    background-color: #00acc1;
+    background-color: #d4af37; /* Tag màu vàng */
     color: #fff;
     padding: 5px 10px;
-    border-radius: 4px;
+    border-radius: 0;
     font-size: 0.8rem;
     font-weight: 600;
 }
@@ -134,7 +136,7 @@
 
 .news-category {
     font-size: 0.85rem;
-    color: #00acc1;
+    color: #d4af37; /* Category màu vàng */
     font-weight: 700;
     text-transform: uppercase;
     margin-bottom: 10px;
@@ -142,7 +144,7 @@
 
 .news-content h3 {
     font-size: 1.3rem;
-    color: #333;
+    color: #1a1a1a;
     margin-bottom: 15px;
     line-height: 1.4;
     font-weight: 700;
@@ -150,7 +152,7 @@
 }
 
 .news-card:hover .news-content h3 {
-    color: #00acc1;
+    color: #d4af37; /* Hover tiêu đề tin ra vàng */
 }
 
 .news-content p {
@@ -158,7 +160,6 @@
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 20px;
-    /* Giới hạn số dòng mô tả */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -167,9 +168,9 @@
 
 /* Nút Đọc thêm */
 .read-more-btn {
-    margin-top: auto; /* Đẩy nút xuống dưới cùng */
+    margin-top: auto; 
     text-decoration: none;
-    color: #333;
+    color: #1a1a1a;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -183,7 +184,7 @@
 }
 
 .read-more-btn:hover {
-    color: #00acc1;
+    color: #d4af37;
 }
 
 .read-more-btn:hover i {
@@ -199,6 +200,6 @@
     }
     
     .news-grid {
-        grid-template-columns: 1fr; /* Mobile hiển thị 1 cột */
+        grid-template-columns: 1fr; 
     }
 }

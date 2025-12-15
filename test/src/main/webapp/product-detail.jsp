@@ -74,7 +74,10 @@
     <header class="header">
         <a href="index.jsp"><img src="img/logover2_5.png" class="logo" width="80"></a>
         <nav class="menu">
-            <a href="index.jsp">TRANG CHỦ</a> <a href="cart">GIỎ HÀNG</a>
+            <a href="index.jsp">TRANG CHỦ</a>
+            <a href="collection.jsp">BỘ SƯU TẬP</a> 
+            <a href="about.jsp">GIỚI THIỆU</a> 
+            <a href="news.jsp">TIN TỨC</a>
         </nav>
         <div class="actions">
             <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>

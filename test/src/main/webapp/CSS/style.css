@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 * {
 	margin: 0;
 	padding: 0;
@@ -8,24 +8,42 @@
 }
 
 body {
-	background-color: #e0f7fa;
+	background-color: #ffffff; /* Đổi nền xanh e0f7fa thành Trắng cho sạch sẽ */
 	flex-direction: column;
 	align-items: center;
+    color: #333;
+}
+/* --- CHỈNH SỬA HEADER USER INFO --- */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #d4af37; /* Viền vàng */
 }
 
 .header {
-	background-color: #00acc1;
+	background-color: #1a1a1a; /* Đổi màu xanh 00acc1 thành Đen */
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 10px 40px;
-	color: black;
+	color: #ffffff; /* Chữ chuyển sang trắng để nổi trên nền đen */
 }
+
 /* CSS cho nút Thêm vào giỏ hàng */
 .btn-add-cart {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #e74c3c; /* Màu đỏ nổi bật */
+    background-color: #d4af37; /* Đổi đỏ e74c3c thành Vàng Gold */
     color: #fff;
     text-decoration: none;
     border: none;
@@ -37,20 +55,26 @@ body {
 }
 
 .btn-add-cart:hover {
-    background-color: #c0392b;
-    transform: translateY(-2px); /* Hiệu ứng nảy lên nhẹ */
+    background-color: #b5952f; /* Màu vàng đậm hơn khi hover */
+    transform: translateY(-2px); 
 }
 
 .btn-view {
-    /* Cập nhật lại nút Xem chi tiết cho đồng bộ */
     background-color: #333;
     color: #fff;
     padding: 10px 20px;
     border-radius: 4px;
     text-decoration: none;
     font-size: 16px;
-    border: none;
+    border: 1px solid #333;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-view:hover {
+    background-color: #fff;
+    color: #333;
+    border-color: #fff;
 }
 
 .item-actions {
@@ -63,6 +87,7 @@ body {
 	font-size: 24px;
 	font-weight: bold;
 	letter-spacing: 2px;
+    color: #d4af37; /* Logo màu vàng */
 }
 
 .menu {
@@ -74,13 +99,15 @@ body {
 
 .menu a {
 	text-decoration: none;
-	color: black;
+	color: #ffffff; /* Menu chữ trắng */
 	font-weight: 600;
 	transition: 0.3s;
+    opacity: 0.8;
 }
 
 .menu a:hover {
-	color: #004d40;
+	color: #d4af37; /* Hover ra màu vàng */
+    opacity: 1;
 }
 
 .actions {
@@ -100,6 +127,7 @@ body {
 	top: 50%;
 	transform: translateY(-50%);
 	font-size: 16px;
+	color: #666;
 }
 
 .search-box input {
@@ -107,34 +135,38 @@ body {
 	border: none;
 	border-radius: 20px;
 	outline: none;
+    background-color: #fff;
 }
 
 .account a {
-	color: black;
+	color: #ffffff; /* Link account màu trắng */
 	text-decoration: none;
 	margin: 0 5px;
 	font-size: 14px;
 }
 
 .account a:hover {
-	text-decoration: underline;
+	color: #d4af37;
+    text-decoration: none;
 }
 
 .fa-cart-shopping {
 	font-size: 20px;
 	cursor: pointer;
 	transition: transform 0.2s;
+    color: #fff;
 }
 
 .fa-cart-shopping:hover {
 	transform: scale(1.1);
+    color: #d4af37;
 }
 
 .footer {
-	background-color: #00acc1;
-	color: #333;
+	background-color: #1a1a1a; /* Footer nền đen (đồng bộ header) */
+	color: #ccc; /* Chữ xám nhạt */
 	padding: 40px 20px 20px;
-	border-top: 1px solid #ddd;
+	border-top: 3px solid #d4af37; /* Viền trên màu vàng */
 	font-family: Arial, sans-serif;
 }
 
@@ -148,7 +180,7 @@ body {
 
 .contact h3, .fanpage h3 {
 	margin-bottom: 15px;
-	color: #000000;
+	color: #d4af37; /* Tiêu đề footer màu vàng */
 }
 
 .contact p {
@@ -158,7 +190,7 @@ body {
 
 .catalog h4 {
 	margin-bottom: 10px;
-	color: #000000;
+	color: #d4af37; /* Tiêu đề danh mục màu vàng */
 	font-size: 1em;
 }
 
@@ -173,14 +205,14 @@ body {
 }
 
 .catalog a {
-	color: #333;
+	color: #ccc;
 	text-decoration: none;
 	font-size: 0.9em;
 	transition: color 0.2s;
 }
 
 .catalog a:hover {
-	color: #007bff;
+	color: #d4af37; /* Hover link footer ra màu vàng */
 }
 
 .payandship {
@@ -196,6 +228,7 @@ body {
 .payment h4, .shipping h4 {
 	margin-bottom: 10px;
 	font-size: 0.9em;
+    color: #fff;
 }
 
 .logos {
@@ -229,12 +262,13 @@ body {
 .social-icons a {
 	display: inline-block;
 	transition: transform 0.2s;
+    color: #fff; /* Icon xã hội màu trắng */
 }
 
 .social-icons a:hover {
 	transform: scale(1.1);
+    color: #d4af37;
 }
-
 
 /* Trong file CSS của bạn */
 .actions a[aria-label="Giỏ hàng"] {
@@ -248,7 +282,7 @@ body {
 	font-size: 1.2rem; /* Hoặc kích thước icon mà bạn đang dùng */
 }
 .menu a.active {
-    color: #ffffff;       /* Đổi chữ thành màu trắng để nổi bật trên nền xanh */
-
-    border-bottom: 2px solid #ffffff; /* Gạch chân màu trắng */
+    color: #d4af37;       /* Đổi chữ thành màu Vàng khi active */
+    font-weight: 800;
+    border-bottom: 2px solid #d4af37; /* Gạch chân màu vàng */
 }

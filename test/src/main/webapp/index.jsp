@@ -29,7 +29,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="CSS/style.css" /> <link rel="stylesheet" href="CSS/index.css" /> </head>
+    <link rel="stylesheet" href="CSS/style.css" /> 
+    <link rel="stylesheet" href="CSS/index.css" /> </head>
 
 <body>
     <header class="header">
@@ -160,38 +161,41 @@
                     <p>Hiện chưa có sản phẩm nào được bày bán.</p>
                 </div>
             <%
-                } else {
-                    for (product p : products) {
-                        // Xử lý ảnh null
-                        String imgPath = (p.getImage() != null && !p.getImage().isEmpty()) ? p.getImage() : "img/no-image.png";
-            %>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="<%=imgPath%>" alt="<%=p.getPdescription()%>">
-                        <a href="product-detail.jsp?pid=<%=p.getPid()%>" class="overlay-btn view-btn"><i class="fa-regular fa-eye"></i></a>
-                    </div>
+    } else {
+        for (product p : products) {
+            // Xử lý ảnh null
+            String imgPath = (p.getImage() != null && !p.getImage().isEmpty()) ? p.getImage() : "img/no-image.png";
+%>
+    <div class="product-card" onclick="window.location.href='product-detail.jsp?pid=<%=p.getPid()%>'" style="cursor: pointer;">
+        
+        <div class="product-image">
+            <img src="<%=imgPath%>" alt="<%=p.getPdescription()%>">
+            <a href="product-detail.jsp?pid=<%=p.getPid()%>" class="overlay-btn view-btn"><i class="fa-regular fa-eye"></i></a>
+        </div>
 
-                    <div class="product-details">
-                        <span class="product-cat">Size: <%=p.getSize()%> | <%=p.getColor()%></span>
-                        <h3 class="product-name"><a href="product-detail.jsp?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a></h3>
-                        <div class="price-row">
-                            <span class="price"><%=df.format(p.getPrice())%></span>
-                        </div>
-                        
-                        <form action="cart" method="post" class="add-cart-form">
-                            <input type="hidden" name="action" value="add"> 
-                            <input type="hidden" name="pid" value="<%=p.getPid()%>"> 
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn-add-cart">
-                                THÊM VÀO GIỎ <i class="fa-solid fa-cart-plus"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            <%
-                    }
-                }
-            %>
+        <div class="product-details">
+            <span class="product-cat">Size: <%=p.getSize()%> | <%=p.getColor()%></span>
+            
+            <h3 class="product-name"><a href="product-detail.jsp?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a></h3>
+            
+            <div class="price-row">
+                <span class="price"><%=df.format(p.getPrice())%></span>
+            </div>
+            
+            <form action="cart" method="post" class="add-cart-form" onclick="event.stopPropagation()">
+                <input type="hidden" name="action" value="add"> 
+                <input type="hidden" name="pid" value="<%=p.getPid()%>"> 
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn-add-cart">
+                    THÊM VÀO GIỎ <i class="fa-solid fa-cart-plus"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+<%
+        }
+    }
+%>
         </div>
     </div>
 

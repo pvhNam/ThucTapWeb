@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
 /* --- BIẾN MÀU SẮC & FONT --- */
 .login-container {
-    background-color: #f0f2f5;
-    min-height: 80vh; /* Chiều cao tối thiểu để đẩy footer xuống */
+    background-color: #f9f9f9; /* Nền xám nhạt nhẹ nhàng hơn */
+    min-height: 80vh; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,14 +14,15 @@
     background: #ffffff;
     padding: 40px 50px;
     border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Giảm bóng cho tinh tế */
     width: 100%;
-    max-width: 450px; /* Độ rộng tối đa của khung login */
+    max-width: 450px; 
     text-align: center;
+    border: 1px solid #eee;
 }
 
 .login-wrapper h2 {
-    color: #333;
+    color: #1a1a1a; /* Tiêu đề màu đen */
     font-size: 2rem;
     margin-bottom: 10px;
     font-weight: 800;
@@ -43,7 +44,7 @@
     display: block;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #444;
+    color: #1a1a1a;
     font-size: 0.9rem;
 }
 
@@ -61,7 +62,7 @@
 
 .input-field input {
     width: 100%;
-    padding: 12px 15px 12px 40px; /* Chừa chỗ cho icon */
+    padding: 12px 15px 12px 40px; 
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
@@ -69,7 +70,7 @@
 }
 
 .input-field input:focus {
-    border-color: #00acc1;
+    border-color: #d4af37; /* Focus ra màu vàng */
     outline: none;
 }
 
@@ -83,15 +84,20 @@
 }
 
 .forgot-password {
-    color: #00acc1;
+    color: #1a1a1a; /* Đổi màu link quên pass */
     font-weight: 600;
+    transition: 0.3s;
+}
+
+.forgot-password:hover {
+    color: #d4af37; /* Hover ra màu vàng */
 }
 
 /* Button Login */
 .btn-login {
     width: 100%;
     padding: 14px;
-    background-color: #00acc1;
+    background-color: #1a1a1a; /* Nút màu đen */
     color: white;
     border: none;
     border-radius: 5px;
@@ -102,7 +108,8 @@
 }
 
 .btn-login:hover {
-    background-color: #00838f;
+    background-color: #d4af37; /* Hover nút ra màu vàng */
+    color: #fff;
 }
 
 /* Register Link */
@@ -112,14 +119,17 @@
 }
 
 .register-link a {
-    color: #00acc1;
+    color: #d4af37; /* Link đăng ký màu vàng */
     font-weight: 700;
+}
+.register-link a:hover {
+    color: #1a1a1a;
 }
 
 /* Thông báo lỗi */
 .alert-error {
-    background-color: #ffebee;
-    color: #c62828;
+    background-color: #fff5f5;
+    color: #c0392b;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -128,4 +138,5 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    border: 1px solid #f2d7d5;
 }

@@ -14,6 +14,8 @@
     
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/collection.css" />
+    
+
 </head>
 <body>
     <header class="header">
@@ -53,7 +55,7 @@
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
                 <% } %>
-            </div>
+            </div>            
             <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </header>
