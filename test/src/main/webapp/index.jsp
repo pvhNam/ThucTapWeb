@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.text.DecimalFormat"%>
 <%@ page import="dao.ProductDAO"%>
@@ -6,12 +7,12 @@
 <%@ page import="model.user"%>
 
 <%
-    // 1. Chống Cache (Tránh lỗi khi user logout xong bấm Back vẫn thấy trang cũ)
+    // 1. Chống Cache (để khi Logout xong back lại không thấy trang cũ)
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
 
-    // 2. Lấy User hiện tại từ Session
+    // 2. Lấy User hiện tại
     user currentUser = (user) session.getAttribute("user");
     boolean isLoggedIn = (currentUser != null);
 %>
@@ -23,19 +24,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Chủ | Fashion Store</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="CSS/style.css" /> 
-    <link rel="stylesheet" href="CSS/index.css" /> 
-</head>
+    <link rel="stylesheet" href="CSS/style.css" /> <link rel="stylesheet" href="CSS/index.css" /> </head>
 
 <body>
     <header class="header">
         <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
 
         <nav class="menu">
-            <a href="index.jsp" class="active">CỬA HÀNG</a> 
+            <a href="index.jsp" class="active">TRANG CHỦ</a> 
             <a href="collection.jsp">BỘ SƯU TẬP</a> 
             <a href="about.jsp">GIỚI THIỆU</a> 
             <a href="news.jsp">TIN TỨC</a>
@@ -57,7 +60,7 @@
                     <div class="user-info">
                         <span>Hi, <%=displayName%></span> 
                         <a href="profile.jsp" title="Trang cá nhân"> 
-                            <img src="img/default-user.png" alt="User" class="user-avatar"> 
+                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
                         </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
@@ -144,7 +147,6 @@
                 List<product> products = pdao.getAllProducts();
                 DecimalFormat df = new DecimalFormat("#,### VNĐ");
                 
-                // Kiểm tra nếu không có sản phẩm
                 if (products == null || products.isEmpty()) {
             %>
                 <div class="no-product">
@@ -153,32 +155,18 @@
             <%
                 } else {
                     for (product p : products) {
-                        // Xử lý ảnh null (nếu DB chưa có ảnh thì dùng ảnh mặc định)
+                        // Xử lý ảnh null
                         String imgPath = (p.getImage() != null && !p.getImage().isEmpty()) ? p.getImage() : "img/no-image.png";
-                        
-                        // Kiểm tra tồn kho (Dựa trên field stockquantyti trong model của bạn)
-                        boolean isOutOfStock = (p.getStockquantyti() <= 0); 
             %>
                 <div class="product-card">
                     <div class="product-image">
                         <img src="<%=imgPath%>" alt="<%=p.getPdescription()%>">
-                        
-                        <% if(isOutOfStock) { %>
-                            <div style="position:absolute; top:10px; right:10px; background:#c0392b; color:white; padding:5px 10px; font-size:11px; font-weight:bold; border-radius:3px; z-index: 10;">
-                                SOLD OUT
-                            </div>
-                        <% } %>
-
                         <a href="product-detail.jsp?pid=<%=p.getPid()%>" class="overlay-btn view-btn"><i class="fa-regular fa-eye"></i></a>
                     </div>
 
                     <div class="product-details">
                         <span class="product-cat">Size: <%=p.getSize()%> | <%=p.getColor()%></span>
-                        
-                        <h3 class="product-name">
-                            <a href="product-detail.jsp?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a>
-                        </h3>
-                        
+                        <h3 class="product-name"><a href="product-detail.jsp?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a></h3>
                         <div class="price-row">
                             <span class="price"><%=df.format(p.getPrice())%></span>
                         </div>
@@ -187,75 +175,81 @@
                             <input type="hidden" name="action" value="add"> 
                             <input type="hidden" name="pid" value="<%=p.getPid()%>"> 
                             <input type="hidden" name="quantity" value="1">
-                            
-                            <% if(!isOutOfStock) { %>
-                                <button type="submit" class="btn-add-cart">
-                                    THÊM VÀO GIỎ <i class="fa-solid fa-cart-plus"></i>
-                                </button>
-                            <% } else { %>
-                                <button type="button" class="btn-add-cart" style="background:#ccc; cursor:not-allowed;" disabled>
-                                    HẾT HÀNG <i class="fa-solid fa-ban"></i>
-                                </button>
-                            <% } %>
+                            <button type="submit" class="btn-add-cart">
+                                THÊM VÀO GIỎ <i class="fa-solid fa-cart-plus"></i>
+                            </button>
                         </form>
                     </div>
                 </div>
-                <%
+            <%
                     }
                 }
             %>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="contact">
-                <h3>Liên Hệ</h3>
-                <p><strong>☎️</strong> 0981774313</p>
-                <p><strong>✉️</strong> tranthanglo@gmail.com</p>
-                <p><strong>📍</strong> S2, đường Hải Triều, Q.1, TP HCM</p>
-            </div>
+  	<footer class="footer">
+		<div class="footer-top">
+			<div class="contact">
+				<h3>Liên Hệ</h3>
+				<p>
+					<strong>☎️</strong> 0981774313
+				</p>
+				<p>
+					<strong>✉️</strong> tranthanglo@gmail.com
+				</p>
+				<p>
+					<strong>📍</strong> S2, đường Hải Triều, phường Bến Nghé, Quận 1,
+					TP HCM
+				</p>
+			</div>
 
-            <div class="payandship">
-                <div class="payment">
-                    <h4>Phương thức thanh toán</h4>
-                    <div class="logos">
-                        <img src="img/visa.png" alt="VISA"> <img src="img/jcb.png" alt="JCB"> <img src="img/paypal.png" alt="PayPal">
-                    </div>
-                </div>
-                <div class="shipping">
-                    <h4>Đơn vị vận chuyển</h4>
-                    <div class="logos2">
-                        <img src="img/vietnampost.png" alt="VietPost"> <img src="img/ghtk.png" alt="GHN">
-                    </div>
-                </div>
-            </div>
-            <div class="catalog">
-                <h4>Danh mục</h4>
-                <ul>
-                    <li><a href="index.jsp">Trang chủ</a></li>
-                    <li><a href="collection.jsp">Cửa hàng</a></li>
-                    <li><a href="about.jsp">Giới thiệu</a></li>
-                    <li><a href="news.jsp">Tin tức</a></li>
-                </ul>
-            </div>
-            <div class="fangage">
-                <h3>Fanpage</h3>
-                <div class="social-icons">
-                    <i class="bi bi-facebook"></i> 
-                    <a href="#"><img src="img/facebook1.png" alt="FB" width="30"></a> 
-                    <a href="#"><img src="img/youtube.png" alt="YT" width="30"></a> 
-                    <a href="#"><img src="img/tiktok.png" alt="TikTok" width="30"></a> 
-                    <a href="#"><img src="img/instagram.png" alt="IG" width="30"></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+			<div class="payandship">
+				<div class="payment">
+					<h4>Phương thức thanh toán</h4>
+					<div class="logos">
+						<img src="img/visa.png" alt="VISA"> <img src="img/jcb.png"
+							alt="JCB"> <img src="img/paypal.png" alt="PayPal">
+					</div>
+				</div>
+				<div class="shipping">
+					<h4>Đơn vị vận chuyển</h4>
+					<div class="logos2">
+						<img src="img/vietnampost.png" alt="VietPost"> <img
+							src="img/ghtk.png" alt="GHN"> <img src="img/jt.png"
+							alt="J&T Express"> <img src="img/kerry.png" alt="Kerry">
+					</div>
+				</div>
+			</div>
+			<div class="catalog">
+				<h4>Danh mục</h4>
+				<ul>
+					<li><a href="#">Trang chủ</a></li>
+					<li><a href="#">Cửa hàng</a></li>
+					<li><a href="#">Giới thiệu</a></li>
+					<li><a href="#">Tin tức</a></li>
+					<li><a href="#">Liên hệ</a></li>
+				</ul>
+			</div>
+			<div class="fangage">
+				<h3>Fanpage</h3>
+				<div class="social-icons">
+					<i class="bi bi-facebook"></i> <a href="#" aria-label="Facebook">
+						<img src="img/facebook1.png" alt="FB" width="30">
+					</a> <a href="#" aria-label="YouTube"><img src="img/youtube.png"
+						alt="YT" width="30"></a> <a href="#" aria-label="TikTok"><img
+						src="img/tiktok.png" alt="TikTok" width="30"></a> <a href="#"
+						aria-label="Instagram"><img src="img/instagram.png" alt="IG"
+						width="30"></a>
+				</div>
+			</div>
+		</div>
+	</footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-        // Hàm xử lý lưu Voucher bằng AJAX
+        // Hàm xử lý lưu Voucher
         function saveVoucher(btn, code) {
             // Biến kiểm tra đăng nhập từ JSP
             var isUserLoggedIn = <%= isLoggedIn %>;
@@ -266,7 +260,7 @@
                 return;
             }
 
-            // Gửi AJAX về Server
+            // Gửi AJAX
             $.ajax({
                 url: "voucher",
                 type: "POST",

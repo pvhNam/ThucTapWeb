@@ -15,6 +15,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Thông Tin Cá Nhân</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/login.css" /> 
@@ -60,14 +63,16 @@
 <body>
     <header class="header">
         <img src="img/logover2_5.png" alt="Logo" class="logo" width="80">
-        <nav class="menu">
-            <a href="index.jsp">TRANG CHỦ</a> 
+   <nav class="menu">
+            <a href="index.jsp" class="active">TRANG CHỦ</a> 
             <a href="collection.jsp">BỘ SƯU TẬP</a> 
+            <a href="about.jsp">GIỚI THIỆU</a> 
+            <a href="news.jsp">TIN TỨC</a>
         </nav>
         <div class="actions">
             <div class="account">
-                <span>Xin chào, <b><%= currentUser.getUsername() %></b></span>
-                <a href="${pageContext.request.contextPath}/logout" style="color:red; margin-left:10px;">(Thoát)</a>
+                <span>Xin chào, <b><%= currentUser.getFullname() %></b></span>
+                <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
             </div>
         </div>
     </header>
@@ -86,10 +91,10 @@
                 <input type="hidden" name="action" value="update-info">
                 
                 <div class="input-group">
-                    <label>Tên đăng nhập (Không thể sửa)</label>
+                    <label>Tên đăng nhập</label>
                     <div class="input-field readonly-field">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" value="<%= currentUser.getUsername() %>" readonly>
+                        <input type="text" name="username" value="<%= currentUser.getUsername() %>" readonly>
                     </div>
                 </div>
 

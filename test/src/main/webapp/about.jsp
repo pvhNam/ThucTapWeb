@@ -6,6 +6,9 @@
 <head>
 <meta charset="UTF-8">
 <title>About</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/about.css" />
@@ -15,10 +18,10 @@
 		<img src="img/logover2_5.png" alt="" class="logo" width="80">
 
 		<nav class="menu">
-			<a href="index.jsp"> CỬA HÀNG</a>
-			<a href="collection.jsp" >BỘ SƯU TẬP </a>
-			<a href="#" class="active"> GIỚI THIỆU</a> 
-			<a href="news.jsp">TIN TỨC </a>
+			<a href="index.jsp">TRANG CHỦ</a>
+			<a href="collection.jsp" >BỘ SƯU TẬP</a>
+			<a href="#" class="active">GIỚI THIỆU</a> 
+			<a href="news.jsp">TIN TỨC</a>
 		</nav>
 
 		<div class="actions">
@@ -50,7 +53,7 @@
                 <img src="img/default-user.png" alt="User" class="user-avatar">
             </a>
             
-            <a href="${pageContext.request.contextPath}/logout" class="logout-btn">(Thoát)</a>
+            <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
         </div>
     <% 
         } 

@@ -1,5 +1,6 @@
 /* CSS/login.css */
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+/* --- BIẾN MÀU SẮC & FONT --- */
 .login-container {
     background-color: #f0f2f5;
     min-height: 80vh; /* Chiều cao tối thiểu để đẩy footer xuống */

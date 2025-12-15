@@ -27,6 +27,9 @@
 <head>
     <meta charset="UTF-8">
     <title><%= p.getPdescription() %> | Fashion Store</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/style.css" />
@@ -71,7 +74,7 @@
     <header class="header">
         <a href="index.jsp"><img src="img/logover2_5.png" class="logo" width="80"></a>
         <nav class="menu">
-            <a href="index.jsp">CỬA HÀNG</a> <a href="cart">GIỎ HÀNG</a>
+            <a href="index.jsp">TRANG CHỦ</a> <a href="cart">GIỎ HÀNG</a>
         </nav>
         <div class="actions">
             <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>

@@ -1,5 +1,6 @@
 /* --- Thêm vào cuối file CSS/login.css --- */
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+/* --- BIẾN MÀU SẮC & FONT --- */
 /* Điều chỉnh riêng cho khung đăng ký */
 .register-wrapper {
     max-width: 500px; /* Rộng hơn form login một chút */

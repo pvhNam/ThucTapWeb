@@ -8,6 +8,9 @@
     <meta charset="UTF-8">
     <title>Giỏ Hàng | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="CSS/style.css" />
@@ -17,7 +20,7 @@
     <header class="header">
         <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
         <nav class="menu">
-            <a href="index.jsp">CỬA HÀNG</a>
+            <a href="index.jsp">TRANG CHỦ</a>
             <a href="collection.jsp">BỘ SƯU TẬP</a> 
             <a href="about.jsp">GIỚI THIỆU</a> 
             <a href="news.jsp">TIN TỨC</a>
@@ -31,7 +34,7 @@
                     <div class="user-info">
                         <span>Hi, <%=currentUser.getUsername()%></span> 
                         <a href="profile.jsp"><img src="img/default-user.png" class="user-avatar" width="30"></a>
-                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn">(Thoát)</a>
+                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
                 <% } %>
             </div>

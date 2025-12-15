@@ -43,11 +43,13 @@ public class ProfileController extends HttpServlet {
 
         if ("update-info".equals(action)) {
             // 1. Xử lý cập nhật thông tin cá nhân
+        	String username = request.getParameter("username");
             String fullname = request.getParameter("fullname");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
 
             // Cập nhật object
+            currentUser.setUsername(username);
             currentUser.setFullname(fullname);
             currentUser.setEmail(email);
             currentUser.setPhonenumber(phone);

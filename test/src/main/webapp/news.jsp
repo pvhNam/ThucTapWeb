@@ -5,6 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Tin Tức Thời Trang</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/news.css" />
@@ -15,7 +18,7 @@
         <img src="img/logover2_5.png" alt="Logo" class="logo" width="80">
 
         <nav class="menu">
-            <a href="index.jsp">CỬA HÀNG</a>
+            <a href="index.jsp">TRANG CHỦ</a>
             <a href="collection.jsp">BỘ SƯU TẬP</a>
             <a href="about.jsp">GIỚI THIỆU</a> 
             <a href="news.jsp" class="active">TIN TỨC</a>
@@ -44,7 +47,7 @@
                         <a href="profile.jsp" title="Trang cá nhân">
                             <img src="img/default-user.png" alt="User" class="user-avatar" style="width:30px; border-radius:50%;">
                         </a>
-                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn" style="color:red; font-size:0.8rem;">(Thoát)</a>
+                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
                 <% 
                     } 
