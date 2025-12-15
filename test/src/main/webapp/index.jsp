@@ -67,6 +67,9 @@
                 %>
                     <div class="user-info">
                         <span>Hi, <%=displayName%></span> 
+                        <a href="order-history" title="Lịch sử mua hàng" style="margin-left: 5px;">
+       <i class="fa-solid fa-clock-rotate-left"></i>
+    </a>
                         <a href="profile.jsp" title="Trang cá nhân"> 
                             <img src="img/images.jpg" alt="User" class="user-avatar"> 
                         </a>
