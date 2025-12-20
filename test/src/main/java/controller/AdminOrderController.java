@@ -19,17 +19,13 @@ public class AdminOrderController extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        
-        // Kiểm tra quyền Admin (Dựa vào cờ isAdmin đã set ở LoginController)
         Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
         
         if (isAdmin == null || !isAdmin) {
-            // Không phải admin thì đá về trang login
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // Gọi DAO lấy tất cả đơn hàng
         OrderDAO orderDao = new OrderDAO();
         List<Order> listOrders = orderDao.getAllOrders();
 

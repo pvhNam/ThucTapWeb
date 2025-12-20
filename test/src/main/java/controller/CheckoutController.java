@@ -6,6 +6,7 @@ import java.util.List;
 import dao.CartDAO;
 import dao.ProductDAO;
 import dao.VoucherDAO;
+import dao.OrderDAO; // Nhớ import cái này
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,13 +21,11 @@ import model.Voucher;
 public class CheckoutController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // GET: Nếu người dùng gõ /checkout trực tiếp -> Chuyển về giỏ hàng
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         response.sendRedirect("cart");
     }
 
-    // POST: Xử lý nút "THANH TOÁN" từ Cart
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -39,7 +38,7 @@ public class CheckoutController extends HttpServlet {
             return;
         }
 
-     // 2. Lấy giỏ hàng hiện tại
+        // 2. Lấy giỏ hàng hiện tại
         CartDAO cartDao = new CartDAO();
         List<cartItem> cart = cartDao.getCartByUid(currentUser.getUid());
 
@@ -48,52 +47,52 @@ public class CheckoutController extends HttpServlet {
             return;
         }
 
-        // --- BƯỚC QUAN TRỌNG: LƯU ĐƠN HÀNG & TRỪ KHO ---
+        // --- BƯỚC QUAN TRỌNG: TÍNH TIỀN & LƯU ĐƠN HÀNG ---
         
-        // ================== ĐOẠN CẦN THÊM VÀO ==================
-        // 1. Tính tổng tiền đơn hàng
+        // Tính tổng tiền
         double totalMoney = 0;
         for (cartItem item : cart) {
-            totalMoney += item.getTotalPrice(); // Giả sử model cartItem có hàm này
+            totalMoney += item.getTotalPrice();
         }
         
-        // Nếu có voucher thì trừ tiền voucher (logic đơn giản)
+        // Xử lý giảm giá nếu có Voucher
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         if (appliedVoucher != null) {
-            // Logic giảm giá của bạn (ví dụ giảm trực tiếp hoặc %)
-            // totalMoney = totalMoney - giamGia;
+            // Ví dụ giảm theo số tiền trực tiếp (hoặc % tùy logic bạn muốn)
+            if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
+                totalMoney = totalMoney * (1 - appliedVoucher.getDiscountAmount()/100);
+            } else {
+                totalMoney = totalMoney - appliedVoucher.getDiscountAmount();
+            }
+            if (totalMoney < 0) totalMoney = 0;
         }
 
-        // 2. Lấy địa chỉ từ form (người dùng nhập ở trang cart)
+        // Lấy địa chỉ
         String address = request.getParameter("address"); 
-        if(address == null) address = "Địa chỉ mặc định"; // Xử lý nếu null
+        if(address == null || address.trim().isEmpty()) address = "Địa chỉ mặc định";
 
-        // 3. LƯU VÀO DATABASE (Đây là bước bạn bị thiếu)
-        dao.OrderDAO orderDao = new dao.OrderDAO();
-        // Gọi hàm vừa viết ở Bước 1
-        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address); 
-        // =======================================================
+        // === GỌI HÀM LƯU DB (CÓ TRUYỀN CART) ===
+        OrderDAO orderDao = new OrderDAO();
+        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, cart); 
+        // ========================================
 
-        // 4. Trừ kho (Code cũ của bạn)
+        // 3. Trừ kho sản phẩm
         ProductDAO pDao = new ProductDAO();
         for (cartItem item : cart) {
-            // A. Trừ số lượng tồn kho trong Database
             pDao.decreaseStock(item.getProduct().getPid(), item.getQuantity());
-            
-            // (Nâng cao: Tại đây bạn nên lưu chi tiết đơn hàng vào bảng order_details dùng newOrderId)
         }
 
-        // B. Xử lý Voucher (Code cũ của bạn - Giữ nguyên)
+        // 4. Đánh dấu Voucher đã dùng
         if (appliedVoucher != null) {
             VoucherDAO vDao = new VoucherDAO();
             vDao.markVoucherUsed(currentUser.getUid(), appliedVoucher.getId());
             session.removeAttribute("appliedVoucher");
         }
 
-        // C. Xóa sạch giỏ hàng (Code cũ của bạn - Giữ nguyên)
+        // 5. Xóa sạch giỏ hàng
         cartDao.clearCart(currentUser.getUid());
 
-        // D. Chuyển hướng
-        response.sendRedirect("order-success.jsp");
-}
+        // 6. Chuyển hướng sang trang thành công (Kèm ID đơn hàng để xem chi tiết)
+        response.sendRedirect("order-success.jsp?id=" + newOrderId);
+    }
 }

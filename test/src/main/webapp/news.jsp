@@ -1,209 +1,115 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="model.user"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Tin Tức Thời Trang</title>
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" href="CSS/news.css" />
-    <link rel="stylesheet" href="CSS/style.css" />
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, dao.NewsDAO, model.News, model.user"%>
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin Tức | Fashion Store</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="CSS/style.css" />
+<style>
+.news-container {
+	max-width: 1200px;
+	margin: 40px auto;
+	padding: 0 20px;
+}
+
+.news-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	gap: 30px;
+}
+
+.news-card {
+	border: 1px solid #eee;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #fff;
+	transition: 0.3s;
+}
+
+.news-card:hover {
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+	transform: translateY(-5px);
+}
+
+.news-img {
+	width: 100%;
+	height: 200px;
+	object-fit: cover;
+}
+
+.news-content {
+	padding: 20px;
+}
+
+.news-title {
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+	color: #1a1a1a;
+	font-weight: bold;
+}
+
+.news-desc {
+	color: #555;
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.news-date {
+	font-size: 0.8rem;
+	color: #999;
+	margin-bottom: 5px;
+	display: block;
+}
+</style>
 </head>
 <body>
+	<header class="header">
+		<a href="index.jsp"><img src="img/logover2_5.png" alt="Logo"
+			class="logo" width="80"></a>
+		<nav class="menu">
+			<a href="index.jsp">CỬA HÀNG</a> <a href="collection.jsp">BỘ SƯU
+				TẬP</a> <a href="about.jsp">GIỚI THIỆU</a> <a href="news.jsp"
+				class="active">TIN TỨC</a>
+		</nav>
+		<div class="actions">
+			<a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
+		</div>
+	</header>
 
-    <header class="header">
-        <img src="img/logover2_5.png" alt="Logo" class="logo" width="80">
-
-        <nav class="menu">
-            <a href="index.jsp">TRANG CHỦ</a>
-            <a href="collection.jsp">BỘ SƯU TẬP</a>
-            <a href="about.jsp">GIỚI THIỆU</a> 
-            <a href="news.jsp" class="active">TIN TỨC</a>
-        </nav>
-
-        <div class="actions">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i> 
-                <input type="text" placeholder="Tìm Kiếm" />
-            </div>
-            
-            <div class="account">
-            	<%user currentUser = (user) session.getAttribute("user");
-                boolean isLoggedIn = (currentUser != null); %>
-                <% if (!isLoggedIn) { %>
-                    <a href="login.jsp">ĐĂNG NHẬP</a> <span style="color:#ccc">|</span> <a href="register.jsp">ĐĂNG KÍ</a>
-                <% } else { 
-                	String fullName = currentUser.getFullname();
-                    String displayName = fullName;
-                    
-                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
-                    if (fullName == null) {
-                        displayName = "Member";
-                    } else if (fullName.length() > 15) {
-                        displayName = fullName.substring(0, 15) + "...";
-                    }
-                %>
-                    <div class="user-info">
-                        <span>Hi, <%=displayName%></span> 
-                        <a href="profile.jsp" title="Trang cá nhân"> 
-                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
-                        </a>
-                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
-                    </div>
-                <% } %>
-            </div>
-            
-            <a href="cart" aria-label="Giỏ hàng"> 
-                <i class="fa-solid fa-cart-shopping"></i>
-            </a>
-        </div>
-    </header>
-
-    <div class="news-hero">
-        <h1>BLOG THỜI TRANG</h1>
-        <p>Cập nhật xu hướng mới nhất năm 2025</p>
-    </div>
-
-    <div class="news-container">
-        
-        <div class="section-heading">
-            <h2>Bài Viết Mới Nhất</h2>
-        </div>
-
-        <div class="news-grid">
-            
-            <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">08/12</span>
-                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop" alt="News 1">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Xu Hướng</span>
-                    <h3>Bộ sưu tập Mùa Hè 2025: Sự bùng nổ của màu sắc</h3>
-                    <p>Khám phá những gam màu rực rỡ sẽ thống trị các sàn diễn thời trang trong mùa hè năm nay. Đừng bỏ lỡ cơ hội làm mới tủ đồ của bạn.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">05/12</span>
-                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2020&auto=format&fit=crop" alt="News 2">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Phong Cách</span>
-                    <h3>5 Cách phối đồ Minimalist cho nàng công sở</h3>
-                    <p>Phong cách tối giản không bao giờ lỗi mốt. Hãy cùng tìm hiểu cách phối đồ vừa thanh lịch vừa thoải mái cho môi trường làm việc.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">01/12</span>
-                    <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1974&auto=format&fit=crop" alt="News 3">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Khuyến Mãi</span>
-                    <h3>Săn Sale Giáng Sinh: Giảm giá lên đến 50%</h3>
-                    <p>Chương trình khuyến mãi lớn nhất trong năm đã bắt đầu. Hàng ngàn sản phẩm thời trang cao cấp đang chờ đón bạn.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">28/11</span>
-                    <img src="https://images.unsplash.com/photo-1529139574466-a302d2052574?q=80&w=2070&auto=format&fit=crop" alt="News 4">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Mẹo Vặt</span>
-                    <h3>Bảo quản đồ da đúng cách tại nhà</h3>
-                    <p>Đồ da cần được chăm sóc đặc biệt để giữ được độ bền và vẻ đẹp. Bài viết này sẽ hướng dẫn bạn các bước cơ bản.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-             <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">28/11</span>
-                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop" alt="News 4">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Mẹo Vặt</span>
-                    <h3>Cách chọn size quần áo chuẩn xác khi mua online</h3>
-                    <p>Bảng hướng dẫn chi tiết cách đo các vòng cơ thể để chọn được size đồ ưng ý nhất mà không cần thử trực tiếp.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-             <article class="news-card">
-                <div class="news-img">
-                    <span class="news-date">28/11</span>
-                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop" alt="News 4">
-                </div>
-                <div class="news-content">
-                    <span class="news-category">Bộ sưu tập</span>
-                    <h3>Vẻ đẹp của trang phục Vintage thập niên 90</h3>
-                    <p>Sự trở lại của phong cách retro thập niên 90 đang làm mưa làm gió. Cùng chiêm ngưỡng những set đồ kinh điển.</p>
-                    <a href="#" class="read-more-btn">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="contact">
-                <h3>Liên Hệ</h3>
-                <p><strong>☎️</strong> 0981774313</p>
-                <p><strong>✉️</strong> tranthanglo@gmail.com</p>
-                <p><strong>📍</strong> S2, đường Hải Triều, phường Bến Nghé, Quận 1, TP HCM</p>
-            </div>
-
-            <div class="payandship">
-                <div class="payment">
-                    <h4>Phương thức thanh toán</h4>
-                    <div class="logos">
-                        <img src="img/visa.png" alt="VISA"> 
-                        <img src="img/jcb.png"alt="JCB"> 
-                        <img src="img/paypal.png" alt="PayPal">
-                    </div>
-                </div>
-                <div class="shipping">
-                    <h4>Đơn vị vận chuyển</h4>
-                    <div class="logos2">
-                        <img src="img/vietnampost.png" alt="VietPost"> 
-                        <img src="img/ghtk.png" alt="GHN"> 
-                        <img src="img/jt.png" alt="J&T Express"> 
-                        <img src="img/kerry.png" alt="Kerry">
-                    </div>
-                </div>
-            </div>
-            <div class="catalog">
-                <h4>Danh mục</h4>
-                <ul>
-                    <li><a href="index.jsp">Trang chủ</a></li>
-                    <li><a href="#">Cửa hàng</a></li>
-                    <li><a href="about.jsp">Giới thiệu</a></li>
-                    <li><a href="news.jsp">Tin tức</a></li>
-                    <li><a href="#">Liên hệ</a></li>
-                </ul>
-            </div>
-            <div class="fangage">
-                <h3>Fanpage</h3>
-                <div class="social-icons">
-                    <i class="bi bi-facebook"></i> 
-                    <a href="#" aria-label="Facebook"> <img src="img/facebook1.png" alt="FB" width="30"></a> 
-                    <a href="#" aria-label="YouTube"><img src="img/youtube.png" alt="YT" width="30"></a> 
-                    <a href="#" aria-label="TikTok"><img src="img/tiktok.png" alt="TikTok" width="30"></a> 
-                    <a href="#" aria-label="Instagram"><img src="img/instagram.png" alt="IG" width="30"></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+	<div class="news-container">
+		<h1 style="text-align: center; margin-bottom: 40px;">BẢN TIN THỜI
+			TRANG</h1>
+		<div class="news-grid">
+			<%
+			NewsDAO dao = new NewsDAO();
+			List<News> list = dao.getAllNews();
+			if (list != null && !list.isEmpty()) {
+				for (News n : list) {
+			%>
+			<div class="news-card">
+				<img src="<%=n.getImage()%>" alt="<%=n.getTitle()%>"
+					class="news-img" onerror="this.src='img/no-image.png'">
+				<div class="news-content">
+					<span class="news-date"><i class="fa-regular fa-clock"></i>
+						<%=n.getCreatedAt()%></span>
+					<h3 class="news-title"><%=n.getTitle()%></h3>
+					<p class="news-desc"><%=n.getShortDesc()%></p>
+				</div>
+			</div>
+			<%
+			}
+			} else {
+			%>
+			<p style="text-align: center; width: 100%;">Chưa có tin tức nào.</p>
+			<%
+			}
+			%>
+		</div>
+	</div>
 </body>
 </html>
