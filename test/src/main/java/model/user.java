@@ -7,7 +7,9 @@ public class user {
 	public String email;
 	public String fullname;
 	public String phonenumber;
-
+	// --- THÊM ĐOẠN NÀY VÀO TRONG CLASS user ---
+    public user() {
+    }
 	public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber) {
 		super();
 		this.uid = uid;

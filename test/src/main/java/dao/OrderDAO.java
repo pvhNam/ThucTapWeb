@@ -61,4 +61,36 @@ public class OrderDAO {
         }
         return orderId;
     }
+    public List<Order> getAllOrders() {
+        List<Order> list = new ArrayList<>();
+        // Giả sử bảng user tên là 'users' và cột tên hiển thị là 'full_name' (hoặc 'username' tùy DB của bạn)
+        String sql = "SELECT o.*, u.full_name FROM orders o " +
+                     "JOIN users u ON o.user_id = u.uid " +
+                     "ORDER BY o.created_at DESC"; 
+        
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Order o = new Order();
+                o.setId(rs.getInt("id"));
+                o.setUserId(rs.getInt("user_id"));
+                o.setTotalMoney(rs.getDouble("total_money"));
+                o.setAddress(rs.getString("address"));
+                o.setStatus(rs.getString("status"));
+                o.setCreatedAt(rs.getDate("created_at"));
+                
+                // Lấy tên người dùng set vào object (Cột này lấy từ bảng users)
+                o.setUserName(rs.getString("full_name")); 
+                
+                list.add(o);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

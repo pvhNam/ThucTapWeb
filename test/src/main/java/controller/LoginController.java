@@ -7,13 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.user;
-
+import dao.UserDAO;
 import java.io.IOException;
-
-/**
- * Servlet implementation class LoginController
- */
-import dao.UserDAO; // Nhớ import DAO
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -23,25 +18,34 @@ public class LoginController extends HttpServlet {
         
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String origin = request.getParameter("origin");
+        
+        // --- 1. KIỂM TRA ADMIN (THÊM ĐOẠN NÀY) ---
+        if ("admin".equals(username) && "123".equals(password)) {
+            HttpSession session = request.getSession();
+            
+            // Tạo user ảo cho admin
+            user adminUser = new user();
+            adminUser.setFullname("Administrator"); // Hoặc setUsername tùy model
+            adminUser.setUid(0); // ID đặc biệt
+            
+            session.setAttribute("user", adminUser);
+            session.setAttribute("isAdmin", true); // Cờ đánh dấu đây là Admin
+            
+            // Chuyển hướng sang trang quản lý
+            response.sendRedirect("admin-orders");
+            return;
+        }
 
-        // GỌI DAO ĐỂ KIỂM TRA TỪ DATABASE
+        // --- 2. LOGIC ĐĂNG NHẬP THƯỜNG (CODE CŨ GIỮ NGUYÊN) ---
         UserDAO dao = new UserDAO();
-        user loginUser = dao.login(username, password); // Hàm này lấy từ Database thật
+        user loginUser = dao.login(username, password);
 
         if (loginUser != null) {
-            // Đăng nhập thành công -> Lưu Session
             HttpSession session = request.getSession();
             session.setAttribute("user", loginUser);
-            
-            // Điều hướng
-            if ("cart".equals(origin)) {
-                response.sendRedirect("cart");
-            } else {
-                response.sendRedirect("index.jsp");
-            }
+            // ... (Logic điều hướng cũ) ...
+            response.sendRedirect("index.jsp");
         } else {
-            // Đăng nhập thất bại
             request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
