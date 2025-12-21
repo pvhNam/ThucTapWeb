@@ -182,16 +182,20 @@ body {
 .btn-view {
 	background: #6c757d;
 	text-decoration: none;
-} /* Màu xám */
+}
+
 .btn-ship {
 	background-color: #17a2b8;
-} /* Màu Cyan */
+}
+
 .btn-success {
 	background-color: #28a745;
-} /* Màu xanh lá */
+}
+
 .btn-cancel {
 	background-color: #dc3545;
-} /* Màu đỏ */
+}
+
 .btn-action:hover {
 	filter: brightness(90%);
 }
@@ -201,7 +205,6 @@ body {
 	font-weight: 700;
 }
 
-/* Tin nhắn thông báo */
 .alert {
 	padding: 15px;
 	margin-bottom: 20px;
@@ -300,16 +303,16 @@ body {
 							if (st.equals("Đang xử lý")) {
 							%>
 							<form action="update-order" method="post" style="margin: 0;">
-								<input type="hidden" name="id" value="<%=o.getId()%>">
-								<input type="hidden" name="action" value="ship">
+								<input type="hidden" name="id" value="<%=o.getId()%>"> <input
+									type="hidden" name="action" value="ship">
 								<button type="submit" class="btn-action btn-ship"
 									title="Giao hàng">
 									<i class="fa-solid fa-truck"></i>
 								</button>
 							</form>
 							<form action="update-order" method="post" style="margin: 0;">
-								<input type="hidden" name="id" value="<%=o.getId()%>">
-								<input type="hidden" name="action" value="cancel">
+								<input type="hidden" name="id" value="<%=o.getId()%>"> <input
+									type="hidden" name="action" value="cancel">
 								<button type="submit" class="btn-action btn-cancel"
 									title="Hủy đơn"
 									onclick="return confirm('Bạn chắc chắn muốn hủy đơn này?')">
@@ -324,8 +327,8 @@ body {
 							if (st.equals("Đang giao hàng")) {
 							%>
 							<form action="update-order" method="post" style="margin: 0;">
-								<input type="hidden" name="id" value="<%=o.getId()%>">
-								<input type="hidden" name="action" value="success">
+								<input type="hidden" name="id" value="<%=o.getId()%>"> <input
+									type="hidden" name="action" value="success">
 								<button type="submit" class="btn-action btn-success"
 									title="Xác nhận giao thành công">
 									<i class="fa-solid fa-check"></i>

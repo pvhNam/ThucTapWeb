@@ -7,7 +7,7 @@ public class Voucher {
 	private String code;
 	private String description;
 	private double discountAmount;
-	private String discountType; // "PERCENT" hoặc "FIXED"
+	private String discountType;
 	private double minOrder;
 	private Date expiryDate;
 
@@ -25,7 +25,6 @@ public class Voucher {
 		this.expiryDate = expiryDate;
 	}
 
-	// Getter và Setter
 	public int getId() {
 		return id;
 	}

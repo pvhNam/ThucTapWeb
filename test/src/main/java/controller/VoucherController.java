@@ -22,17 +22,13 @@ public class VoucherController extends HttpServlet {
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
         user currentUser = (user) session.getAttribute("user");
-
-        // Nếu chưa đăng nhập -> Báo lỗi 401
         if (currentUser == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
             response.getWriter().write("LOGIN_REQUIRED");
             return;
         }
-
         VoucherDAO vDao = new VoucherDAO();
 
-        // --- XỬ LÝ LƯU MÃ ---
         if ("save".equals(action)) {
             String code = request.getParameter("code");
             Voucher v = vDao.getVoucherByCode(code);

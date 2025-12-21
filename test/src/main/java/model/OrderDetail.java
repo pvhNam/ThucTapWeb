@@ -6,7 +6,7 @@ public class OrderDetail {
 	private int productId;
 	private double price;
 	private int quantity;
-	private product product; // Để lấy tên và ảnh sản phẩm
+	private product product; 
 
 	public OrderDetail(int id, int orderId, int productId, double price, int quantity, product product) {
 		this.id = id;

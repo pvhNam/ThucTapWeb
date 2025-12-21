@@ -1,9 +1,6 @@
 package model;
 
-/**
- * cái này để làm phần bộ sưu tập
- *
- */
+
 public class collection {
 	public int cid;
 	public String title;

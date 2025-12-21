@@ -1,205 +1,205 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+
+@import
+	url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap')
+	;
 /* --- BIẾN MÀU SẮC & FONT --- */
 /* =========================================
    1. HERO BANNER
    ========================================= */
 .news-hero {
-    width: 100%;
-    height: 300px;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../img/news-banner.jpg');
-    background-size: cover;
-    background-position: center;
-    background-color: #1a1a1a; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: #fff;
-    text-align: center;
-    margin-bottom: 50px;
+	width: 100%;
+	height: 300px;
+	background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+		url('../img/news-banner.jpg');
+	background-size: cover;
+	background-position: center;
+	background-color: #1a1a1a;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	color: #fff;
+	text-align: center;
+	margin-bottom: 50px;
 }
 
 .news-hero h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    color: #d4af37; /* Tiêu đề màu vàng */
+	font-size: 3rem;
+	font-weight: 800;
+	margin-bottom: 10px;
+	letter-spacing: 2px;
+	color: #d4af37; /* Tiêu đề màu vàng */
 }
 
 .news-hero p {
-    font-size: 1.2rem;
-    font-weight: 300;
+	font-size: 1.2rem;
+	font-weight: 300;
 }
 
 /* =========================================
    2. CONTAINER & LAYOUT
    ========================================= */
 .news-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px 60px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px 60px;
 }
 
 /* Tiêu đề phân mục */
 .section-heading {
-    text-align: center;
-    margin-bottom: 40px;
-    position: relative;
+	text-align: center;
+	margin-bottom: 40px;
+	position: relative;
 }
 
 .section-heading h2 {
-    font-size: 2rem;
-    color: #1a1a1a; /* Màu đen */
-    text-transform: uppercase;
-    font-weight: 700;
+	font-size: 2rem;
+	color: #1a1a1a; /* Màu đen */
+	text-transform: uppercase;
+	font-weight: 700;
 }
 
 .section-heading::after {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 4px;
-    background-color: #d4af37; /* Gạch chân màu vàng */
-    margin: 10px auto 0;
+	content: "";
+	display: block;
+	width: 60px;
+	height: 4px;
+	background-color: #d4af37; /* Gạch chân màu vàng */
+	margin: 10px auto 0;
 }
 
 /* =========================================
    3. NEWS GRID
    ========================================= */
 .news-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
-    gap: 30px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	gap: 30px;
 }
 
 /* =========================================
    4. NEWS CARD
    ========================================= */
 .news-card {
-    background: #fff;
-    border-radius: 4px; /* Bo góc ít hơn cho sang */
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #eee;
+	background: #fff;
+	border-radius: 4px; /* Bo góc ít hơn cho sang */
+	overflow: hidden;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #eee;
 }
 
 .news-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    border-color: #d4af37; /* Viền vàng khi hover */
+	transform: translateY(-10px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+	border-color: #d4af37; /* Viền vàng khi hover */
 }
 
 /* Ảnh tin tức */
 .news-img {
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-    position: relative;
+	width: 100%;
+	height: 220px;
+	overflow: hidden;
+	position: relative;
 }
 
 .news-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
 }
 
 .news-card:hover .news-img img {
-    transform: scale(1.1); 
+	transform: scale(1.1);
 }
 
 /* Tag ngày tháng */
 .news-date {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background-color: #d4af37; /* Tag màu vàng */
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 0;
-    font-size: 0.8rem;
-    font-weight: 600;
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	background-color: #d4af37; /* Tag màu vàng */
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 0;
+	font-size: 0.8rem;
+	font-weight: 600;
 }
 
 /* Nội dung tin */
 .news-content {
-    padding: 25px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+	padding: 25px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 .news-category {
-    font-size: 0.85rem;
-    color: #d4af37; /* Category màu vàng */
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+	font-size: 0.85rem;
+	color: #d4af37; /* Category màu vàng */
+	font-weight: 700;
+	text-transform: uppercase;
+	margin-bottom: 10px;
 }
 
 .news-content h3 {
-    font-size: 1.3rem;
-    color: #1a1a1a;
-    margin-bottom: 15px;
-    line-height: 1.4;
-    font-weight: 700;
-    transition: color 0.3s;
+	font-size: 1.3rem;
+	color: #1a1a1a;
+	margin-bottom: 15px;
+	line-height: 1.4;
+	font-weight: 700;
+	transition: color 0.3s;
 }
 
 .news-card:hover .news-content h3 {
-    color: #d4af37; /* Hover tiêu đề tin ra vàng */
+	color: #d4af37; /* Hover tiêu đề tin ra vàng */
 }
 
 .news-content p {
-    color: #666;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+	color: #666;
+	font-size: 0.95rem;
+	line-height: 1.6;
+	margin-bottom: 20px;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 /* Nút Đọc thêm */
 .read-more-btn {
-    margin-top: auto; 
-    text-decoration: none;
-    color: #1a1a1a;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    transition: color 0.3s;
+	margin-top: auto;
+	text-decoration: none;
+	color: #1a1a1a;
+	font-weight: 600;
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	transition: color 0.3s;
 }
 
 .read-more-btn i {
-    font-size: 0.8rem;
-    transition: transform 0.3s;
+	font-size: 0.8rem;
+	transition: transform 0.3s;
 }
 
 .read-more-btn:hover {
-    color: #d4af37;
+	color: #d4af37;
 }
 
 .read-more-btn:hover i {
-    transform: translateX(5px);
+	transform: translateX(5px);
 }
 
-/* =========================================
-   5. RESPONSIVE
-   ========================================= */
-@media (max-width: 768px) {
-    .news-hero h1 {
-        font-size: 2rem;
-    }
-    
-    .news-grid {
-        grid-template-columns: 1fr; 
-    }
+@media ( max-width : 768px) {
+	.news-hero h1 {
+		font-size: 2rem;
+	}
+	.news-grid {
+		grid-template-columns: 1fr;
+	}
 }

@@ -1,142 +1,146 @@
 /* CSS/login.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+@import
+	url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap')
+	;
 /* --- BIẾN MÀU SẮC & FONT --- */
 .login-container {
-    background-color: #f9f9f9; /* Nền xám nhạt nhẹ nhàng hơn */
-    min-height: 80vh; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
+	background-color: #f9f9f9; /* Nền xám nhạt nhẹ nhàng hơn */
+	min-height: 80vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
 }
 
 .login-wrapper {
-    background: #ffffff;
-    padding: 40px 50px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Giảm bóng cho tinh tế */
-    width: 100%;
-    max-width: 450px; 
-    text-align: center;
-    border: 1px solid #eee;
+	background: #ffffff;
+	padding: 40px 50px;
+	border-radius: 10px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+	/* Giảm bóng cho tinh tế */
+	width: 100%;
+	max-width: 450px;
+	text-align: center;
+	border: 1px solid #eee;
 }
 
 .login-wrapper h2 {
-    color: #1a1a1a; /* Tiêu đề màu đen */
-    font-size: 2rem;
-    margin-bottom: 10px;
-    font-weight: 800;
+	color: #1a1a1a; /* Tiêu đề màu đen */
+	font-size: 2rem;
+	margin-bottom: 10px;
+	font-weight: 800;
 }
 
 .login-subtitle {
-    color: #666;
-    margin-bottom: 30px;
-    font-size: 0.95rem;
+	color: #666;
+	margin-bottom: 30px;
+	font-size: 0.95rem;
 }
 
 /* Style cho các ô nhập liệu */
 .input-group {
-    text-align: left;
-    margin-bottom: 20px;
+	text-align: left;
+	margin-bottom: 20px;
 }
 
 .input-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #1a1a1a;
-    font-size: 0.9rem;
+	display: block;
+	font-weight: 600;
+	margin-bottom: 8px;
+	color: #1a1a1a;
+	font-size: 0.9rem;
 }
 
 .input-field {
-    position: relative;
+	position: relative;
 }
 
 .input-field i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #999;
+	position: absolute;
+	left: 15px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #999;
 }
 
 .input-field input {
-    width: 100%;
-    padding: 12px 15px 12px 40px; 
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+	width: 100%;
+	padding: 12px 15px 12px 40px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	font-size: 1rem;
+	transition: border-color 0.3s;
 }
 
 .input-field input:focus {
-    border-color: #d4af37; /* Focus ra màu vàng */
-    outline: none;
+	border-color: #d4af37; /* Focus ra màu vàng */
+	outline: none;
 }
 
 /* Options: Remember & Forgot Pass */
 .form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.9rem;
-    margin-bottom: 25px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.9rem;
+	margin-bottom: 25px;
 }
 
 .forgot-password {
-    color: #1a1a1a; /* Đổi màu link quên pass */
-    font-weight: 600;
-    transition: 0.3s;
+	color: #1a1a1a; /* Đổi màu link quên pass */
+	font-weight: 600;
+	transition: 0.3s;
 }
 
 .forgot-password:hover {
-    color: #d4af37; /* Hover ra màu vàng */
+	color: #d4af37; /* Hover ra màu vàng */
 }
 
 /* Button Login */
 .btn-login {
-    width: 100%;
-    padding: 14px;
-    background-color: #1a1a1a; /* Nút màu đen */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
+	width: 100%;
+	padding: 14px;
+	background-color: #1a1a1a; /* Nút màu đen */
+	color: white;
+	border: none;
+	border-radius: 5px;
+	font-size: 1rem;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background 0.3s;
 }
 
 .btn-login:hover {
-    background-color: #d4af37; /* Hover nút ra màu vàng */
-    color: #fff;
+	background-color: #d4af37; /* Hover nút ra màu vàng */
+	color: #fff;
 }
 
 /* Register Link */
 .register-link {
-    margin-top: 20px;
-    font-size: 0.9rem;
+	margin-top: 20px;
+	font-size: 0.9rem;
 }
 
 .register-link a {
-    color: #d4af37; /* Link đăng ký màu vàng */
-    font-weight: 700;
+	color: #d4af37; /* Link đăng ký màu vàng */
+	font-weight: 700;
 }
+
 .register-link a:hover {
-    color: #1a1a1a;
+	color: #1a1a1a;
 }
 
 /* Thông báo lỗi */
 .alert-error {
-    background-color: #fff5f5;
-    color: #c0392b;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #f2d7d5;
+	background-color: #fff5f5;
+	color: #c0392b;
+	padding: 10px;
+	border-radius: 5px;
+	margin-bottom: 20px;
+	font-size: 0.9rem;
+	text-align: left;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	border: 1px solid #f2d7d5;
 }

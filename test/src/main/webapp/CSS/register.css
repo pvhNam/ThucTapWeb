@@ -1,28 +1,30 @@
 /* --- Thêm vào cuối file CSS/login.css --- */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+@import
+	url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap')
+	;
 /* --- BIẾN MÀU SẮC & FONT --- */
 /* Điều chỉnh riêng cho khung đăng ký */
 .register-wrapper {
-    max-width: 500px; 
-    margin-top: 20px;
-    margin-bottom: 20px;
+	max-width: 500px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 /* Nút đăng ký */
 .btn-register {
-    background-color: #1a1a1a; /* Nút màu đen */
-    margin-top: 10px;
-    transition: 0.3s;
+	background-color: #1a1a1a; /* Nút màu đen */
+	margin-top: 10px;
+	transition: 0.3s;
 }
 
 .btn-register:hover {
-    background-color: #d4af37; /* Hover ra màu vàng */
+	background-color: #d4af37; /* Hover ra màu vàng */
 }
 
 /* Responsive cho màn hình nhỏ */
-@media (max-width: 600px) {
-    .register-wrapper {
-        padding: 30px 20px;
-        width: 100%;
-    }
+@media ( max-width : 600px) {
+	.register-wrapper {
+		padding: 30px 20px;
+		width: 100%;
+	}
 }

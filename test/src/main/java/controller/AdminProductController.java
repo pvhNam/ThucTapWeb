@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AdminProductController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	// GET: HIỂN THỊ DANH SÁCH HOẶC FORM SỬA
+	//  HIỂN THỊ DANH SÁCH HOẶC FORM SỬA
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String type = request.getParameter("type");
@@ -40,14 +40,14 @@ public class AdminProductController extends HttpServlet {
 			}
 			response.sendRedirect("admin-products");
 		} else {
-			// MẶC ĐỊNH: HIỂN THỊ DANH SÁCH
+			//HIỂN THỊ DANH SÁCH
 			List<product> list = dao.getAllProducts();
 			request.setAttribute("listP", list);
 			request.getRequestDispatcher("admin-products.jsp").forward(request, response);
 		}
 	}
 
-	// POST: XỬ LÝ CẬP NHẬT (SỬA) SẢN PHẨM
+	//  XỬ LÝ CẬP NHẬT (SỬA) SẢN PHẨM
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
@@ -65,7 +65,7 @@ public class AdminProductController extends HttpServlet {
 			product p = new product(pid, name, price, cateId, color, size, stock, image);
 
 			ProductDAO dao = new ProductDAO();
-			dao.updateProduct(p); // Gọi hàm Update
+			dao.updateProduct(p); 
 
 			response.sendRedirect("admin-products");
 		} catch (Exception e) {

@@ -10,7 +10,7 @@ public class NewsDAO {
 	PreparedStatement ps = null;
 	ResultSet rs = null;
 
-	// 1. Thêm tin tức
+	//Thêm tin tức
 	public boolean addNews(News n) {
 		String sql = "INSERT INTO news (title, short_desc, content, image, created_at) VALUES (?, ?, ?, ?, NOW())";
 		try {
@@ -27,7 +27,7 @@ public class NewsDAO {
 		return false;
 	}
 
-	// 2. Lấy tất cả tin tức
+	//Lấy tất cả tin tức
 	public List<News> getAllNews() {
 		List<News> list = new ArrayList<>();
 		String sql = "SELECT * FROM news ORDER BY created_at DESC";
@@ -45,7 +45,7 @@ public class NewsDAO {
 		return list;
 	}
 
-	// 3. Lấy 1 tin tức theo ID (để sửa)
+	//Lấy 1 tin tức theo ID (để sửa)
 	public News getNewsById(int id) {
 		String sql = "SELECT * FROM news WHERE id = ?";
 		try {
@@ -63,7 +63,7 @@ public class NewsDAO {
 		return null;
 	}
 
-	// 4. Cập nhật tin tức
+	// Cập nhật tin tức
 	public boolean updateNews(News n) {
 		String sql = "UPDATE news SET title=?, short_desc=?, content=?, image=? WHERE id=?";
 		try {
@@ -81,7 +81,7 @@ public class NewsDAO {
 		return false;
 	}
 
-	// 5. Xóa tin tức
+	// Xóa tin tức
 	public void deleteNews(int id) {
 		String sql = "DELETE FROM news WHERE id=?";
 		try { 	 	

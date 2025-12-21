@@ -36,11 +36,9 @@ public class AdminAddProductController extends HttpServlet {
             boolean isAdded = dao.addProduct(p);
             
             if (isAdded) {
-                // THÀNH CÔNG: Chuyển hướng về trang DANH SÁCH SẢN PHẨM (Controller)
-                // Đừng chuyển về JSP hay admin-orders
+                // Chuyển hướng về trang DANH SÁCH SẢN PHẨM (Controller)
             	response.sendRedirect("admin-orders?msg=added_product");
             	} else {
-                // THẤT BẠI: In lỗi ra màn hình để biết tại sao
                 response.getWriter().write("<h3>Lỗi: Không thể lưu vào Database!</h3><p>Kiểm tra lại tên cột trong ProductDAO và Database.</p>");
             }
             

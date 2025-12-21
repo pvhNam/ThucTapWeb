@@ -39,7 +39,6 @@
                 	String fullName = currentUser.getFullname();
                     String displayName = fullName;
                     
-                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
                     if (fullName == null) {
                         displayName = "Member";
                     } else if (fullName.length() > 15) {

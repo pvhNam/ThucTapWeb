@@ -3,11 +3,10 @@ package model;
 public class user {
 	public int uid;
 	public String username;
-	public String passwordHash; // cái này dùn mã băm để cho an toàn
+	public String passwordHash;
 	public String email;
 	public String fullname;
 	public String phonenumber;
-	// --- THÊM ĐOẠN NÀY VÀO TRONG CLASS user ---
     public user() {
     }
 	public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber) {

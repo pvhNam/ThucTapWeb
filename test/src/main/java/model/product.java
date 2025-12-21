@@ -8,7 +8,7 @@ public class product {
 	public String color;
 	public String size;
 	public int stockquantyti;
-	public String image; // THÊM DÒNG NÀY
+	public String image;
 
 	public product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti,
 			String image) {
@@ -19,7 +19,7 @@ public class product {
 		this.color = color;
 		this.size = size;
 		this.stockquantyti = stockquantyti;
-		this.image = image; // THÊM DÒNG NÀY
+		this.image = image; 
 	}
 
 	public int getPid() {

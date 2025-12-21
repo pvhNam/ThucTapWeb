@@ -9,10 +9,8 @@ public class Order {
 	private String address;
 	private String status;
 	private Date createdAt;
-
-	// --- CÁC TRƯỜNG MỞ RỘNG ĐỂ HIỂN THỊ ---
 	private String userName;
-	private String phoneNumber; // Thêm dòng này
+	private String phoneNumber;
 
 	public Order() {
 	}
@@ -26,7 +24,6 @@ public class Order {
 		this.createdAt = createdAt;
 	}
 
-	// --- Getter & Setter Mới ---
 	public String getUserName() {
 		return userName;
 	}

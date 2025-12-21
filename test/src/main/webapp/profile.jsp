@@ -2,7 +2,6 @@
 <%@ page import="model.user" %>
 
 <%
-    // KIỂM TRA ĐĂNG NHẬP: Nếu chưa đăng nhập thì đá về trang login
     user currentUser = (user) session.getAttribute("user");
     if (currentUser == null) {
         response.sendRedirect("login.jsp");

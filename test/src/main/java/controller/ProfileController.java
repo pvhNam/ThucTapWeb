@@ -14,7 +14,7 @@ import java.io.IOException;
 public class ProfileController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // GET: Hiển thị trang profile
+    // Hiển thị trang profile
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -25,7 +25,7 @@ public class ProfileController extends HttpServlet {
         }
     }
 
-    // POST: Xử lý cập nhật
+    //Xử lý cập nhật
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -66,7 +66,7 @@ public class ProfileController extends HttpServlet {
             }
 
         } else if ("change-pass".equals(action)) {
-            // 2. Xử lý đổi mật khẩu
+            // Xử lý đổi mật khẩu
             String oldPass = request.getParameter("old_pass");
             String newPass = request.getParameter("new_pass");
             String confirmPass = request.getParameter("confirm_pass");
