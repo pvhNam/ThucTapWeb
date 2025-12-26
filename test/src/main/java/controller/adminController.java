@@ -11,19 +11,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin-orders")
-public class AdminOrderController extends HttpServlet {
+@WebServlet("/admin")
+public class adminController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+        
+        if (isAdmin == null || !isAdmin) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
-        OrderDAO orderDao = new OrderDAO();
-        List<Order> listOrders = orderDao.getAllOrders();
-
-        request.setAttribute("listOrders", listOrders);
-        request.getRequestDispatcher("admin-orders.jsp").forward(request, response);
+        request.getRequestDispatcher("admin.jsp").forward(request, response);
     }
 }

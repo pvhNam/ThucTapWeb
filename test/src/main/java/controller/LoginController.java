@@ -29,7 +29,7 @@ public class LoginController extends HttpServlet {
 			session.setAttribute("isAdmin", true);
 
 			// trang quản lý
-			response.sendRedirect("admin-orders");
+			response.sendRedirect("admin");
 			return;
 		}
 		UserDAO dao = new UserDAO();
