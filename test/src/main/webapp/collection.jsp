@@ -25,55 +25,55 @@
 </head>
 <body>
 	<header class="header">
-		<a href="index.jsp"><img src="img/logover2_5.png" alt="Logo"
-			class="logo" width="80"></a>
-		<nav class="menu">
-			<a href="index.jsp">TRANG CHỦ</a> <a href="collection.jsp"
-				class="active">BỘ SƯU TẬP</a> <a href="about.jsp">GIỚI THIỆU</a> <a
-				href="news.jsp">TIN TỨC</a>
-		</nav>
-		<div class="actions">
-			<div class="search-box">
-				<i class="fa-solid fa-magnifying-glass"></i> <input type="text"
-					placeholder="Tìm kiếm" />
-			</div>
-			<div class="account">
-				<%
-				user currentUser = (user) session.getAttribute("user");
-				boolean isLoggedIn = (currentUser != null);
-				%>
-				<%
-				if (!isLoggedIn) {
-				%>
-				<a href="login.jsp">ĐĂNG NHẬP</a> <span style="color: #ccc">|</span>
-				<a href="register.jsp">ĐĂNG KÍ</a>
-				<%
-				} else {
-				String fullName = currentUser.getFullname();
-				String displayName = fullName;
+        <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
 
-				// Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
-				if (fullName == null) {
-					displayName = "Member";
-				} else if (fullName.length() > 15) {
-					displayName = fullName.substring(0, 15) + "...";
-				}
-				%>
-				<div class="user-info">
-					<span>Hi, <%=displayName%></span> <a href="profile.jsp"
-						title="Trang cá nhân"> <img src="img/images.jpg" alt="User"
-						class="user-avatar">
-					</a> <a href="${pageContext.request.contextPath}/logout"
-						class="logout-btn" title="Đăng xuất"><i
-						class="fa-solid fa-right-from-bracket"></i></a>
-				</div>
-				<%
-				}
-				%>
-			</div>
-			<a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
-		</div>
-	</header>
+        <nav class="menu">
+            <a href="index.jsp" >TRANG CHỦ</a> 
+            <a href="collection.jsp" class="active">BỘ SƯU TẬP</a> 
+            <a href="about.jsp">GIỚI THIỆU</a> 
+            <a href="news.jsp">TIN TỨC</a>
+        </nav>
+
+        <div class="actions">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i> 
+                <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+            </div>
+
+            <div class="account">
+            	<%user currentUser = (user) session.getAttribute("user");
+                boolean isLoggedIn = (currentUser != null); %>
+                <% if (!isLoggedIn) { %>
+                    <a href="login.jsp">ĐĂNG NHẬP</a> <span style="color:#ccc">|</span> <a href="register.jsp">ĐĂNG KÍ</a>
+                <% } else { 
+                	String fullName = currentUser.getFullname();
+                    String displayName = fullName;
+                    
+                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
+                    if (fullName == null) {
+                        displayName = "Member";
+                    } else if (fullName.length() > 15) {
+                        displayName = fullName.substring(0, 15) + "...";
+                    }
+                %>
+                    <div class="user-info">
+                        <span>Hi, <%=displayName%></span> 
+                        <a href="order-history" title="Lịch sử mua hàng" style="margin-left: 5px;">
+       <i class="fa-solid fa-clock-rotate-left"></i>
+    </a>
+                        <a href="profile.jsp" title="Trang cá nhân"> 
+                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
+                        </a>
+                        <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
+                    </div>
+                <% } %>
+            </div>
+            
+            <a href="cart" aria-label="Giỏ hàng" class="cart-icon"> 
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+        </div>
+    </header>
 
 	<div class="collection-wrapper">
 

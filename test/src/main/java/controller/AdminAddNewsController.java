@@ -28,6 +28,6 @@ public class AdminAddNewsController extends HttpServlet {
         NewsDAO dao = new NewsDAO();
         dao.addNews(n);
 
-        response.sendRedirect("admin-orders.jsp?msg=added_news"); // Quay về trang admin
+        response.sendRedirect("admin-news"); 
     }
 }

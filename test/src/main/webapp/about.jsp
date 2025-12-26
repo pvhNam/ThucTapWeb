@@ -16,21 +16,22 @@
 </head>
 <body>
 <header class="header">
-		<img src="img/logover2_5.png" alt="" class="logo" width="80">
+        <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
 
-		<nav class="menu">
-			<a href="index.jsp">TRANG CHỦ</a>
-			<a href="collection.jsp" >BỘ SƯU TẬP</a>
-			<a href="#" class="active">GIỚI THIỆU</a> 
-			<a href="news.jsp">TIN TỨC</a>
-		</nav>
+        <nav class="menu">
+            <a href="index.jsp" >TRANG CHỦ</a> 
+            <a href="collection.jsp">BỘ SƯU TẬP</a> 
+            <a href="about.jsp" class="active">GIỚI THIỆU</a> 
+            <a href="news.jsp">TIN TỨC</a>
+        </nav>
 
-		<div class="actions">
-			<div class="search-box">
-				<i class="fa-solid fa-magnifying-glass"></i> <input type="text"
-					placeholder="Tìm Kiếm" />
-			</div>
-	<div class="account">
+        <div class="actions">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i> 
+                <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+            </div>
+
+            <div class="account">
             	<%user currentUser = (user) session.getAttribute("user");
                 boolean isLoggedIn = (currentUser != null); %>
                 <% if (!isLoggedIn) { %>
@@ -39,6 +40,7 @@
                 	String fullName = currentUser.getFullname();
                     String displayName = fullName;
                     
+                    // Nếu tên null thì để rỗng, nếu dài quá 15 ký tự thì cắt bớt + ...
                     if (fullName == null) {
                         displayName = "Member";
                     } else if (fullName.length() > 15) {
@@ -47,18 +49,22 @@
                 %>
                     <div class="user-info">
                         <span>Hi, <%=displayName%></span> 
+                        <a href="order-history" title="Lịch sử mua hàng" style="margin-left: 5px;">
+       <i class="fa-solid fa-clock-rotate-left"></i>
+    </a>
                         <a href="profile.jsp" title="Trang cá nhân"> 
-                            <img src="${pageContext.request.contextPath}/img/images.jpg" alt="User" class="user-avatar">
+                            <img src="img/images.jpg" alt="User" class="user-avatar"> 
                         </a>
                         <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
                     </div>
                 <% } %>
             </div>
-			<a href="cart" aria-label="Giỏ hàng"> <i
-				class="fa-solid fa-cart-shopping"></i>
-			</a>
-		</div>
-	</header>
+            
+            <a href="cart" aria-label="Giỏ hàng" class="cart-icon"> 
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+        </div>
+    </header>
 	<footer class="footer">
 		<div class="footer-top">
 			<div class="contact">

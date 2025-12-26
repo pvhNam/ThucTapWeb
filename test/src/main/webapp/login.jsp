@@ -90,7 +90,6 @@
 		</div>
 	</div>
 
-	<
 	<footer class="footer">
 		<div class="footer-top">
 			<div class="contact">
