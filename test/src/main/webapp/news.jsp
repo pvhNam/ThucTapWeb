@@ -167,7 +167,7 @@
 			if (list != null && !list.isEmpty()) {
 				for (News n : list) {
 			%>
-            <a href="news-detail.jsp?id=<%=n.getId()%>" style="text-decoration: none; color: inherit;">
+            <a href="news-detail?id=<%=n.getId()%>" style="text-decoration: none; color: inherit;">
 			    <div class="news-card">
 				    <img src="<%=n.getImage()%>" alt="<%=n.getTitle()%>"
 					    class="news-img" onerror="this.src='img/no-image.png'">
