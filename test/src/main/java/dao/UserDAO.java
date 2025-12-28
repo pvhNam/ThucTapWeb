@@ -3,6 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
 import model.user;
 
 public class UserDAO {
@@ -124,4 +127,44 @@ public class UserDAO {
 		}
 		return false;
 	}
+	// Lấy tất cả danh sách khách hàng
+    public List<user> getAllUsers() {
+        List<user> list = new ArrayList<>();
+        // Lưu ý: Tên bảng trong DB là `users` hoặc `user` (nếu là user thì nên để trong dấu backtick `user`)
+        String query = "SELECT * FROM users"; 
+        
+        try {
+            conn = new DBConnect().getConnection();
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                // Khởi tạo đối tượng theo đúng Constructor trong model.user của bạn
+                // Thứ tự: uid, uname, passwordHash, email, fullname, phonenumber
+                list.add(new user(
+                    rs.getInt("uid"),              // uid
+                    rs.getString("username"),      // uname
+                    rs.getString("password"),      // passwordHash (Tên cột trong DB có thể là password)
+                    rs.getString("email"),         // email
+                    rs.getString("fullname"),      // fullname
+                    rs.getString("phonenumber")   // phonenumber (Kiểm tra tên cột trong DB của bạn)
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Xóa user theo UID
+    public void deleteUser(int uid) {
+        String query = "DELETE FROM users WHERE uid = ?";
+        try {
+            conn = new DBConnect().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, uid);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

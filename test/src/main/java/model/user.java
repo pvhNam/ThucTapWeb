@@ -10,7 +10,6 @@ public class user {
     public user() {
     }
 	public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber) {
-		super();
 		this.uid = uid;
 		this.username = username;
 		this.passwordHash = passwordHash;
