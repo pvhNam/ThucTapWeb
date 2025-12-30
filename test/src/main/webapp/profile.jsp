@@ -20,60 +20,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/login.css" /> 
+        <link rel="stylesheet" href="CSS/profile.css" /> 
     
-    <style>
-        .profile-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 50px 20px;
-            background-color: #f5f5f5;
-            flex-wrap: wrap;
-        }
-        .profile-box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            width: 450px;
-        }
-        .profile-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-        .readonly-field {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-        }
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-    </style>
+  
 </head>
 <body>
-    <header class="header">
-        <img src="img/logover2_5.png" alt="Logo" class="logo" width="80">
-   <nav class="menu">
-            <a href="index.jsp">TRANG CHỦ</a> 
-            <a href="collection.jsp">BỘ SƯU TẬP</a> 
-            <a href="about.jsp">GIỚI THIỆU</a> 
-            <a href="news.jsp">TIN TỨC</a>
-        </nav>
-        <div class="actions">
-            <div class="account">
-                <span>Xin chào, <b><%= currentUser.getFullname() %></b></span>
-                <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
-            </div>
-        </div>
+    <header >
+          <jsp:include page="header.jsp"><jsp:param name="page" value="#"/></jsp:include>
+
     </header>
 
     <div class="profile-container">
@@ -169,6 +123,6 @@
             </form>
         </div>
     </div>
-
+ <jsp:include page="footer.jsp" />
     </body>
 </html>

@@ -149,8 +149,15 @@ public class CartController extends HttpServlet {
 			CartDAO dao = new CartDAO();
 			int uid = currentUser.getUid();
 			if ("add".equals(action)) {
-				int quantity = Integer.parseInt(request.getParameter("quantity"));
+				String qParam = request.getParameter("quantity");
+				int quantity = 1; // Mặc định là 1 nếu không tìm thấy tham số
+
+				if (qParam != null && !qParam.isEmpty()) {
+					quantity = Integer.parseInt(qParam);
+				}
+
 				dao.addToCart(uid, pid, quantity);
+
 			} else if ("remove".equals(action)) {
 				dao.removeItem(uid, pid);
 			} else if ("update".equals(action)) {

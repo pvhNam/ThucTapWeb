@@ -7,18 +7,18 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Chi Tiết Đơn Hàng</title>
+<title>Chi Tiết Đơn Hàng | Fashion Store</title>
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
 <style>
 body {
 	background: #f4f6f9;
-	font-family: sans-serif;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .detail-container {
-	max-width: 900px;
+	max-width: 1000px;
 	margin: 40px auto;
 	background: white;
 	padding: 30px;
@@ -37,187 +37,170 @@ body {
 	align-items: center;
 }
 
-/* Box thông tin khách hàng */
 .customer-info {
 	background: #f8f9fa;
-	padding: 15px;
+	padding: 20px;
 	border-radius: 6px;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	border: 1px solid #e9ecef;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
 }
 
 .info-row {
-	margin-bottom: 8px;
 	font-size: 15px;
 	color: #333;
 }
 
 .info-row strong {
-	width: 100px;
-	display: inline-block;
 	color: #555;
+	margin-right: 10px;
 }
 
-/* Bảng sản phẩm */
 .detail-table {
 	width: 100%;
 	border-collapse: collapse;
-	margin-top: 10px;
 }
 
 .detail-table th {
-	background: #343a40;
+	background: #1a1a1a;
 	color: white;
 	padding: 12px;
 	text-align: left;
-	font-size: 14px;
 }
 
 .detail-table td {
-	padding: 12px;
+	padding: 15px;
 	border-bottom: 1px solid #eee;
 	vertical-align: middle;
 }
 
 .img-thumb {
-	width: 50px;
-	height: 60px;
+	width: 60px;
+	height: 75px;
 	object-fit: cover;
 	border-radius: 4px;
-	border: 1px solid #ddd;
 	margin-right: 15px;
 }
 
 .total-row {
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: bold;
 	color: #d00000;
 	text-align: right;
 	padding-top: 20px;
 }
 
-.btn-back {
-	display: inline-block;
+.btn-back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
 	margin-top: 20px;
 	text-decoration: none;
 	color: #666;
 	font-weight: 600;
-	padding: 8px 15px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-	transition: 0.2s;
-}
-
-.btn-back:hover {
-	background: #333;
-	color: white;
 }
 </style>
 </head>
 <body>
+	<jsp:include page="header.jsp" />
 
 	<div class="detail-container">
 		<%
 		String idParam = request.getParameter("id");
-		if (idParam != null) {
-			int orderId = Integer.parseInt(idParam);
-			OrderDAO dao = new OrderDAO();
+		if (idParam != null && !idParam.isEmpty()) {
+			try {
+				int orderId = Integer.parseInt(idParam);
+				OrderDAO dao = new OrderDAO();
+				Order order = dao.getOrderById(orderId);
+				List<OrderDetail> details = dao.getDetails(orderId);
 
-			// 1. Lấy thông tin Header đơn hàng (Khách, SĐT, Địa chỉ)
-			Order order = dao.getOrderById(orderId);
-
-			// 2. Lấy danh sách sản phẩm
-			List<OrderDetail> list = dao.getDetails(orderId);
-
-			if (order != null) {
+				if (order != null) {
+			DecimalFormat df = new DecimalFormat("#,### VNĐ");
 		%>
-
 		<div class="head-title">
-			<span><i class="fa-solid fa-file-invoice"></i> Đơn Hàng #<%=order.getId()%></span>
+			<span><i class="fa-solid fa-file-invoice"></i> ĐƠN HÀNG #<%=order.getId()%></span>
 			<span
-				style="font-size: 14px; background: #e2e6ea; padding: 5px 10px; border-radius: 4px;">
+				style="font-size: 14px; background: #d4edda; color: #155724; padding: 5px 12px; border-radius: 20px;">
 				<%=order.getStatus()%>
 			</span>
 		</div>
 
 		<div class="customer-info">
 			<div class="info-row">
-				<strong>Người đặt:</strong>
+				<strong>Người nhận:</strong>
 				<%=order.getUserName()%></div>
-			<div class="info-row">
-				<strong>SĐT:</strong> <span
-					style="color: #d00000; font-weight: bold;"><%=order.getPhoneNumber()%></span>
-			</div>
-			<div class="info-row">
-				<strong>Địa chỉ:</strong>
-				<%=order.getAddress()%></div>
 			<div class="info-row">
 				<strong>Ngày đặt:</strong>
 				<%=order.getCreatedAt()%></div>
+			<div class="info-row" style="grid-column: span 2;">
+				<strong>Địa chỉ:</strong>
+				<%=order.getAddress()%></div>
 		</div>
 
-		<h3 style="font-size: 16px; margin-bottom: 10px;">Danh Sách Sản
-			Phẩm</h3>
 		<table class="detail-table">
 			<thead>
 				<tr>
 					<th>Sản phẩm</th>
-					<th>Đơn giá</th>
-					<th>Số lượng</th>
-					<th>Thành tiền</th>
+					<th style="text-align: center;">Đơn giá</th>
+					<th style="text-align: center;">Số lượng</th>
+					<th style="text-align: right;">Thành tiền</th>
 				</tr>
 			</thead>
 			<tbody>
 				<%
-				DecimalFormat df = new DecimalFormat("#,### VNĐ");
-				double grandTotal = 0;
-
-				for (OrderDetail item : list) {
-					double total = item.getPrice() * item.getQuantity();
-					grandTotal += total;
+				for (OrderDetail item : details) {
+					double subTotal = item.getPrice() * item.getQuantity();
 				%>
 				<tr>
 					<td style="display: flex; align-items: center;"><img
 						src="<%=item.getProduct().getImage()%>" class="img-thumb">
 						<div>
 							<div style="font-weight: 600;"><%=item.getProduct().getPdescription()%></div>
-							<small style="color: #777;">Size: <%=item.getProduct().getSize()%>
-								| Màu: <%=item.getProduct().getColor()%></small>
+							<small>Size: <%=item.getProduct().getSize()%> | Màu: <%=item.getProduct().getColor()%></small>
 						</div></td>
-					<td><%=df.format(item.getPrice())%></td>
-					<td>x <%=item.getQuantity()%></td>
-					<td style="font-weight: bold;"><%=df.format(total)%></td>
+					<td style="text-align: center;"><%=df.format(item.getPrice())%></td>
+					<td style="text-align: center;">x <%=item.getQuantity()%></td>
+					<td style="text-align: right; font-weight: bold;"><%=df.format(subTotal)%></td>
 				</tr>
 				<%
 				}
 				%>
 			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="4" class="total-row">Tổng Tiền: <%=df.format(grandTotal)%>
-					</td>
-				</tr>
-			</tfoot>
 		</table>
 
+		<div class="total-row">
+			Tổng cộng:
+			<%=df.format(order.getTotalMoney())%>
+		</div>
 		<%
 		} else {
 		%>
-		<p style="text-align: center; padding: 20px;">Không tìm thấy thông
-			tin đơn hàng.</p>
+		<div style="text-align: center; padding: 40px;">
+			<p>Không tìm thấy dữ liệu đơn hàng.</p>
+		</div>
+		<%
+		}
+		} catch (Exception e) {
+		%>
+		<p>
+			Lỗi xử lý dữ liệu:
+			<%=e.getMessage()%></p>
 		<%
 		}
 		} else {
 		%>
-		<p style="text-align: center; padding: 20px;">Mã đơn hàng không
-			hợp lệ.</p>
+		<p>Mã đơn hàng không hợp lệ.</p>
 		<%
 		}
 		%>
 
-		<a href="javascript:history.back()" class="btn-back"><i
-			class="fa-solid fa-arrow-left"></i> Quay lại</a>
+		<a href="order-history" class="btn-back-link"> <i
+			class="fa-solid fa-arrow-left"></i> QUAY LẠI LỊCH SỬ
+		</a>
 	</div>
 
+	<jsp:include page="footer.jsp" />
 </body>
 </html>

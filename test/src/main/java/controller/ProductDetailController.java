@@ -24,7 +24,7 @@ public class ProductDetailController extends HttpServlet {
 		// Lấy tham số pid từ URL
 		String pidParam = request.getParameter("pid");
 		if (pidParam == null || pidParam.isEmpty()) {
-			response.sendRedirect("index.jsp");
+			response.sendRedirect("product-detail.jsp");
 			return;
 		}
 

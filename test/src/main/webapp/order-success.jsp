@@ -38,8 +38,8 @@
 		</p>
 
 		<div class="btn-group">
-			<a href="index.jsp" class="btn-home">Tiếp tục mua sắm</a> <a href="#"
-				class="btn-order">Xem đơn hàng</a>
+			<a href="index.jsp" class="btn-home">Tiếp tục mua sắm</a> <a
+				href="order-history" class="btn-order">Xem đơn hàng của tôi</a>
 		</div>
 	</div>
 
