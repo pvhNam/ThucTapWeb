@@ -116,10 +116,14 @@
                     
                     if (list != null && !list.isEmpty()) {
                         for (user u : list) {
-                            // Logic: Không cho hiện nút xóa với tài khoản admin (để tránh lỡ tay xóa chính mình)
-                            // Giả sử tên tài khoản admin là "admin"
-                            boolean isAdminAccount = "admin".equals(u.getUsername());
-                    %>
+                            
+                            // --- ĐOẠN SỬA ĐỔI ---
+                            // Nếu username là "admin" thì bỏ qua vòng lặp này ngay lập tức
+                            // Dòng code bên dưới lệnh continue sẽ không chạy, nên dòng <tr> không được vẽ ra
+                            if ("admin".equals(u.getUsername())) {
+                                continue; 
+                            }  
+                    %> 
                     <tr>
                         <td><strong>#<%=u.getUid()%></strong></td>
                         
@@ -144,16 +148,12 @@
                         </td>
                         
                         <td>
-                            <% if (!isAdminAccount) { %>
-                                <a href="admin-users?type=delete&uid=<%=u.getUid()%>" 
-                                   class="btn-action btn-del" 
-                                   onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa tài khoản [<%=u.getUsername()%>] không? Hành động này không thể hoàn tác.')" 
-                                   title="Xóa tài khoản">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            <% } else { %>
-                                <span style="font-size: 11px; background: #343a40; color: white; padding: 3px 6px; border-radius: 4px;">Admin</span>
-                            <% } %>
+                            <a href="admin-users?type=delete&uid=<%=u.getUid()%>" 
+                               class="btn-action btn-del" 
+                               onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa tài khoản [<%=u.getUsername()%>] không? Hành động này không thể hoàn tác.')" 
+                               title="Xóa tài khoản">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                         </td>
                     </tr>
                     <% 
@@ -167,7 +167,7 @@
                         </td>
                     </tr>
                     <% } %>
-                </tbody>
+                </tbody> 
             </table>
         </div>
     </main>
