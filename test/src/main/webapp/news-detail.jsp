@@ -20,129 +20,13 @@ if (n == null) {
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
-
-<style>
-/* CSS RIÊNG CHO TRANG CHI TIẾT */
-.article-container {
-	max-width: 800px;
-	margin: 40px auto;
-	padding: 0 20px;
-	background: #fff;
-}
-
-/* Breadcrumb */
-.breadcrumb {
-	font-size: 0.9rem;
-	color: #888;
-	margin-bottom: 20px;
-}
-
-.breadcrumb a {
-	text-decoration: none;
-	color: #333;
-	font-weight: 600;
-}
-
-/* Header bài viết */
-.article-header {
-	margin-bottom: 30px;
-	text-align: center;
-}
-
-.article-title {
-	font-size: 2rem;
-	font-weight: 800;
-	color: #1a1a1a;
-	line-height: 1.3;
-	margin-bottom: 15px;
-}
-
-.article-meta {
-	color: #777;
-	font-size: 0.9rem;
-	font-style: italic;
-}
-
-/* Ảnh đại diện */
-.article-featured-img {
-	width: 100%;
-	height: auto;
-	max-height: 500px;
-	object-fit: cover;
-	border-radius: 8px;
-	margin-bottom: 30px;
-}
-
-/* Nội dung */
-.article-content {
-	font-size: 1.1rem;
-	line-height: 1.8;
-	color: #333;
-	text-align: justify;
-}
-
-.article-content p {
-	margin-bottom: 20px;
-}
-
-/* Nút quay lại */
-.article-footer {
-	margin-top: 50px;
-	padding-top: 30px;
-	border-top: 1px solid #eee;
-}
-
-.btn-back {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	text-decoration: none;
-	color: #333;
-	font-weight: 600;
-	padding: 10px 20px;
-	border: 1px solid #ddd;
-	border-radius: 30px;
-	transition: 0.3s;
-}
-
-.btn-back:hover {
-	background: #333;
-	color: white;
-}
-</style>
+<link rel="stylesheet" href="CSS/news-detail.css">
 </head>
 <body>
 
-	<header class="header">
-		<a href="index.jsp"><img src="img/logover2_5.png" alt="Logo"
-			class="logo" width="80"></a>
-		<nav class="menu">
-			<a href="index.jsp">TRANG CHỦ</a> <a href="collection.jsp">BỘ
-				SƯU TẬP</a> <a href="about.jsp">GIỚI THIỆU</a> <a href="news.jsp"
-				class="active">TIN TỨC</a>
-		</nav>
-		<div class="actions">
-			<div class="account">
-				<%
-				user currentUser = (user) session.getAttribute("user");
-				if (currentUser != null) {
-				%>
-				<div class="user-info">
-					<span>Hi, <%=currentUser.getFullname()%></span> <a href="logout"
-						class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
-				</div>
-				<%
-				} else {
-				%>
-				<a href="login.jsp">ĐĂNG NHẬP</a>
-				<%
-				}
-				%>
-			</div>
-			<a href="cart" class="cart-icon"><i
-				class="fa-solid fa-cart-shopping"></i></a>
-		</div>
-	</header>
+<jsp:include page="header.jsp">
+        <jsp:param name="page" value="news" />
+    </jsp:include>
 
 	<div class="article-container">
 

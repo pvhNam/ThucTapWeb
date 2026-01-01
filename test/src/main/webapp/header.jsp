@@ -3,14 +3,34 @@
 <%
     user currentUser = (user) session.getAttribute("user");
     boolean isLoggedIn = (currentUser != null);
+    
     String displayName = "Member";
+    String avatarLink = "profile.jsp"; // Mặc định là trang cá nhân
+
     if (isLoggedIn) {
+        // 1. Xử lý tên hiển thị
         String fullName = currentUser.getFullname();
         displayName = (fullName == null || fullName.isEmpty()) ? "Member" : fullName;
         if (displayName.length() > 15) {
             displayName = displayName.substring(0, 15) + "...";
         }
+
+        // 2. Xử lý Link Avatar (Check Admin)
+        // Kiểm tra session isAdmin (nếu LoginController có set) HOẶC check cứng username/email
+        Boolean isAdminSession = (Boolean) session.getAttribute("isAdmin");
+        String uName = currentUser.getUsername();
+        String uEmail = currentUser.getEmail();
+
+        boolean isAdmin = (isAdminSession != null && isAdminSession) || 
+                          (uName != null && uName.equalsIgnoreCase("admin")) || 
+                          (uEmail != null && uEmail.contains("admin"));
+
+        if (isAdmin) {
+            // Nếu là Admin -> Trỏ về Controller "admin" để load Dashboard
+            avatarLink = "admin"; 
+        }
     }
+    
     String currentPage = request.getParameter("page");
 %>
 <header class="header">
@@ -32,9 +52,17 @@
             <% } else { %>
                 <div class="user-info">
                     <span>Hi, <%= displayName %></span> 
-                    <a href="order-history" title="Lịch sử mua hàng" style="margin-left: 5px;"><i class="fa-solid fa-clock-rotate-left"></i></a>
-                    <a href="profile.jsp" title="Trang cá nhân"><img src="img/images.jpg" alt="User" class="user-avatar"></a>
-                    <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></a>
+                    <a href="order-history" title="Lịch sử mua hàng" style="margin-left: 5px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </a>
+                    
+                    <a href="<%= avatarLink %>" title="<%= avatarLink.equals("admin") ? "Trang quản trị" : "Trang cá nhân" %>">
+                        <img src="img/images.jpg" alt="User" class="user-avatar">
+                    </a>
+                    
+                    <a href="${pageContext.request.contextPath}/logout" class="logout-btn" title="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
                 </div>
             <% } %>
         </div>
