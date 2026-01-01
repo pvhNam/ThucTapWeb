@@ -9,6 +9,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/index.css">
+    
+    <style>
+        .view-more-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .btn-view-more {
+            display: inline-block;
+            padding: 12px 40px;
+            background-color: transparent;
+            color: #1a1a1a;
+            border: 2px solid #1a1a1a;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .btn-view-more:hover {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <jsp:include page="header.jsp">
@@ -37,11 +60,12 @@
         <div class="voucher-grid">
             <%
                 VoucherDAO vdao = new VoucherDAO();
-                List<Voucher> vouchers = vdao.getAllVouchers(); // Lấy từ DB
+                List<Voucher> vouchers = vdao.getAllVouchers();
                 DecimalFormat df = new DecimalFormat("#,###");
-                if (vouchers != null) {
+                
+                // Kiểm tra null và danh sách trống
+                if (vouchers != null && !vouchers.isEmpty()) {
                     for (Voucher v : vouchers) {
-                        // Logic hiển thị: PERCENT -> 10%, FIXED -> 50K
                         String amountDisplay = "PERCENT".equals(v.getDiscountType()) 
                                                ? (int)v.getDiscountAmount() + "%" 
                                                : df.format(v.getDiscountAmount() / 1000) + "K";
@@ -63,7 +87,10 @@
                         <button class="btn-save-voucher" onclick="saveVoucher(this, '<%= v.getCode() %>')">Lưu Mã</button>
                     </div>
                 </div>
-            <% } } %>
+            <%  } 
+                } else { %>
+                <p style="text-align:center; width: 100%; color: #666;">Hiện chưa có mã giảm giá nào.</p>
+            <% } %>
         </div>
     </div>
 
@@ -77,8 +104,12 @@
                 ProductDAO pdao = new ProductDAO();
                 List<product> products = pdao.getAllProducts();
                 DecimalFormat dfFull = new DecimalFormat("#,### VNĐ");
+                
                 if (products != null) {
+                    int count = 0; // Biến đếm số sản phẩm đã hiện
                     for (product p : products) {
+                        // Nếu đã hiện đủ 8 sản phẩm thì dừng vòng lặp
+                        if (count >= 8) break; 
             %>
                 <div class="product-card">
                     <div class="product-image">
@@ -99,7 +130,15 @@
                         </form>
                     </div>
                 </div>
-            <% } } %>
+            <% 
+                        count++; // Tăng biến đếm sau mỗi lần hiện
+                    } 
+                } 
+            %>
+        </div>
+        
+        <div class="view-more-container">
+            <a href="about.jsp" class="btn-view-more">Xem Tất Cả Sản Phẩm <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
     

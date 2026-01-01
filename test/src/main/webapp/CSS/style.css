@@ -1,5 +1,5 @@
 @charset "UTF-8";
-
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
 /* --- 1. BIẾN DÙNG CHUNG (ROOT) --- */
 :root {
     --gold: #d4af37;        /* Màu vàng kim loại */
@@ -7,8 +7,8 @@
     --white: #ffffff;
     --text-gray: #666;
     --border-color: #333;
-    --font-main: "Inter", sans-serif;
-    --font-heading: 'Montserrat', sans-serif;
+--font-main: "Be Vietnam Pro", sans-serif; 
+    --font-heading: "Be Vietnam Pro", sans-serif;
 }
 
 /* --- 2. THIẾT LẬP CƠ BẢN --- */

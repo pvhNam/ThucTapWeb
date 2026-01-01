@@ -186,3 +186,27 @@ body {
         font-size: 2rem;
     }
 }
+/* --- BỔ SUNG LOGIC ẨN HIỆN --- */
+
+/* Mặc định ẩn tất cả item */
+.gallery-item {
+    display: none; 
+}
+
+/* Chỉ hiện những item có class "show" */
+.gallery-item.show {
+    display: block;
+    animation: fadeIn 0.6s ease forwards; /* Hiệu ứng hiện ra từ từ */
+}
+
+/* Hiệu ứng zoom nhẹ khi xuất hiện */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+    }
+}
