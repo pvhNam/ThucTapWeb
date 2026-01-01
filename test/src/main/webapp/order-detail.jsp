@@ -92,15 +92,23 @@ body {
 	padding-top: 20px;
 }
 
-.btn-back-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	margin-top: 20px;
-	text-decoration: none;
-	color: #666;
-	font-weight: 600;
-}
+.action-buttons {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;
+    }
+
+    .btn-back-link {
+        display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #666; font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-back-link:hover { color: #333; }
+
+    .btn-cancel {
+        background-color: #dc3545; color: white; padding: 10px 20px;
+        border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+        display: inline-flex; align-items: center; gap: 5px; transition: 0.3s; font-size: 14px;
+    }
+    .btn-cancel:hover { background-color: #c82333; }
 </style>
 </head>
 <body>
@@ -171,36 +179,52 @@ body {
 		</table>
 
 		<div class="total-row">
-			Tổng cộng:
-			<%=df.format(order.getTotalMoney())%>
-		</div>
-		<%
-		} else {
-		%>
-		<div style="text-align: center; padding: 40px;">
-			<p>Không tìm thấy dữ liệu đơn hàng.</p>
-		</div>
-		<%
-		}
-		} catch (Exception e) {
-		%>
-		<p>
-			Lỗi xử lý dữ liệu:
-			<%=e.getMessage()%></p>
-		<%
-		}
-		} else {
-		%>
-		<p>Mã đơn hàng không hợp lệ.</p>
-		<%
-		}
-		%>
+            Tổng cộng: <%=df.format(order.getTotalMoney())%>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="order-history" class="btn-back-link"> 
+                <i class="fa-solid fa-arrow-left"></i> QUAY LẠI LỊCH SỬ
+            </a>
 
-		<a href="order-history" class="btn-back-link"> <i
-			class="fa-solid fa-arrow-left"></i> QUAY LẠI LỊCH SỬ
-		</a>
-	</div>
+            <% if (order.getStatus() != null && order.getStatus().equals("Đang xử lý")) { %>
+                <form action="order-detail" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.');" style="margin: 0;">
+                    
+                    <input type="hidden" name="id" value="<%= order.getId() %>">
+                    
+                    <input type="hidden" name="action" value="cancel">
+                    
+                    <button type="submit" class="btn-cancel">
+                        <i class="fa-solid fa-xmark"></i> HỦY ĐƠN HÀNG
+                    </button>
+                </form>
+            <% } %>
+        </div>
 
-	<jsp:include page="footer.jsp" />
+        <%
+                } else {
+        %>
+            <div style="text-align: center; padding: 40px;">
+                <i class="fa-regular fa-folder-open" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
+                <p>Không tìm thấy dữ liệu đơn hàng.</p>
+                <a href="order-history" class="btn-back-link">Quay lại lịch sử</a>
+            </div>
+        <%
+                }
+            } catch (Exception e) {
+        %>
+            <p style="color: red;">Lỗi xử lý dữ liệu: <%=e.getMessage()%></p>
+            <a href="order-history" class="btn-back-link">Quay lại</a>
+        <%
+            }
+        } else {
+        %>
+            <p style="text-align: center; padding: 30px;">Mã đơn hàng không hợp lệ.</p>
+            <a href="order-history" class="btn-back-link" style="justify-content: center;">Quay lại</a>
+        <% } %>
+
+    </div>
+
+    <jsp:include page="footer.jsp" />
 </body>
 </html>

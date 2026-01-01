@@ -25,7 +25,45 @@ public class adminController extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+        
+        OrderDAO dao = new OrderDAO();
+        List<Order> list = dao.getAllOrders();
 
+        double totalRevenue = 0;
+        int countSuccess = 0;
+        int countShipping = 0;
+        int countProcessing = 0;
+        int countCancel = 0;
+
+        if (list != null) {
+            for (Order o : list) {
+                String s = o.getStatus();
+                // Kiểm tra null để tránh lỗi
+                if(s == null) s = ""; 
+                s = s.toLowerCase(); // Chuyển về chữ thường để so sánh cho chuẩn
+
+                if (s.contains("thành công")) {
+                    totalRevenue += o.getTotalMoney();
+                    countSuccess++;
+                } else if (s.contains("giao")) {
+                    countShipping++;
+                } else if (s.contains("hủy")) {
+                    countCancel++;
+                } else {
+                    // Còn lại là Đang xử lý / Chờ xác nhận
+                    countProcessing++;
+                }
+            }
+        }
+        request.setAttribute("listOrders", list); // Vẫn cần list để vẽ bảng
+        
+        request.setAttribute("totalOrders", (list != null) ? list.size() : 0);
+        request.setAttribute("totalRevenue", totalRevenue);
+        
+        request.setAttribute("countSuccess", countSuccess);
+        request.setAttribute("countShipping", countShipping);
+        request.setAttribute("countProcessing", countProcessing);
+        request.setAttribute("countCancel", countCancel);
         request.getRequestDispatcher("admin.jsp").forward(request, response);
     }
 }

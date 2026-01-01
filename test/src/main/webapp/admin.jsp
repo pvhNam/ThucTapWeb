@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.Order"%>
 <%@ page import="java.text.DecimalFormat"%>
 
@@ -8,15 +7,22 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard Admin | Fashion Store</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="CSS/Admin.css">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link
-	href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet"  href="CSS/Admin.css">
+<style>
+    /* CSS cho 4 thẻ thống kê */
+    .stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+    .card-stat { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .stat-info h3 { font-size: 28px; margin: 0; color: #333; }
+    .stat-info p { margin: 5px 0 0; color: #777; font-size: 14px; }
+    .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .icon-blue { background: #e3f2fd; color: #2196f3; }
+    .icon-green { background: #e8f5e9; color: #4caf50; }
+    .icon-orange { background: #fff3e0; color: #ff9800; }
+    .icon-red { background: #ffebee; color: #f44336; }
+</style>
 </head>
 <body>
 
@@ -32,38 +38,16 @@
 			</div>
 		</div>
 
-		<%
-		// --- 1. JAVA LOGIC: TÍNH TOÁN SỐ LIỆU TỪ LIST ---
-		List<Order> list = (List<Order>) request.getAttribute("listOrders");
-		DecimalFormat df = new DecimalFormat("#,### VNĐ");
-		
-		double totalRevenue = 0;
-		int totalOrders = 0;
-		
-		// Biến đếm cho biểu đồ tròn (Pie Chart)
-		int countSuccess = 0;
-		int countShipping = 0;
-		int countProcessing = 0;
-		int countCancel = 0;
-
-		if (list != null && !list.isEmpty()) {
-			totalOrders = list.size();
-			for (Order o : list) {
-				String s = o.getStatus();
-				
-				if (s.contains("thành công")) {
-					totalRevenue += o.getTotalMoney();
-					countSuccess++;
-				} else if (s.contains("giao")) {
-					countShipping++;
-				} else if (s.contains("hủy")) {
-					countCancel++;
-				} else {
-					countProcessing++;
-				}
-			}
-		}
-		%>
+        <%
+            // Lấy các biến Attribute
+            int totalOrders = (int) request.getAttribute("totalOrders");
+            double totalRevenue = (double) request.getAttribute("totalRevenue");
+            int countProcessing = (int) request.getAttribute("countProcessing");
+            int countCancel = (int) request.getAttribute("countCancel");
+            
+            // Format tiền tệ
+            DecimalFormat df = new DecimalFormat("#,### VNĐ");
+        %>
 
 		<div class="stats-cards">
 			<div class="card-stat">
@@ -73,6 +57,7 @@
 				</div>
 				<div class="stat-icon icon-blue"><i class="fa-solid fa-cart-shopping"></i></div>
 			</div>
+			
 			<div class="card-stat">
 				<div class="stat-info">
 					<h3 style="color: #28a745;"><%= df.format(totalRevenue) %></h3>
@@ -80,6 +65,7 @@
 				</div>
 				<div class="stat-icon icon-green"><i class="fa-solid fa-sack-dollar"></i></div>
 			</div>
+			
 			<div class="card-stat">
 				<div class="stat-info">
 					<h3><%= countProcessing %></h3>
@@ -87,6 +73,7 @@
 				</div>
 				<div class="stat-icon icon-orange"><i class="fa-solid fa-clock"></i></div>
 			</div>
+			
 			<div class="card-stat">
 				<div class="stat-info">
 					<h3><%= countCancel %></h3>
@@ -96,26 +83,16 @@
 			</div>
 		</div>
 
-		<div class="charts-section">
-			<div class="chart-container">
-				<div class="chart-title">Biểu đồ doanh thu 6 tháng gần đây</div>
-				<canvas id="revenueChart"></canvas>
-			</div>
-			
-			<div class="chart-container">
-				<div class="chart-title">Tỉ lệ trạng thái đơn hàng</div>
-				<canvas id="statusChart"></canvas>
-			</div>
-		</div>
-
-		<% if (request.getParameter("msg") != null) { %>
-		<div class="alert alert-success">
+        <% if (request.getParameter("msg") != null) { %>
+		<div class="alert alert-success" style="padding: 15px; background: #d4edda; color: #155724; border-radius: 4px; margin-bottom: 20px;">
 			<i class="fa-solid fa-check-circle"></i> Thao tác thành công!
 		</div>
 		<% } %>
 
-		<div class="card-box">
-			<div class="chart-title" style="margin-bottom: 20px;">Danh sách đơn hàng mới nhất</div>
+        <div class="card-box">
+			<div class="chart-title" style="margin-bottom: 20px; font-weight: bold; color: #444;">
+                Danh sách đơn hàng gần đây
+            </div>
 			<table class="admin-table">
 				<thead>
 					<tr>
@@ -130,6 +107,9 @@
 				</thead>
 				<tbody>
 					<%
+                    // Lấy lại list để vẽ bảng
+                    List<Order> list = (List<Order>) request.getAttribute("listOrders");
+                    
 					if (list != null && !list.isEmpty()) {
 						for (Order o : list) {
 							String st = o.getStatus();
@@ -147,73 +127,25 @@
 						<td><span class="badge <%=badgeClass%>"><%=st%></span></td>
 						<td>
 							<div class="action-group">
-								<a href="order-detail.jsp?id=<%=o.getId()%>" class="btn-action btn-view"><i class="fa-solid fa-eye"></i></a>
+								<a href="order-detail.jsp?id=<%=o.getId()%>" class="btn-action btn-view" title="Xem chi tiết">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
 								<% if (st.equals("Đang xử lý")) { %>
 									<form action="update-order" method="post" style="margin: 0;">
 										<input type="hidden" name="id" value="<%=o.getId()%>"> 
 										<input type="hidden" name="action" value="ship">
-										<button class="btn-action btn-ship"><i class="fa-solid fa-truck"></i></button>
+										<button class="btn-action btn-ship" title="Giao hàng"><i class="fa-solid fa-truck"></i></button>
 									</form>
 								<% } %>
 							</div>
 						</td>
 					</tr>
 					<% } } else { %>
-					<tr><td colspan="7" style="text-align: center;">Chưa có dữ liệu.</td></tr>
+					<tr><td colspan="7" style="text-align: center; padding: 30px;">Chưa có đơn hàng nào.</td></tr>
 					<% } %>
 				</tbody>
 			</table>
 		</div>
 	</main>
-
-	<script>
-		// --- Biểu đồ Tròn (Dữ liệu THẬT lấy từ biến Java) ---
-		const ctxPie = document.getElementById('statusChart');
-		
-		new Chart(ctxPie, {
-			type: 'doughnut',
-			data: {
-				labels: ['Thành công', 'Đang giao', 'Đang xử lý', 'Đã hủy'],
-				datasets: [{
-					label: 'Số lượng đơn',
-					// Sử dụng Expression Tag của JSP để in giá trị Java vào JavaScript
-					data: [<%=countSuccess%>, <%=countShipping%>, <%=countProcessing%>, <%=countCancel%>],
-					backgroundColor: [
-						'#28a745', // Xanh lá
-						'#17a2b8', // Xanh dương nhạt
-						'#ffc107', // Vàng
-						'#dc3545'  // Đỏ
-					],
-					borderWidth: 1
-				}]
-			},
-			options: {
-				responsive: true,
-				plugins: {
-					legend: { position: 'bottom' }
-				}
-			}
-		});
-
-		// --- Biểu đồ Cột (Dữ liệu TĨNH - Mock Data) ---
-		const ctxBar = document.getElementById('revenueChart');
-
-		new Chart(ctxBar, {
-			type: 'bar',
-			data: {
-				labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
-				datasets: [{
-					label: 'Doanh thu (Triệu VNĐ)',
-					data: [12, 19, 15, 25, 22, 30], // Số liệu giả định
-					backgroundColor: '#3498db',
-					borderRadius: 5
-				}]
-			},
-			options: {
-				scales: { y: { beginAtZero: true } }
-			}
-		});
-	</script>
-
 </body>
 </html>
