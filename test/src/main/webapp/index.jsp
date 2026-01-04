@@ -17,7 +17,7 @@
     
     <div class="hero-banner" style="background-image: url('img/banner.png');">
         <div class="hero-content">
-            <span class="hero-subtitle">NEW ARRIVALS</span>
+            <span class="hero-subtitle"></span>
             <h1 class="hero-title">COLLECTION 2025</h1>
             <a href="#products" class="btn-hero">MUA NGAY</a>
         </div>
