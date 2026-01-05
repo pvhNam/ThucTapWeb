@@ -130,6 +130,9 @@
         <a href="admin-users" class="menu-item <%= activePage.equals("users") ? "active" : "" %>">
             <i class="fa-solid fa-users"></i> Quản lý Khách hàng
         </a>
+        <a href="admin-vouchers" class="menu-item <%= activePage.equals("vouchers") ? "active" : "" %>">
+    <i class="fa-solid fa-ticket"></i> Quản lý Voucher
+</a>	
     </div>
 
     <div class="sidebar-footer">

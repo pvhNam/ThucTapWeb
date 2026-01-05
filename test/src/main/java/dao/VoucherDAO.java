@@ -150,4 +150,75 @@ public class VoucherDAO {
             e.printStackTrace();
         }
     }
+ // Thêm các phương thức này vào class VoucherDAO
+    public boolean insertVoucher(Voucher v) {
+        String query = "INSERT INTO vouchers (code, description, discount_amount, discount_type, min_order, expiry_date) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, v.getCode());
+            ps.setString(2, v.getDescription());
+            ps.setDouble(3, v.getDiscountAmount());
+            ps.setString(4, v.getDiscountType());
+            ps.setDouble(5, v.getMinOrder());
+            ps.setDate(6, v.getExpiryDate());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateVoucher(Voucher v) {
+        String query = "UPDATE vouchers SET code=?, description=?, discount_amount=?, discount_type=?, min_order=?, expiry_date=? WHERE id=?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, v.getCode());
+            ps.setString(2, v.getDescription());
+            ps.setDouble(3, v.getDiscountAmount());
+            ps.setString(4, v.getDiscountType());
+            ps.setDouble(5, v.getMinOrder());
+            ps.setDate(6, v.getExpiryDate());
+            ps.setInt(7, v.getId());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteVoucher(int id) {
+        // Lưu ý: Cần xóa bảng phụ user_wallet trước hoặc thiết lập foreign key ON DELETE CASCADE trong DB
+        String query = "DELETE FROM vouchers WHERE id = ?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Voucher getVoucherById(int id) {
+        String query = "SELECT * FROM vouchers WHERE id = ?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Voucher(
+                    rs.getInt("id"), rs.getString("code"), rs.getString("description"),
+                    rs.getDouble("discount_amount"), rs.getString("discount_type"),
+                    rs.getDouble("min_order"), rs.getDate("expiry_date")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
