@@ -7,16 +7,20 @@ public class user {
 	public String email;
 	public String fullname;
 	public String phonenumber;
+	public String avatar; 
+
     public user() {
     }
-	public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber) {
-		this.uid = uid;
-		this.username = username;
-		this.passwordHash = passwordHash;
-		this.email = email;
-		this.fullname = fullname;
-		this.phonenumber = phonenumber;
-	}
+
+    public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber, String avatar) {
+        this.uid = uid;
+        this.username = uname;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.fullname = fullname;
+        this.phonenumber = phonenumber;
+        this.avatar = avatar;
+    }
 
 	public int getUid() {
 		return uid;
@@ -65,5 +69,12 @@ public class user {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
+	public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
 }
