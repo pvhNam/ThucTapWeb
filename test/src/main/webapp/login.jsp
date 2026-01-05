@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="CSS/login.css" />
 </head>
 <body>
-     <jsp:include page="header.jsp" /> 
+   <jsp:include page="header.jsp" />
     
+
 
     <div class="login-container">
         <div class="login-wrapper">
