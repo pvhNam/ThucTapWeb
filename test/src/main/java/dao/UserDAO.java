@@ -165,4 +165,24 @@ public class UserDAO {
         }
         return false;
     }
+    public user checkEmailExist(String email) {
+        String query = "SELECT * FROM users WHERE email = ?";
+        try {
+            conn = new DBConnect().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                // Chỉ cần lấy username và email là đủ cho chức năng này
+                user u = new user();
+                u.setUid(rs.getInt("uid"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                return u;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

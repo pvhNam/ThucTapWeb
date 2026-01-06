@@ -100,7 +100,7 @@
                 if (products != null && !products.isEmpty()) {
                     // --- GIỚI HẠN 4 SẢN PHẨM ---
                     int count = 0;
-                    int maxDisplay = 4; // [cite: 141] Đã sửa từ 8 thành 4 theo yêu cầu cũ
+                    int maxDisplay = 8; // [cite: 141] Đã sửa từ 8 thành 4 theo yêu cầu cũ
                     
                     for (product p : products) {
                         if (count >= maxDisplay) break;
