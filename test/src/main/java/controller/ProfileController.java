@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import model.user;
 import dao.UserDAO;
+import util.MD5; // [QUAN TRỌNG]: Phải có dòng này để dùng được MD5
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -23,7 +24,6 @@ import java.nio.file.Paths;
 public class ProfileController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Hiển thị trang profile
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         HttpSession session = request.getSession();
@@ -34,7 +34,6 @@ public class ProfileController extends HttpServlet {
         }
     }
 
-    // Xử lý cập nhật (Thông tin, Mật khẩu, Avatar)
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -42,7 +41,6 @@ public class ProfileController extends HttpServlet {
         HttpSession session = request.getSession();
         user currentUser = (user) session.getAttribute("user");
         
-        // Nếu chưa đăng nhập thì đá về trang login
         if (currentUser == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -60,21 +58,17 @@ public class ProfileController extends HttpServlet {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 
                 if (fileName != null && !fileName.isEmpty()) {
-                    // Tạo tên file duy nhất để tránh trùng lặp
+                    // Tạo tên file duy nhất
                     String newFileName = "avatar_" + currentUser.getUid() + "_" + System.currentTimeMillis() + "_" + fileName;
                     
-                    // Đường dẫn lưu file: WebContent/img/avatars
                     String uploadPath = getServletContext().getRealPath("") + File.separator + "img" + File.separator + "avatars";
                     File uploadDir = new File(uploadPath);
-                    if (!uploadDir.exists()) uploadDir.mkdir(); // Tạo thư mục nếu chưa có
+                    if (!uploadDir.exists()) uploadDir.mkdir();
                     
-                    // Ghi file
                     filePart.write(uploadPath + File.separator + newFileName);
                     
-                    // 1. Cập nhật Database
                     dao.updateAvatar(currentUser.getUid(), newFileName);
                     
-                    // 2. Cập nhật Session (Quan trọng: để Header đổi ảnh ngay lập tức)
                     currentUser.setAvatar(newFileName);
                     session.setAttribute("user", currentUser);
                     
@@ -89,12 +83,12 @@ public class ProfileController extends HttpServlet {
         // TRƯỜNG HỢP 2: CẬP NHẬT THÔNG TIN CÁ NHÂN
         // ------------------------------------------
         else if ("update-info".equals(action)) {
-            String username = request.getParameter("username");
+            String username = request.getParameter("username"); // Thường username không cho sửa, nhưng nếu form gửi lên thì cứ lấy
             String fullname = request.getParameter("fullname");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
 
-            currentUser.setUsername(username);
+            // Lưu ý: Nếu logic của bạn không cho đổi username thì đừng set lại username
             currentUser.setFullname(fullname);
             currentUser.setEmail(email);
             currentUser.setPhonenumber(phone);
@@ -109,29 +103,37 @@ public class ProfileController extends HttpServlet {
             }
         } 
         // ------------------------------------------
-        // TRƯỜNG HỢP 3: ĐỔI MẬT KHẨU
+        // TRƯỜNG HỢP 3: ĐỔI MẬT KHẨU (ĐÃ SỬA LỖI)
         // ------------------------------------------
         else if ("change-pass".equals(action)) {
             String oldPass = request.getParameter("old_pass");
             String newPass = request.getParameter("new_pass");
             String confirmPass = request.getParameter("confirm_pass");
 
-            // Lưu ý: Nếu bạn đã dùng MD5 ở bước trước, hãy nhớ mã hóa oldPass và newPass trước khi so sánh/lưu
-            // Ở đây tôi viết logic so sánh chuỗi hash trong object user (đã hash từ lúc login)
-            
-            if (!oldPass.equals(currentUser.getPasswordHash())) { 
-                // Nếu bạn dùng MD5: if (!MD5.getMd5(oldPass).equals(currentUser.getPasswordHash()))
-                request.setAttribute("errPass", "Mật khẩu cũ không đúng!");
-            } else if (!newPass.equals(confirmPass)) {
+            // Kiểm tra mật khẩu xác nhận trước
+            if (!newPass.equals(confirmPass)) {
                 request.setAttribute("errPass", "Mật khẩu xác nhận không khớp!");
             } else {
-                boolean isChanged = dao.changePassword(currentUser.getUsername(), newPass);
-                if (isChanged) {
-                    currentUser.setPasswordHash(newPass);
-                    session.setAttribute("user", currentUser);
-                    request.setAttribute("msgPass", "Đổi mật khẩu thành công!");
+                // [QUAN TRỌNG]: Mã hóa mật khẩu cũ người dùng nhập vào để so sánh
+                String oldPassHash = MD5.getMd5(oldPass);
+
+                // currentUser.getPassword() trả về mật khẩu đã mã hóa (từ DB)
+                // Lưu ý: Nếu hàm get mật khẩu trong file user.java tên khác (ví dụ getPasswordHash), hãy sửa lại dòng dưới đây
+                if (!oldPassHash.equals(currentUser.getPasswordHash())) { 
+                    request.setAttribute("errPass", "Mật khẩu cũ không đúng!");
                 } else {
-                    request.setAttribute("errPass", "Lỗi hệ thống! Vui lòng thử lại.");
+                    // [QUAN TRỌNG]: Mã hóa mật khẩu mới trước khi lưu xuống DB
+                    String newPassHash = MD5.getMd5(newPass);
+                    
+                    boolean isChanged = dao.changePassword(currentUser.getUsername(), newPassHash);
+                    if (isChanged) {
+                        // Cập nhật lại mật khẩu mới (đã hash) vào session
+                        currentUser.setPasswordHash(newPassHash); 
+                        session.setAttribute("user", currentUser);
+                        request.setAttribute("msgPass", "Đổi mật khẩu thành công!");
+                    } else {
+                        request.setAttribute("errPass", "Lỗi hệ thống! Vui lòng thử lại.");
+                    }
                 }
             }
         }

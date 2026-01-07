@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="CSS/AdminProduct.css">
 
 <style>
-    /* CSS Modal (Popup) - Giữ nguyên như cũ */
+    /* CSS Modal (Popup) */
     .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .modal-content { background-color: white; padding: 30px; border-radius: 10px; width: 600px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: slideDown 0.3s ease-out; max-height: 90vh; overflow-y: auto; }
     @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -25,6 +25,7 @@
     .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
     .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: border-color 0.2s; }
     .form-group input:focus, .form-group select:focus { border-color: #3498db; outline: none; }
+    
     .btn-submit-modal { background: #28a745; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; font-size: 16px; border-radius: 6px; font-weight: 600; margin-top: 10px; transition: background 0.2s; }
     .btn-submit-modal:hover { background: #218838; }
 </style>
@@ -43,6 +44,18 @@
                 <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm sản phẩm mới
             </button>
         </div>
+        
+        <% if (request.getParameter("msg") != null) {
+            String msg = request.getParameter("msg");
+            String alertClass = "alert-success";
+            String text = "Thao tác thành công!";
+            if(msg.contains("error")) { alertClass = "alert-danger"; text = "Có lỗi xảy ra!"; }
+            else if(msg.equals("imported")) text = "Đã nhập thêm hàng vào kho thành công!";
+        %>
+            <div class="alert <%=alertClass%>" style="padding: 10px; margin-bottom: 15px; background: #d4edda; color: #155724; border-radius: 5px;">
+                <%= text %>
+            </div>
+        <% } %>
 
         <div class="card-box">
             <table class="admin-table">
@@ -66,13 +79,19 @@
                     %>
                     <tr>
                         <td>#<%=p.getPid()%></td>
-                        <td><img src="<%=p.getImage()%>" class="product-img" alt="Ảnh SP"></td>
+                        <td><img src="<%=p.getImage()%>" class="product-img" alt="Ảnh SP" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
                         <td style="font-weight: 500;"><%=p.getPdescription()%></td>
                         <td class="price-text"><%=df.format(p.getPrice())%></td>
-                        <td><span class="stock-badge"><%=p.getStockquantyti()%> sp</span></td>
+                        <td><span class="stock-badge" style="background: #e2e6ea; padding: 5px 10px; border-radius: 15px; font-weight: bold;"><%=p.getStockquantyti()%></span></td>
                         <td>
-                            <div class="action-group">
-                                <button type="button" class="btn-action btn-edit" title="Sửa"
+                            <div class="action-group" style="display: flex; gap: 5px;">
+                                <button type="button" class="btn-action" style="background: #17a2b8; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;" 
+                                    title="Nhập thêm hàng"
+                                    onclick="openImportModal('<%=p.getPid()%>', '<%=p.getPdescription()%>', <%=p.getStockquantyti()%>)">
+                                    <i class="fa-solid fa-box-open"></i>
+                                </button>
+
+                                <button type="button" class="btn-action btn-edit" title="Sửa" style="background: #ffc107; color: #333; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer;"
                                     onclick="openEditModal(
                                         '<%=p.getPid()%>', 
                                         '<%=p.getPdescription()%>', 
@@ -87,7 +106,7 @@
                                 </button>
                                 
                                 <a href="admin-products?type=delete&pid=<%=p.getPid()%>" 
-                                   class="btn-action btn-del" 
+                                   class="btn-action btn-del" style="background: #dc3545; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none;"
                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')" title="Xóa">
                                     <i class="fa-solid fa-trash"></i>
                                 </a>
@@ -112,7 +131,6 @@
             
             <form action="admin-products" method="post" id="productForm">
                 <input type="hidden" id="form-action" name="action" value="add">
-                
                 <input type="hidden" id="pid" name="pid">
 
                 <div class="form-group">
@@ -149,8 +167,9 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Số lượng kho:</label>
+                        <label>Số lượng kho (Tổng):</label>
                         <input type="number" id="stock" name="stock" required>
+                        <small style="color: #666;">Chỉnh sửa trực tiếp tổng kho (nếu cần)</small>
                     </div>
                 </div>
 
@@ -170,76 +189,90 @@
         </div>
     </div>
 
+    <div id="importModal" class="modal">
+        <div class="modal-content" style="width: 400px;">
+            <span class="close-btn" onclick="closeImportModal()">&times;</span>
+            <h2 class="modal-title" style="color: #17a2b8;">Nhập Kho</h2>
+            
+            <p style="margin-bottom: 5px;">Sản phẩm: <strong id="import-name" style="color: #333;"></strong></p>
+            <p style="margin-bottom: 20px;">Tồn kho hiện tại: <strong id="current-stock" style="color: #dc3545;"></strong></p>
+            
+            <form action="admin-products" method="post">
+                <input type="hidden" name="action" value="import_stock">
+                <input type="hidden" name="pid" id="import-pid">
+                
+                <div class="form-group">
+                    <label>Số lượng nhập thêm:</label>
+                    <input type="number" name="quantityAdded" min="1" required placeholder="Ví dụ: 50" style="font-size: 18px; font-weight: bold; padding: 12px;">
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">* Số lượng này sẽ được cộng thêm vào kho hiện tại.</p>
+                </div>
+
+                <button type="submit" class="btn-submit-modal" style="background: #17a2b8;">
+                    <i class="fa-solid fa-plus-circle"></i> Xác Nhận Nhập
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
         var modal = document.getElementById('productModal');
+        var importModal = document.getElementById('importModal');
         var imgPreview = document.getElementById('preview-image');
 
-        // 1. Hàm mở Modal để THÊM MỚI (Reset form)
+        // --- HÀM CHO MODAL THÊM / SỬA ---
         function openAddModal() {
-            // Đặt tiêu đề và nút bấm
             document.getElementById('modal-title').innerText = "Thêm Sản Phẩm Mới";
             document.getElementById('btn-text').innerText = "Thêm Mới";
-            
-            // Set action là "add" để Controller biết
             document.getElementById('form-action').value = "add";
-            
-            // Xóa trắng các ô input
             document.getElementById('pid').value = "0";
             document.getElementById('name').value = "";
             document.getElementById('price').value = "";
-            document.getElementById('cateId').value = "1"; // Mặc định chọn cái đầu
+            document.getElementById('cateId').value = "1";
             document.getElementById('color').value = "";
             document.getElementById('size').value = "";
             document.getElementById('stock').value = "100";
             document.getElementById('image').value = "";
-            
-            // Ẩn ảnh preview
             imgPreview.style.display = 'none';
             imgPreview.src = "";
-
-            // Hiện Modal
             modal.style.display = 'flex';
         }
 
-        // 2. Hàm mở Modal để SỬA (Điền dữ liệu cũ)
         function openEditModal(id, name, price, cateId, color, size, stock, image) {
-            // Đặt tiêu đề và nút bấm
             document.getElementById('modal-title').innerText = "Cập Nhật Sản Phẩm";
             document.getElementById('btn-text').innerText = "Lưu Thay Đổi";
-            
-            // Set action là "update"
             document.getElementById('form-action').value = "update";
-            
-            // Điền dữ liệu vào form
             document.getElementById('pid').value = id;
             document.getElementById('name').value = name;
             document.getElementById('price').value = price;
-            document.getElementById('cateId').value = cateId; // Tự động chọn đúng option
+            document.getElementById('cateId').value = cateId;
             document.getElementById('color').value = color;
             document.getElementById('size').value = size;
             document.getElementById('stock').value = stock;
             document.getElementById('image').value = image;
-
-            // Hiện ảnh preview
             if(image) {
                 imgPreview.src = image;
                 imgPreview.style.display = 'inline-block';
             } else {
                 imgPreview.style.display = 'none';
             }
-
-            // Hiện Modal
             modal.style.display = 'flex';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
+        // --- HÀM CHO MODAL NHẬP HÀNG ---
+        function openImportModal(id, name, currentStock) {
+            document.getElementById('import-pid').value = id;
+            document.getElementById('import-name').innerText = name;
+            document.getElementById('current-stock').innerText = currentStock + " sản phẩm";
+            importModal.style.display = 'flex';
         }
 
+        // --- ĐÓNG MODAL ---
+        function closeModal() { modal.style.display = 'none'; }
+        function closeImportModal() { importModal.style.display = 'none'; }
+
         window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) closeModal();
+            if (event.target == importModal) closeImportModal();
         }
     </script>
 

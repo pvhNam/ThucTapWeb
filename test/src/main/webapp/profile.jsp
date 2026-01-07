@@ -102,21 +102,21 @@
                     <label><fmt:message key="profile.old_pass" /></label>
                     <div class="input-field">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" name="old_pass" placeholder="***" required>
+                        <input type="password" name="old_pass" placeholder="********" required>
                     </div>
                 </div>
                 <div class="input-group">
                     <label><fmt:message key="profile.new_pass" /></label>
                     <div class="input-field">
                         <i class="fa-solid fa-key"></i>
-                        <input type="password" name="new_pass" placeholder="***" required>
+                        <input type="password" name="new_pass" placeholder="*********" required>
                     </div>
                 </div>
                 <div class="input-group">
                     <label><fmt:message key="profile.confirm_pass" /></label>
                     <div class="input-field">
                         <i class="fa-solid fa-check-double"></i>
-                        <input type="password" name="confirm_pass" placeholder="***" required>
+                        <input type="password" name="confirm_pass" placeholder="*********" required>
                     </div>
                 </div>
                 <button type="submit" class="btn-login" style="background-color: #555;"><fmt:message key="profile.change_pass_btn" /></button>

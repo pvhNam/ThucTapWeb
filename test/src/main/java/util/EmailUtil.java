@@ -6,8 +6,9 @@ import jakarta.mail.internet.*;
 
 public class EmailUtil {
     public static void sendEmail(String toEmail, String subject, String body) {
-        final String fromEmail = "ntmenfashionshop@gmail.com"; // Điền email của bạn
-        final String password = "rtzwlwfyqmfjiczx"; // Điền App Password của bạn
+        // Cấu hình email gửi đi
+        final String fromEmail = "ntmenfashionshop@gmail.com"; 
+        final String password = "rtzwlwfyqmfjiczx"; // Mật khẩu ứng dụng (App Password)
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com"); 
@@ -16,6 +17,7 @@ public class EmailUtil {
         props.put("mail.smtp.starttls.enable", "true"); 
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
+        // Tạo phiên làm việc (Session)
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(fromEmail, password);
@@ -30,10 +32,10 @@ public class EmailUtil {
             msg.setText(body, "UTF-8");
 
             Transport.send(msg);
-            System.out.println("Gửi email thành công!");
+            System.out.println("Gửi email thành công tới: " + toEmail);
         } catch (MessagingException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("Lỗi gửi email: " + e.getMessage());
         }
     }
 }

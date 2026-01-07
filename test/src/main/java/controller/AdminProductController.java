@@ -25,45 +25,60 @@ public class AdminProductController extends HttpServlet {
             try {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 dao.deleteProduct(pid);
-                // Xóa xong reload lại trang kèm thông báo
                 response.sendRedirect("admin-products?msg=deleted");
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("admin-products?msg=error");
             }
         } else {
-            // === HIỂN THỊ DANH SÁCH (Mặc định) ===
+            // === HIỂN THỊ DANH SÁCH ===
             List<product> list = dao.getAllProducts();
             request.setAttribute("listP", list);
             request.getRequestDispatcher("admin-products.jsp").forward(request, response);
         }
     }
 
-    // --- 2. XỬ LÝ POST: THÊM MỚI & CẬP NHẬT (SỬA) ---
+    // --- 2. XỬ LÝ POST: THÊM, SỬA, NHẬP HÀNG ---
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         
-        // Lấy tham số "action" để biết là đang Thêm hay Sửa
         String action = request.getParameter("action"); 
         ProductDAO dao = new ProductDAO();
 
         try {
-            // Lấy dữ liệu chung từ form (Cả thêm và sửa đều cần những trường này)
+            // --- CHỨC NĂNG 1: NHẬP HÀNG (IMPORT STOCK) ---
+            if ("import_stock".equals(action)) {
+                int pid = Integer.parseInt(request.getParameter("pid"));
+                int quantityToAdd = Integer.parseInt(request.getParameter("quantityAdded"));
+                
+                if (quantityToAdd > 0) {
+                    dao.importStock(pid, quantityToAdd);
+                    response.sendRedirect("admin-products?msg=imported");
+                } else {
+                    response.sendRedirect("admin-products?msg=error_quantity");
+                }
+                return; // Kết thúc xử lý
+            }
+
+            // --- LẤY DỮ LIỆU CHUNG (CHO THÊM & SỬA) ---
             String name = request.getParameter("name");
-            
             String priceStr = request.getParameter("price");
             double price = (priceStr != null && !priceStr.isEmpty()) ? Double.parseDouble(priceStr) : 0;
             
             int cateId = Integer.parseInt(request.getParameter("cateId"));
             String color = request.getParameter("color");
             String size = request.getParameter("size");
-            int stock = Integer.parseInt(request.getParameter("stock"));
             String image = request.getParameter("image");
+            
+            // Số lượng tồn kho (Dùng cho tạo mới hoặc sửa tay)
+            int stock = 0;
+            try {
+                stock = Integer.parseInt(request.getParameter("stock"));
+            } catch(Exception e) { stock = 0; }
 
-            // --- TRƯỜNG HỢP 1: THÊM MỚI (ADD) ---
+            // --- CHỨC NĂNG 2: THÊM MỚI (ADD) ---
             if ("add".equals(action)) {
-                // ID = 0 (hoặc số bất kỳ vì DB tự tăng), gọi hàm addProduct
                 product p = new product(0, name, price, cateId, color, size, stock, image);
                 boolean isAdded = dao.addProduct(p);
                 
@@ -73,9 +88,8 @@ public class AdminProductController extends HttpServlet {
                     response.sendRedirect("admin-products?msg=error_add");
                 }
             } 
-            // --- TRƯỜNG HỢP 2: CẬP NHẬT (UPDATE) ---
-            else {
-                // Sửa thì bắt buộc phải lấy PID
+            // --- CHỨC NĂNG 3: CẬP NHẬT THÔNG TIN (UPDATE) ---
+            else if ("update".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 
                 product p = new product(pid, name, price, cateId, color, size, stock, image);

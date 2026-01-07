@@ -19,72 +19,94 @@ import model.Voucher;
 
 @WebServlet("/checkout")
 public class CheckoutController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		response.sendRedirect("cart");
-	}
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Truy cập trực tiếp link checkout thì đẩy về giỏ hàng
+        response.sendRedirect("cart");
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		HttpSession session = request.getSession();
-		user currentUser = (user) session.getAttribute("user");
+        request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        user currentUser = (user) session.getAttribute("user");
 
-		// Kiểm tra đăng nhập
-		if (currentUser == null) {
-			response.sendRedirect("login.jsp");
-			return;
-		}
+        // 1. Kiểm tra đăng nhập
+        if (currentUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
-		// Lấy giỏ hàng hiện tại
-		CartDAO cartDao = new CartDAO();
-		List<cartItem> cart = cartDao.getCartByUid(currentUser.getUid());
+        // 2. Lấy giỏ hàng
+        CartDAO cartDao = new CartDAO();
+        List<cartItem> cart = cartDao.getCartByUid(currentUser.getUid());
 
-		if (cart.isEmpty()) {
-			response.sendRedirect("cart");
-			return;
-		}
-		// Tính tổng tiền
-		double totalMoney = 0;
-		for (cartItem item : cart) {
-			totalMoney += item.getTotalPrice();
-		}
+        if (cart == null || cart.isEmpty()) {
+            response.sendRedirect("cart");
+            return;
+        }
 
-		// Xử lý giảm giá nếu có Voucher
-		Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
-		if (appliedVoucher != null) {
-			// Ví dụ giảm theo số tiền trực tiếp (hoặc % tùy logic bạn muốn)
-			if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
-				totalMoney = totalMoney * (1 - appliedVoucher.getDiscountAmount() / 100);
-			} else {
-				totalMoney = totalMoney - appliedVoucher.getDiscountAmount();
-			}
-			if (totalMoney < 0)
-				totalMoney = 0;
-		}
+        // 3. Tính tổng tiền
+        double totalMoney = 0;
+        for (cartItem item : cart) {
+            totalMoney += item.getTotalPrice();
+        }
 
-		// Lấy địa chỉ
-		String address = request.getParameter("address");
-		if (address == null || address.trim().isEmpty())
-			address = "Địa chỉ mặc định";
+        // 4. Áp dụng Voucher (nếu có)
+        Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
+        if (appliedVoucher != null) {
+            if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
+                // Giả sử DiscountAmount là số phần trăm (ví dụ 10 -> 10%)
+                totalMoney = totalMoney * (1.0 - (appliedVoucher.getDiscountAmount() / 100.0));
+            } else {
+                // Giảm tiền trực tiếp
+                totalMoney = totalMoney - appliedVoucher.getDiscountAmount();
+            }
+            
+            // Đảm bảo không bị âm
+            if (totalMoney < 0) totalMoney = 0;
+        }
 
-		OrderDAO orderDao = new OrderDAO();
-		int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, cart);
-		// Trừ kho sản phẩm
-		ProductDAO pDao = new ProductDAO();
-		for (cartItem item : cart) {
-			pDao.decreaseStock(item.getProduct().getPid(), item.getQuantity());
-		}
-		// Đánh dấu Voucher đã dùng
-		if (appliedVoucher != null) {
-			VoucherDAO vDao = new VoucherDAO();
-			vDao.markVoucherUsed(currentUser.getUid(), appliedVoucher.getId());
-			session.removeAttribute("appliedVoucher");
-		}
-		// Xóa sạch giỏ hàng
-		cartDao.clearCart(currentUser.getUid());
-		response.sendRedirect("order-success.jsp?id=" + newOrderId);
-	}
+        // 5. Lấy địa chỉ giao hàng
+        String address = request.getParameter("address");
+        if (address == null || address.trim().isEmpty()) {
+            address = "Địa chỉ mặc định"; 
+            // Hoặc có thể lấy từ thông tin user nếu muốn
+        }
+
+        // 6. Lưu Đơn Hàng vào Database
+        OrderDAO orderDao = new OrderDAO();
+        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, cart);
+
+        if (newOrderId > 0) {
+            // 7. Nếu tạo đơn thành công -> Trừ kho, Xóa voucher, Xóa giỏ
+            ProductDAO pDao = new ProductDAO();
+            VoucherDAO vDao = new VoucherDAO();
+
+            for (cartItem item : cart) {
+                // Trừ số lượng tồn kho
+                pDao.decreaseStock(item.getProduct().getPid(), item.getQuantity());
+            }
+
+            // Đánh dấu Voucher đã dùng (nếu có)
+            if (appliedVoucher != null) {
+                vDao.markVoucherUsed(currentUser.getUid(), appliedVoucher.getId());
+                session.removeAttribute("appliedVoucher");
+                session.removeAttribute("voucherMsg");
+            }
+
+            // Xóa sạch giỏ hàng
+            cartDao.clearCart(currentUser.getUid()); // Đảm bảo CartDAO có hàm này
+
+            // Chuyển hướng đến trang thành công
+            response.sendRedirect("order-success.jsp?id=" + newOrderId);
+        } else {
+            // Trường hợp lỗi database
+            request.setAttribute("error", "Đặt hàng thất bại, vui lòng thử lại!");
+            request.getRequestDispatcher("cart").forward(request, response);
+        }
+    }
 }

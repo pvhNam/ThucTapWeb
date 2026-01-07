@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.Order"%>
 <%@ page import="java.text.DecimalFormat"%>
+<%@ page import="java.time.LocalDate"%>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -22,6 +23,14 @@
     .icon-green { background: #e8f5e9; color: #4caf50; }
     .icon-orange { background: #fff3e0; color: #ff9800; }
     .icon-red { background: #ffebee; color: #f44336; }
+    
+    /* CSS thêm cho phần báo cáo */
+    .export-section { display: flex; gap: 30px; flex-wrap: wrap; }
+    .export-group { display: flex; align-items: center; gap: 10px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px dashed #ccc; }
+    .btn-excel { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.3s; font-weight: 500;}
+    .btn-green { background: #28a745; }
+    .btn-blue { background: #17a2b8; }
+    .btn-excel:hover { opacity: 0.9; transform: translateY(-1px); }
 </style>
 </head>
 <body>
@@ -39,14 +48,16 @@
 		</div>
 
         <%
-            // Lấy các biến Attribute
-            int totalOrders = (int) request.getAttribute("totalOrders");
-            double totalRevenue = (double) request.getAttribute("totalRevenue");
-            int countProcessing = (int) request.getAttribute("countProcessing");
-            int countCancel = (int) request.getAttribute("countCancel");
+            // Lấy dữ liệu thống kê từ Servlet (DashboardController)
+            int totalOrders = request.getAttribute("totalOrders") != null ? (int) request.getAttribute("totalOrders") : 0;
+            double totalRevenue = request.getAttribute("totalRevenue") != null ? (double) request.getAttribute("totalRevenue") : 0.0;
+            int countProcessing = request.getAttribute("countProcessing") != null ? (int) request.getAttribute("countProcessing") : 0;
+            int countCancel = request.getAttribute("countCancel") != null ? (int) request.getAttribute("countCancel") : 0;
             
             // Format tiền tệ
             DecimalFormat df = new DecimalFormat("#,### VNĐ");
+            int currentYear = LocalDate.now().getYear();
+            int currentMonth = LocalDate.now().getMonthValue();
         %>
 
 		<div class="stats-cards">
@@ -89,6 +100,44 @@
 		</div>
 		<% } %>
 
+        <div class="card-box" style="margin-bottom: 30px;">
+            <div class="chart-title" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <i class="fa-solid fa-file-excel" style="color: #28a745; margin-right: 8px;"></i> Xuất Báo Cáo Doanh Thu
+            </div>
+            
+            <div class="export-section">
+                <div class="export-group">
+                    <form action="admin-export-report" method="get" style="display: flex; align-items: center; gap: 10px; margin: 0;">
+                        <input type="hidden" name="type" value="daily">
+                        <label style="font-weight: 500; font-size: 14px;">📅 Theo ngày:</label>
+                        <input type="date" name="date" required style="padding: 6px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button type="submit" class="btn-excel btn-green">
+                            <i class="fa-solid fa-download"></i> Tải về
+                        </button>
+                    </form>
+                </div>
+
+                <div class="export-group">
+                    <form action="admin-export-report" method="get" style="display: flex; align-items: center; gap: 10px; margin: 0;">
+                        <input type="hidden" name="type" value="monthly">
+                        <label style="font-weight: 500; font-size: 14px;">📊 Theo tháng:</label>
+                        
+                        <select name="month" style="padding: 6px; border: 1px solid #ddd; border-radius: 5px;">
+                            <% for(int i=1; i<=12; i++) { %>
+                                <option value="<%=i%>" <%= i == currentMonth ? "selected" : "" %>>Tháng <%=i%></option>
+                            <% } %>
+                        </select>
+
+                        <input type="number" name="year" value="<%= currentYear %>" style="width: 70px; padding: 6px; border: 1px solid #ddd; border-radius: 5px;">
+                        
+                        <button type="submit" class="btn-excel btn-blue">
+                            <i class="fa-solid fa-download"></i> Tải về
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="card-box">
 			<div class="chart-title" style="margin-bottom: 20px; font-weight: bold; color: #444;">
                 Danh sách đơn hàng gần đây
@@ -107,16 +156,16 @@
 				</thead>
 				<tbody>
 					<%
-                    // Lấy lại list để vẽ bảng
                     List<Order> list = (List<Order>) request.getAttribute("listOrders");
-                    
 					if (list != null && !list.isEmpty()) {
 						for (Order o : list) {
 							String st = o.getStatus();
 							String badgeClass = "bg-process";
-							if (st.contains("giao")) badgeClass = "bg-shipping";
-							if (st.contains("thành công")) badgeClass = "bg-success";
-							if (st.contains("hủy")) badgeClass = "bg-cancel";
+							if (st != null) {
+								if (st.contains("giao") || st.contains("ship")) badgeClass = "bg-shipping";
+								if (st.contains("thành công") || st.contains("HT")) badgeClass = "bg-success";
+								if (st.contains("hủy")) badgeClass = "bg-cancel";
+							} else { st = "Không xác định"; }
 					%>
 					<tr>
 						<td><strong>#<%=o.getId()%></strong></td>
@@ -127,10 +176,10 @@
 						<td><span class="badge <%=badgeClass%>"><%=st%></span></td>
 						<td>
 							<div class="action-group">
-								<a href="order-detail.jsp?id=<%=o.getId()%>" class="btn-action btn-view" title="Xem chi tiết">
+								<a href="order-detail?id=<%=o.getId()%>" class="btn-action btn-view" title="Xem chi tiết">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
-								<% if (st.equals("Đang xử lý")) { %>
+								<% if ("Đang xử lý".equals(st)) { %>
 									<form action="update-order" method="post" style="margin: 0;">
 										<input type="hidden" name="id" value="<%=o.getId()%>"> 
 										<input type="hidden" name="action" value="ship">
