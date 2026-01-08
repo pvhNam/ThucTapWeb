@@ -93,7 +93,7 @@ public class CartController extends HttpServlet {
 		user currentUser = (user) session.getAttribute("user");
 		String action = request.getParameter("action");
 
-		// XỬ LÝ ÁP DỤNG MÃ
+		// --- 1. XỬ LÝ ÁP DỤNG MÃ ---
 		if ("apply_voucher".equals(action)) {
 			if (currentUser == null) {
 				response.sendRedirect("login.jsp");
@@ -128,7 +128,7 @@ public class CartController extends HttpServlet {
 			return;
 		}
 
-		// XỬ LÝ GỠ MÃ
+		// --- 2. XỬ LÝ GỠ MÃ ---
 		if ("remove_voucher".equals(action)) {
 			session.removeAttribute("appliedVoucher");
 			session.setAttribute("voucherMsg", "Đã gỡ bỏ mã giảm giá.");
@@ -137,17 +137,20 @@ public class CartController extends HttpServlet {
 			return;
 		}
 
-		// ADD/REMOVE/UPDATE GIỎ HÀNG
+		// --- 3. XỬ LÝ GIỎ HÀNG (ADD/REMOVE/UPDATE) ---
 		int pid = 0;
 		try {
 			if (request.getParameter("pid") != null)
 				pid = Integer.parseInt(request.getParameter("pid"));
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (currentUser != null) {
+			// TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP (Lưu vào Database)
 			CartDAO dao = new CartDAO();
 			int uid = currentUser.getUid();
+			
 			if ("add".equals(action)) {
 				String qParam = request.getParameter("quantity");
 				int quantity = 1; // Mặc định là 1 nếu không tìm thấy tham số
@@ -155,24 +158,52 @@ public class CartController extends HttpServlet {
 				if (qParam != null && !qParam.isEmpty()) {
 					quantity = Integer.parseInt(qParam);
 				}
-
 				dao.addToCart(uid, pid, quantity);
 
 			} else if ("remove".equals(action)) {
 				dao.removeItem(uid, pid);
-			} else if ("update".equals(action)) {
-				int quantity = Integer.parseInt(request.getParameter("quantity"));
-				if (quantity > 0)
-					dao.updateQuantity(uid, pid, quantity);
-				else
+				
+			} else if ("update_quantity".equals(action)) { // Đã sửa tên action cho khớp JSP
+				
+				int currentQty = 1;
+				try {
+					currentQty = Integer.parseInt(request.getParameter("quantity"));
+				} catch (Exception e) {}
+				
+				// Lấy lệnh increase (tăng) hoặc decrease (giảm) từ nút bấm
+				String mod = request.getParameter("mod");
+				int newQty = currentQty;
+				
+				if ("increase".equals(mod)) {
+					newQty++;
+				} else if ("decrease".equals(mod)) {
+					newQty--;
+				}
+
+				if (newQty > 0) {
+					dao.updateQuantity(uid, pid, newQty);
+				} else {
+					// Nếu giảm về 0 thì xóa luôn
 					dao.removeItem(uid, pid);
+				}
 			}
 		} else {
+			// TRƯỜNG HỢP KHÁCH VÃNG LAI (Lưu vào Session)
 			List<cartItem> cart = (List<cartItem>) session.getAttribute("cart");
-			if (cart == null)
-				cart = new ArrayList<>();
+			if (cart == null) cart = new ArrayList<>();
+			
+			// Logic cho Session Cart (nếu cần triển khai chi tiết hơn thì viết vào đây)
 			if ("add".equals(action)) {
-
+				// Ví dụ logic session cart đơn giản
+				boolean exists = false;
+				for(cartItem item : cart) {
+					if(item.getProduct().getPid() == pid) {
+						item.setQuantity(item.getQuantity() + 1);
+						exists = true;
+						break;
+					}
+				}
+				// Nếu chưa có thì phải query Product từ DB để add vào list (cần ProductDAO)
 			}
 			session.setAttribute("cart", cart);
 		}
