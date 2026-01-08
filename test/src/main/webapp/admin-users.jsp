@@ -115,7 +115,6 @@
                         <th>Thông Tin Khách Hàng</th>
                         <th>Email</th>
                         <th>Số Điện Thoại</th>
-                        <th style="width: 100px; text-align: center;">Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -148,13 +147,6 @@
                             <% } else { %> 
                                 <span style="color: #ccc; font-style: italic;">---</span>
                             <% } %>
-                        </td>
-                        <td style="text-align: center;"> <a href="admin-users?type=delete&uid=<%=u.getUid()%>" 
-                               class="btn-icon btn-delete" 
-                               onclick="return confirm('CẢNH BÁO: Xóa tài khoản [<%=u.getUsername()%>] sẽ xóa toàn bộ đơn hàng của họ. Bạn có chắc chắn?')" 
-                               title="Xóa tài khoản">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
                         </td>
                     </tr>
                     <% } } else { %>

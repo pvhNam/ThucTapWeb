@@ -22,20 +22,8 @@ public class AdminUserController extends HttpServlet {
         String keyword = request.getParameter("search");
         UserDAO dao = new UserDAO();
 
-        // Xóa User
-        if ("delete".equals(type)) {
-            String uidStr = request.getParameter("uid");
-            if (uidStr != null) {
-                try {
-                    int uid = Integer.parseInt(uidStr);
-                    dao.deleteUser(uid);
-                } catch (NumberFormatException e) { e.printStackTrace(); }
-            }
-            response.sendRedirect("admin-users?msg=deleted");
-            return;
-        }
 
-        // Lấy danh sách (Tìm kiếm hoặc Tất cả)
+        // --- 2. LẤY DANH SÁCH USER ---
         List<user> list;
         if (keyword != null && !keyword.trim().isEmpty()) {
             list = dao.searchUsers(keyword.trim());
@@ -44,6 +32,11 @@ public class AdminUserController extends HttpServlet {
             list = dao.getAllUsers();
         }
         
+        // Lọc ẩn Admin
+        if (list != null) {
+            list.removeIf(u -> u.getIsAdmin() == 1);
+        }
+
         request.setAttribute("listUsers", list);
         request.getRequestDispatcher("admin-users.jsp").forward(request, response);
     }

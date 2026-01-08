@@ -8,11 +8,12 @@ public class user {
 	public String fullname;
 	public String phonenumber;
 	public String avatar; 
+	private int isAdmin;
 
     public user() {
     }
 
-    public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber, String avatar) {
+    public user(int uid, String uname, String passwordHash, String email, String fullname, String phonenumber, String avatar, int isAdmin) {
         this.uid = uid;
         this.username = uname;
         this.passwordHash = passwordHash;
@@ -20,7 +21,16 @@ public class user {
         this.fullname = fullname;
         this.phonenumber = phonenumber;
         this.avatar = avatar;
-    }
+        this.isAdmin = isAdmin;   
+        }
+
+	public int getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(int isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 
 	public int getUid() {
 		return uid;

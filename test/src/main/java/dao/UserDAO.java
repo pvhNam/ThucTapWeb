@@ -12,7 +12,7 @@ public class UserDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // 1. LOGIN
+    // 1. LOGIN (UPDATED)
     public user login(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try {
@@ -22,15 +22,22 @@ public class UserDAO {
             ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar"));
+                return new user(
+                    rs.getInt("uid"), 
+                    rs.getString("username"), 
+                    rs.getString("password"),
+                    rs.getString("email"), 
+                    rs.getString("fullname"), 
+                    rs.getString("phonenumber"),
+                    rs.getString("avatar"),
+                    rs.getInt("is_admin") // <--- GET ADMIN ROLE HERE
+                );
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
 
-    // 2. REGISTER
+    // 2. REGISTER (No change needed, defaults to 0)
     public void register(String user, String pass, String email, String fullname, String phone) {
         String query = "INSERT INTO users (username, password, email, fullname, phonenumber, is_admin) VALUES (?, ?, ?, ?, ?, 0)";
         try {
@@ -45,7 +52,7 @@ public class UserDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 3. CHECK USER EXIST
+    // 3. CHECK USER EXIST (UPDATED)
     public user checkUserExist(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
         try {
@@ -54,15 +61,17 @@ public class UserDAO {
             ps.setString(1, username);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar"));
+                return new user(
+                    rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
+                    rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
+                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                );
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
 
-    // 4. CHECK EMAIL EXIST
+    // 4. CHECK EMAIL EXIST (UPDATED)
     public user checkEmailExist(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
         try {
@@ -71,15 +80,17 @@ public class UserDAO {
             ps.setString(1, email);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar"));
+                return new user(
+                    rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
+                    rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
+                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                );
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
 
-    // 5. CHANGE PASSWORD
+    // 5. CHANGE PASSWORD (No change needed)
     public boolean changePassword(String username, String newPassword) {
         String query = "UPDATE users SET password = ? WHERE username = ?";
         try {
@@ -92,8 +103,7 @@ public class UserDAO {
         return false;
     }
 
-    // --- [QUAN TRỌNG] HÀM NÀY ĐỂ SỬA LỖI BẠN ĐANG GẶP ---
-    // 6. UPDATE USER INFO (Nhận vào đối tượng user)
+    // 6. UPDATE USER INFO (No change needed)
     public boolean updateUserInfo(user u) {
         String sql = "UPDATE users SET fullname = ?, email = ?, phonenumber = ? WHERE uid = ?";
         try {
@@ -104,13 +114,11 @@ public class UserDAO {
             ps.setString(3, u.getPhonenumber());
             ps.setInt(4, u.getUid());
             return ps.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
     
-    // Hàm update cũ (giữ lại để tránh lỗi ở chỗ khác nếu có dùng)
+    // Legacy update (No change needed)
     public void updateUser(int uid, String email, String fullname, String phone) {
         String query = "UPDATE users SET email=?, fullname=?, phonenumber=? WHERE uid=?";
         try {
@@ -124,7 +132,7 @@ public class UserDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 7. UPDATE AVATAR
+    // 7. UPDATE AVATAR (No change needed)
     public boolean updateAvatar(int uid, String filename) {
         String sql = "UPDATE users SET avatar = ? WHERE uid = ?";
         try {
@@ -137,7 +145,7 @@ public class UserDAO {
         return false;
     }
 
-    // 8. GET ALL USERS
+    // 8. GET ALL USERS (UPDATED)
     public List<user> getAllUsers() {
         List<user> list = new ArrayList<>();
         String query = "SELECT * FROM users";
@@ -146,15 +154,17 @@ public class UserDAO {
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar")));
+                list.add(new user(
+                    rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
+                    rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
+                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                ));
             }
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    // 9. SEARCH USERS
+    // 9. SEARCH USERS (UPDATED)
     public List<user> searchUsers(String keyword) {
         List<user> list = new ArrayList<>();
         String query = "SELECT * FROM users WHERE username LIKE ? OR fullname LIKE ? OR email LIKE ? OR phonenumber LIKE ?";
@@ -168,26 +178,17 @@ public class UserDAO {
             ps.setString(4, pattern);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar")));
+                list.add(new user(
+                    rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
+                    rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
+                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                ));
             }
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 
-    // 10. DELETE USER
-    public void deleteUser(int uid) {
-        String query = "DELETE FROM users WHERE uid = ?";
-        try {
-            conn = new DBConnect().getConnection();
-            ps = conn.prepareStatement(query);
-            ps.setInt(1, uid);
-            ps.executeUpdate();
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    // 11. GET USER BY ID
+    // 11. GET USER BY ID (UPDATED)
     public user getUserById(int uid) {
         String query = "SELECT * FROM users WHERE uid = ?";
         try {
@@ -196,9 +197,11 @@ public class UserDAO {
             ps.setInt(1, uid);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
-                        rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                        rs.getString("avatar"));
+                return new user(
+                    rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
+                    rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
+                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                );
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
