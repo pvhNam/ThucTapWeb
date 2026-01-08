@@ -60,6 +60,29 @@
     .user-name a:hover .icon-link { color: #4e73df; }
     
     .user-username { font-size: 12px; color: #888; margin-top: 2px; }
+
+    /* --- MỚI: CSS CHO NÚT XÓA ĐỒNG BỘ --- */
+    .btn-icon {
+        width: 36px;       
+        height: 36px;      
+        border-radius: 6px; 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-size: 14px;
+    }
+
+    .btn-icon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Màu đỏ cho nút xóa */
+    .btn-delete { background-color: #dc3545; color: white; }
+    .btn-delete:hover { background-color: #c82333; }
 </style>
 </head>
 <body>
@@ -92,7 +115,7 @@
                         <th>Thông Tin Khách Hàng</th>
                         <th>Email</th>
                         <th>Số Điện Thoại</th>
-                        <th style="width: 100px;">Hành Động</th>
+                        <th style="width: 100px; text-align: center;">Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,10 +149,8 @@
                                 <span style="color: #ccc; font-style: italic;">---</span>
                             <% } %>
                         </td>
-                        <td>
-                            <a href="admin-users?type=delete&uid=<%=u.getUid()%>" 
-                               class="btn-action btn-del" 
-                               style="background: #e74a3b; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; display: inline-block;"
+                        <td style="text-align: center;"> <a href="admin-users?type=delete&uid=<%=u.getUid()%>" 
+                               class="btn-icon btn-delete" 
                                onclick="return confirm('CẢNH BÁO: Xóa tài khoản [<%=u.getUsername()%>] sẽ xóa toàn bộ đơn hàng của họ. Bạn có chắc chắn?')" 
                                title="Xóa tài khoản">
                                 <i class="fa-solid fa-trash"></i>

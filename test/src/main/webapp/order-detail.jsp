@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, dao.OrderDAO, model.OrderDetail, model.Order, java.text.DecimalFormat"%>
+<%@ page import="java.util.List, dao.OrderDAO, model.OrderDetail, model.Order, model.user, java.text.DecimalFormat"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
@@ -111,6 +111,52 @@ body {
     .btn-cancel:hover { background-color: #c82333; }
 </style>
 </head>
+<%
+    // 1. Khai báo link mặc định
+    String backLink = "order-history"; 
+    
+    // 2. Lấy user từ session (Lưu ý: model.user viết thường theo code của bạn)
+    model.user currentUser = (model.user) session.getAttribute("user"); 
+    
+    // 3. Logic kiểm tra
+    boolean isAdmin = false;
+    String currentUsername = "";
+    String currentFullname = ""; // Biến chứa họ tên
+
+    if (currentUser != null) {
+        // Lấy thông tin (Giả định model.user có hàm getUsername và getFullName)
+        // Nếu hàm getFullName() bên model của bạn tên khác (vd: getName), hãy sửa lại dòng dưới
+        currentUsername = currentUser.getUsername();
+        try { currentFullname = currentUser.getFullname(); } catch (Exception e) { currentFullname = "Chưa lấy được (Check tên hàm)"; }
+
+        // --- CHECK ADMIN ---
+//         // Cách 1: Check theo Username (admin)
+//         if (currentUsername != null && "Administrator".equalsIgnoreCase(currentUsername.trim())) {
+//             backLink = "admin.jsp"; 
+//             isAdmin = true;
+//         }
+        
+        // Cách 2: Check theo Fullname (Nếu bạn muốn check bằng tên đầy đủ)
+        // Bỏ comment dòng dưới và thay "Admin Quản Lý" bằng tên thật trong DB của bạn
+        
+        if (currentFullname != null && currentFullname.equalsIgnoreCase("Administrator")) {
+            backLink = "admin"; 
+            isAdmin = true;
+        }
+        
+    }
+%>
+
+<div style="background: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; margin: 10px; font-family: monospace;">
+    <strong>🔍 DEBUG INFO:</strong><br>
+    - Session User Object: <%= (currentUser == null ? "NULL (Chưa đăng nhập)" : "Đã lấy được") %><br>
+    <% if (currentUser != null) { %>
+        - Username: [<%= currentUsername %>]<br>
+        - Fullname: [<%= currentFullname %>] <br>
+        - Link nút Back hiện tại: [<%= backLink %>]<br>
+        - Là Admin?: <%= isAdmin ? "ĐÚNG" : "SAI" %>
+    <% } %>
+</div>
 <body>
     <jsp:include page="header.jsp" />
 
@@ -169,8 +215,13 @@ body {
 
         <div class="total-row"><fmt:message key="order.total" />: <%=df.format(order.getTotalMoney())%></div>
         
+        
+
         <div class="action-buttons">
-            <a href="order-history" class="btn-back-link"> <i class="fa-solid fa-arrow-left"></i> <fmt:message key="order.back" /></a>
+            <a href="<%= backLink %>" class="btn-back-link"> 
+                <i class="fa-solid fa-arrow-left"></i> <fmt:message key="order.back" />
+            </a>
+
             <% if (order.getStatus() != null && order.getStatus().equals("Đang xử lý")) { %>
                 <form action="order-detail" method="post" onsubmit="return confirm('<fmt:message key="order.cancel_confirm" />');" style="margin: 0;">
                     <input type="hidden" name="id" value="<%= order.getId() %>">
@@ -183,16 +234,16 @@ body {
             <div style="text-align: center; padding: 40px;">
                 <i class="fa-regular fa-folder-open" style="font-size: 40px; color: #ccc; margin-bottom: 15px;"></i>
                 <p><fmt:message key="order.not_found" /></p>
-                <a href="order-history" class="btn-back-link"><fmt:message key="order.back" /></a>
+                <a href="<%= backLink %>" class="btn-back-link"><fmt:message key="order.back" /></a>
             </div>
         <% }
             } catch (Exception e) { %>
             <p style="color: red;">Error: <%=e.getMessage()%></p>
-            <a href="order-history" class="btn-back-link"><fmt:message key="order.back" /></a>
+            <a href="<%= backLink %>" class="btn-back-link"><fmt:message key="order.back" /></a>
         <% }
         } else { %>
             <p style="text-align: center; padding: 30px;"><fmt:message key="order.invalid_id" /></p>
-            <a href="order-history" class="btn-back-link" style="justify-content: center;"><fmt:message key="order.back" /></a>
+            <a href="<%= backLink %>" class="btn-back-link" style="justify-content: center;"><fmt:message key="order.back" /></a>
         <% } %>
     </div>
     <jsp:include page="footer.jsp" />
