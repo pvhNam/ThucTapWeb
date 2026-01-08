@@ -147,16 +147,6 @@ body {
     }
 %>
 
-<div style="background: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; margin: 10px; font-family: monospace;">
-    <strong>🔍 DEBUG INFO:</strong><br>
-    - Session User Object: <%= (currentUser == null ? "NULL (Chưa đăng nhập)" : "Đã lấy được") %><br>
-    <% if (currentUser != null) { %>
-        - Username: [<%= currentUsername %>]<br>
-        - Fullname: [<%= currentFullname %>] <br>
-        - Link nút Back hiện tại: [<%= backLink %>]<br>
-        - Là Admin?: <%= isAdmin ? "ĐÚNG" : "SAI" %>
-    <% } %>
-</div>
 <body>
     <jsp:include page="header.jsp" />
 

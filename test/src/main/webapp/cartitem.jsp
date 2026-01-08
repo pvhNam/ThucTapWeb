@@ -12,6 +12,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart.css">
+    <style>
+        .stock-limit { font-size: 11px; color: #e74a3b; margin-top: 5px; display: block; font-style: italic; font-weight: bold;}
+        .stock-info { font-size: 11px; color: #858796; margin-top: 5px; display: block; }
+        .btn-qty:disabled { background-color: #eaecf4; color: #d1d3e2; cursor: not-allowed; border-color: #d1d3e2; }
+        
+        /* Style cho nút checkout bị khóa */
+        .btn-checkout:disabled {
+            background-color: #858796;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .error-alert-box {
+            background: #ffebee; color: #c62828; padding: 10px; border-radius: 5px; 
+            margin-top: 15px; font-size: 13px; text-align: center; border: 1px solid #ffcdd2;
+        }
+    </style>
 </head>
 <body>
     <jsp:include page="header.jsp" />
@@ -20,6 +36,9 @@
     DecimalFormat df = new DecimalFormat("#,### VNĐ");
     List<cartItem> cartList = (List<cartItem>) request.getAttribute("cartList");
     List<Voucher> myVouchers = (List<Voucher>) request.getAttribute("myVouchers");
+    
+    // [QUAN TRỌNG] Biến cờ để kiểm tra xem giỏ hàng có lỗi không
+    boolean cartHasError = false; 
     %>
 
     <div class="cart-wrapper">
@@ -28,8 +47,19 @@
         <div class="cart-layout">
             <div class="cart-items-section">
                 <% if (cartList != null && !cartList.isEmpty()) {
-                    for (cartItem item : cartList) { %>
-                <div class="cart-card">
+                    for (cartItem item : cartList) { 
+                        // Logic kiểm tra tồn kho
+                        int currentQty = item.getQuantity();
+                        int maxStock = item.getProduct().getStockquantyti(); 
+                        boolean isMaxed = (currentQty >= maxStock);
+                        boolean isOverStock = (currentQty > maxStock);
+                        
+                        // Nếu có bất kỳ sản phẩm nào vượt quá kho, bật cờ lỗi lên
+                        if (isOverStock) { 
+                            cartHasError = true; 
+                        }
+                %>
+                <div class="cart-card" style="<%= isOverStock ? "border: 1px solid #e74a3b; background: #fffdfd;" : "" %>">
                     <div class="card-img"><img src="<%=item.getProduct().getImage()%>" alt="Product Image"></div>
                     <div class="card-details">
                         <h3><%=item.getProduct().getPdescription()%></h3>
@@ -38,13 +68,32 @@
                             <form action="cart" method="post" class="quantity-control">
                                 <input type="hidden" name="action" value="update_quantity">
                                 <input type="hidden" name="pid" value="<%=item.getProduct().getPid()%>">
+                                
                                 <button type="submit" name="mod" value="decrease" class="btn-qty"><i class="fa-solid fa-minus"></i></button>
-                                <input type="text" name="quantity" value="<%=item.getQuantity()%>" readonly class="input-qty">
-                                <button type="submit" name="mod" value="increase" class="btn-qty"><i class="fa-solid fa-plus"></i></button>
+                                
+                                <input type="text" name="quantity" value="<%=currentQty%>" readonly class="input-qty">
+                                
+                                <button type="submit" name="mod" value="increase" class="btn-qty" <%= isMaxed ? "disabled" : "" %>>
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
                             </form>
+                            
                             <span class="item-total"><%=df.format(item.getTotalPrice())%></span>
+                            
                             <a href="cart?action=remove&pid=<%=item.getProduct().getPid()%>" class="btn-remove"><i class="fa-solid fa-trash-can"></i></a>
                         </div>
+                        
+                        <% if (isOverStock) { %>
+                            <span class="stock-limit">
+                                <i class="fa-solid fa-triangle-exclamation"></i> 
+                                Kho chỉ còn <%=maxStock%>. Vui lòng giảm số lượng!
+                            </span>
+                        <% } else if (isMaxed) { %>
+                            <span class="stock-limit" style="color: #f6c23e;">Đã đạt giới hạn kho</span>
+                        <% } else { %>
+                            <span class="stock-info">Tồn kho: <%=maxStock%></span>
+                        <% } %>
+                        
                     </div>
                 </div>
                 <% } } else { %>
@@ -140,7 +189,21 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn-checkout"><fmt:message key="cart.checkout_btn" /> <i class="fa-solid fa-arrow-right"></i></button>
+                        
+                        <% if (cartHasError) { %>
+                            <div class="error-alert-box">
+                                <i class="fa-solid fa-circle-exclamation"></i> 
+                                Giỏ hàng có sản phẩm vượt quá tồn kho. Vui lòng điều chỉnh lại số lượng để thanh toán!
+                            </div>
+                            <button type="button" class="btn-checkout" disabled>
+                                <fmt:message key="cart.checkout_btn" /> <i class="fa-solid fa-lock"></i>
+                            </button>
+                        <% } else { %>
+                            <button type="submit" class="btn-checkout">
+                                <fmt:message key="cart.checkout_btn" /> <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        <% } %>
+                        
                     </form>
                 </div>
             </div>
