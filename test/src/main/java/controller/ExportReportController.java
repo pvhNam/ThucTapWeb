@@ -3,11 +3,8 @@ package controller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.text.DecimalFormat;
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import dao.ReportDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,13 +19,13 @@ public class ExportReportController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        String type = request.getParameter("type"); // "daily" hoặc "monthly"
+        String type = request.getParameter("type");
         ReportDAO dao = new ReportDAO();
         
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Báo Cáo");
             
-            // --- STYLE ĐỊNH DẠNG ---
+            // --- STYLE ---
             CellStyle headerStyle = workbook.createCellStyle();
             Font font = workbook.createFont();
             font.setBold(true);
@@ -47,7 +44,7 @@ public class ExportReportController extends HttpServlet {
 
             int rowIdx = 0;
 
-            // ================= TRƯỜNG HỢP 1: BÁO CÁO NGÀY =================
+            // ================= 1. BÁO CÁO NGÀY =================
             if ("daily".equals(type)) {
                 String date = request.getParameter("date");
                 List<ReportDAO.DailyReportItem> list = dao.getDailyReport(date);
@@ -55,8 +52,7 @@ public class ExportReportController extends HttpServlet {
                 Row titleRow = sheet.createRow(rowIdx++);
                 titleRow.createCell(0).setCellValue("BÁO CÁO DOANH THU NGÀY " + date);
                 titleRow.getCell(0).setCellStyle(headerStyle);
-                
-                rowIdx++; // Dòng trống
+                rowIdx++; 
 
                 Row header = sheet.createRow(rowIdx++);
                 String[] columns = {"Tên Sản Phẩm", "Số Lượng", "Đơn Giá", "Thành Tiền", "HT Thanh Toán"};
@@ -76,9 +72,11 @@ public class ExportReportController extends HttpServlet {
                         Cell c2 = row.createCell(2); c2.setCellValue(item.price); c2.setCellStyle(moneyStyle);
                         Cell c3 = row.createCell(3); c3.setCellValue(item.totalMoney); c3.setCellStyle(moneyStyle);
                         
-                        // Chuẩn hóa tên thanh toán
+                        // --- SỬA LỖI HIỂN THỊ THANH TOÁN ---
                         String payMethod = "Tiền mặt";
-                        if(item.paymentMethod != null && item.paymentMethod.toUpperCase().contains("BANK")) {
+                        // Kiểm tra nếu database trả về có chứa chữ BANK hoặc BANKING
+                        if(item.paymentMethod != null && 
+                          (item.paymentMethod.toUpperCase().contains("BANK") || item.paymentMethod.toUpperCase().contains("CHUYỂN"))) {
                             payMethod = "Chuyển khoản";
                         }
                         row.createCell(4).setCellValue(payMethod);
@@ -94,33 +92,31 @@ public class ExportReportController extends HttpServlet {
                 sumCell.setCellValue(totalDay);
                 sumCell.setCellStyle(moneyStyle);
                 sumCell.getCellStyle().setFont(font);
-
             } 
-            // ================= TRƯỜNG HỢP 2: BÁO CÁO THÁNG =================
+            // ================= 2. BÁO CÁO THÁNG =================
             else if ("monthly".equals(type)) {
                 int month = Integer.parseInt(request.getParameter("month"));
                 int year = Integer.parseInt(request.getParameter("year"));
                 
-                // Lấy dữ liệu 3 phần từ DAO
                 ReportDAO.MonthlyStats stats = dao.getMonthlyStats(month, year);
                 List<ReportDAO.MonthlyProductReport> soldDetails = dao.getMonthlyProductDetails(month, year);
                 List<ReportDAO.ImportReportItem> importDetails = dao.getImportHistory(month, year);
 
-                // --- PHẦN 1: TỔNG QUAN ---
+                // --- PHẦN 1: TỔNG QUAN (SỬA THEO YÊU CẦU) ---
                 Row title = sheet.createRow(rowIdx++);
                 title.createCell(0).setCellValue("BÁO CÁO TỔNG QUAN THÁNG " + month + "/" + year);
                 title.getCell(0).setCellStyle(headerStyle);
                 
-                // Xử lý null cho stats
-                double rev = (stats != null) ? stats.totalRevenue : 0;
-                double impCost = (stats != null) ? stats.totalImportCost : 0;
+                double totalSales = (stats != null) ? stats.totalRevenue : 0;
                 double tax = (stats != null) ? stats.totalTax : 0;
+                double netRevenue = totalSales - tax; // Doanh thu thực = Bán - Thuế
                 
                 String[][] summaryData = {
-                    {"Tổng Doanh Thu", String.valueOf(rev)},
-                    {"Tổng Vốn Nhập (Theo đơn bán)", String.valueOf(impCost)},
-                    {"Lợi Nhuận Gộp", String.valueOf(rev - impCost)},
-                    {"Thuế (Dự kiến 10%)", String.valueOf(tax)}
+                    {"Tổng Tiền Bán Hàng", String.valueOf(totalSales)},
+                    {"Thuế (Dự kiến 10%)", String.valueOf(tax)},
+                    {"Tổng Doanh Thu (Trừ thuế)", String.valueOf(netRevenue)}, // Đổi tên và công thức
+                    // Đã bỏ dòng "Tổng Vốn Nhập" ở đây
+                    {"Lợi Nhuận Gộp (Bán - Vốn)", String.valueOf(totalSales - ((stats!=null)?stats.totalImportCost:0))} 
                 };
 
                 for(String[] line : summaryData) {
@@ -150,7 +146,6 @@ public class ExportReportController extends HttpServlet {
                         Row r = sheet.createRow(rowIdx++);
                         r.createCell(0).setCellValue(p.productName);
                         r.createCell(1).setCellValue(p.totalQuantity);
-                        
                         Cell c2 = r.createCell(2); c2.setCellValue(p.totalRevenue); c2.setCellStyle(moneyStyle);
                         Cell c3 = r.createCell(3); c3.setCellValue(p.totalProfit); c3.setCellStyle(moneyStyle);
                     }
@@ -174,22 +169,15 @@ public class ExportReportController extends HttpServlet {
                 if (importDetails != null) {
                     for(ReportDAO.ImportReportItem imp : importDetails) {
                         Row r = sheet.createRow(rowIdx++);
-                        
-                        Cell cDate = r.createCell(0); 
-                        cDate.setCellValue(imp.importDate);
-                        cDate.setCellStyle(dateStyle);
-                        
+                        Cell cDate = r.createCell(0); cDate.setCellValue(imp.importDate); cDate.setCellStyle(dateStyle);
                         r.createCell(1).setCellValue(imp.productName);
                         r.createCell(2).setCellValue(imp.quantity);
-                        
                         Cell cPrice = r.createCell(3); cPrice.setCellValue(imp.importPrice); cPrice.setCellStyle(moneyStyle);
                         Cell cTotal = r.createCell(4); cTotal.setCellValue(imp.totalCost); cTotal.setCellStyle(moneyStyle);
-                        
                         totalImportMonth += imp.totalCost;
                     }
                 }
 
-                // Tổng kết chi phí nhập
                 Row sumImpRow = sheet.createRow(rowIdx++);
                 sumImpRow.createCell(3).setCellValue("TỔNG TIỀN NHẬP HÀNG:");
                 sumImpRow.getCell(3).setCellStyle(headerStyle);
@@ -199,7 +187,6 @@ public class ExportReportController extends HttpServlet {
             }
 
             for(int i=0; i<5; i++) sheet.autoSizeColumn(i);
-
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=BaoCao_" + type + ".xlsx");
             
