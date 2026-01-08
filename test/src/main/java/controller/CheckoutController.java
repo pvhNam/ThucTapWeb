@@ -59,10 +59,8 @@ public class CheckoutController extends HttpServlet {
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         if (appliedVoucher != null) {
             if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
-                // Giả sử DiscountAmount là số phần trăm (ví dụ 10 -> 10%)
                 totalMoney = totalMoney * (1.0 - (appliedVoucher.getDiscountAmount() / 100.0));
             } else {
-                // Giảm tiền trực tiếp
                 totalMoney = totalMoney - appliedVoucher.getDiscountAmount();
             }
             
@@ -74,15 +72,22 @@ public class CheckoutController extends HttpServlet {
         String address = request.getParameter("address");
         if (address == null || address.trim().isEmpty()) {
             address = "Địa chỉ mặc định"; 
-            // Hoặc có thể lấy từ thông tin user nếu muốn
         }
 
-        // 6. Lưu Đơn Hàng vào Database
+        // --- [MỚI] 6. Lấy Hình thức thanh toán từ Form ---
+        String paymentMethod = request.getParameter("paymentMethod");
+        // Mặc định là COD nếu không chọn hoặc lỗi
+        if (paymentMethod == null || paymentMethod.isEmpty()) {
+            paymentMethod = "COD"; 
+        }
+
+        // 7. Lưu Đơn Hàng vào Database
         OrderDAO orderDao = new OrderDAO();
-        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, cart);
+        // Gọi hàm createOrder mới đã cập nhật ở bước trước (thêm tham số paymentMethod)
+        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, paymentMethod, cart);
 
         if (newOrderId > 0) {
-            // 7. Nếu tạo đơn thành công -> Trừ kho, Xóa voucher, Xóa giỏ
+            // 8. Nếu tạo đơn thành công -> Trừ kho, Xóa voucher, Xóa giỏ
             ProductDAO pDao = new ProductDAO();
             VoucherDAO vDao = new VoucherDAO();
 
@@ -99,7 +104,7 @@ public class CheckoutController extends HttpServlet {
             }
 
             // Xóa sạch giỏ hàng
-            cartDao.clearCart(currentUser.getUid()); // Đảm bảo CartDAO có hàm này
+            cartDao.clearCart(currentUser.getUid());
 
             // Chuyển hướng đến trang thành công
             response.sendRedirect("order-success.jsp?id=" + newOrderId);

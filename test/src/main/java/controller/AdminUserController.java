@@ -17,27 +17,33 @@ public class AdminUserController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        request.setCharacterEncoding("UTF-8");
         String type = request.getParameter("type");
+        String keyword = request.getParameter("search");
         UserDAO dao = new UserDAO();
 
-        // --- XỬ LÝ XÓA USER ---
+        // Xóa User
         if ("delete".equals(type)) {
-            String uidStr = request.getParameter("uid"); // Lấy tham số uid
+            String uidStr = request.getParameter("uid");
             if (uidStr != null) {
                 try {
                     int uid = Integer.parseInt(uidStr);
                     dao.deleteUser(uid);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
+                } catch (NumberFormatException e) { e.printStackTrace(); }
             }
-            // Xóa xong reload lại trang
             response.sendRedirect("admin-users?msg=deleted");
             return;
         }
 
-        // --- HIỂN THỊ DANH SÁCH ---
-        List<user> list = dao.getAllUsers();
+        // Lấy danh sách (Tìm kiếm hoặc Tất cả)
+        List<user> list;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            list = dao.searchUsers(keyword.trim());
+            request.setAttribute("searchKeyword", keyword);
+        } else {
+            list = dao.getAllUsers();
+        }
+        
         request.setAttribute("listUsers", list);
         request.getRequestDispatcher("admin-users.jsp").forward(request, response);
     }

@@ -4,8 +4,7 @@
 
 
 
-<%-- CẤU HÌNH ĐA NGÔN NGỮ --%>
-<fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
+	<fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 <%
     // Lấy user từ session
