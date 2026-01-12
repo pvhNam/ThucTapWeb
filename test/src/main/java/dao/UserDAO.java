@@ -30,7 +30,7 @@ public class UserDAO {
                     rs.getString("fullname"), 
                     rs.getString("phonenumber"),
                     rs.getString("avatar"),
-                    rs.getInt("is_admin") // <--- GET ADMIN ROLE HERE
+                    rs.getInt("is_admin") 
                 );
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -52,7 +52,7 @@ public class UserDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 3. CHECK USER EXIST (UPDATED)
+
     public user checkUserExist(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
         try {
@@ -83,7 +83,7 @@ public class UserDAO {
                 return new user(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
-                    rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
+                    rs.getString("avatar"), rs.getInt("is_admin") 
                 );
             }
         } catch (Exception e) { e.printStackTrace(); }
