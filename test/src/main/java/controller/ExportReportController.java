@@ -37,7 +37,7 @@ public class ExportReportController extends HttpServlet {
             headerStyle.setBorderTop(BorderStyle.THIN);
             
             CellStyle moneyStyle = workbook.createCellStyle();
-            moneyStyle.setDataFormat(workbook.createDataFormat().getFormat("#,##0"));
+            moneyStyle.setDataFormat(workbook.createDataFormat().getFormat("#,##0 \"VND\""));
             
             CellStyle dateStyle = workbook.createCellStyle();
             dateStyle.setDataFormat(workbook.createDataFormat().getFormat("dd/mm/yyyy HH:mm"));
@@ -72,9 +72,7 @@ public class ExportReportController extends HttpServlet {
                         Cell c2 = row.createCell(2); c2.setCellValue(item.price); c2.setCellStyle(moneyStyle);
                         Cell c3 = row.createCell(3); c3.setCellValue(item.totalMoney); c3.setCellStyle(moneyStyle);
                         
-                        // --- SỬA LỖI HIỂN THỊ THANH TOÁN ---
                         String payMethod = "Tiền mặt";
-                        // Kiểm tra nếu database trả về có chứa chữ BANK hoặc BANKING
                         if(item.paymentMethod != null && 
                           (item.paymentMethod.toUpperCase().contains("BANK") || item.paymentMethod.toUpperCase().contains("CHUYỂN"))) {
                             payMethod = "Chuyển khoản";
@@ -102,21 +100,19 @@ public class ExportReportController extends HttpServlet {
                 List<ReportDAO.MonthlyProductReport> soldDetails = dao.getMonthlyProductDetails(month, year);
                 List<ReportDAO.ImportReportItem> importDetails = dao.getImportHistory(month, year);
 
-                // --- PHẦN 1: TỔNG QUAN (SỬA THEO YÊU CẦU) ---
+                // --- PHẦN 1: TỔNG QUAN ---
                 Row title = sheet.createRow(rowIdx++);
                 title.createCell(0).setCellValue("BÁO CÁO TỔNG QUAN THÁNG " + month + "/" + year);
                 title.getCell(0).setCellStyle(headerStyle);
                 
                 double totalSales = (stats != null) ? stats.totalRevenue : 0;
                 double tax = (stats != null) ? stats.totalTax : 0;
-                double netRevenue = totalSales - tax; // Doanh thu thực = Bán - Thuế
+                double netRevenue = totalSales - tax; 
                 
                 String[][] summaryData = {
                     {"Tổng Tiền Bán Hàng", String.valueOf(totalSales)},
-                    {"Thuế (Dự kiến 10%)", String.valueOf(tax)},
-                    {"Tổng Doanh Thu (Trừ thuế)", String.valueOf(netRevenue)}, // Đổi tên và công thức
-                    // Đã bỏ dòng "Tổng Vốn Nhập" ở đây
-                    {"Lợi Nhuận Gộp (Bán - Vốn)", String.valueOf(totalSales - ((stats!=null)?stats.totalImportCost:0))} 
+                    {"Thuế (10%)", String.valueOf(tax)},
+                    {"Tổng Doanh Thu", String.valueOf(netRevenue)}, 
                 };
 
                 for(String[] line : summaryData) {
@@ -134,7 +130,8 @@ public class ExportReportController extends HttpServlet {
                 soldHeaderTitle.getCell(0).setCellStyle(headerStyle);
                 
                 Row soldHeader = sheet.createRow(rowIdx++);
-                String[] cols = {"Tên Sản Phẩm", "Số Lượng Bán", "Doanh Thu", "Lợi Nhuận"};
+                // [ĐÃ SỬA] Xóa "Lợi Nhuận" khỏi mảng tiêu đề
+                String[] cols = {"Tên Sản Phẩm", "Số Lượng Bán", "Doanh Thu"};
                 for(int i=0; i<cols.length; i++) {
                     Cell c = soldHeader.createCell(i);
                     c.setCellValue(cols[i]);
@@ -147,7 +144,7 @@ public class ExportReportController extends HttpServlet {
                         r.createCell(0).setCellValue(p.productName);
                         r.createCell(1).setCellValue(p.totalQuantity);
                         Cell c2 = r.createCell(2); c2.setCellValue(p.totalRevenue); c2.setCellStyle(moneyStyle);
-                        Cell c3 = r.createCell(3); c3.setCellValue(p.totalProfit); c3.setCellStyle(moneyStyle);
+                        // [ĐÃ SỬA] Đã xóa dòng tạo cell cho lợi nhuận ở đây
                     }
                 }
 
