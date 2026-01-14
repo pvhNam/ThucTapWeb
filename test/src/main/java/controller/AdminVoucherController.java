@@ -21,7 +21,7 @@ public class AdminVoucherController extends HttpServlet {
 
         if (action == null) {
             // Liệt kê danh sách
-            List<Voucher> list = vDao.getAllVouchers(); // Hàm này đã có sẵn trong DAO cũ
+            List<Voucher> list = vDao.getAllVouchers();
             request.setAttribute("listVouchers", list);
             request.getRequestDispatcher("admin-vouchers.jsp").forward(request, response);
         } else if (action.equals("delete")) {
@@ -49,7 +49,7 @@ public class AdminVoucherController extends HttpServlet {
         String code = request.getParameter("code");
         String desc = request.getParameter("description");
         double amount = Double.parseDouble(request.getParameter("discountAmount"));
-        String type = request.getParameter("discountType"); // "PERCENT" hoặc "FIXED"
+        String type = request.getParameter("discountType"); 
         double minOrder = Double.parseDouble(request.getParameter("minOrder"));
         Date expiry = Date.valueOf(request.getParameter("expiryDate"));
 

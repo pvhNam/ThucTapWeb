@@ -40,7 +40,7 @@ public class adminController extends HttpServlet {
                 String s = o.getStatus();
                 // Kiểm tra null để tránh lỗi
                 if(s == null) s = ""; 
-                s = s.toLowerCase(); // Chuyển về chữ thường để so sánh cho chuẩn
+                s = s.toLowerCase(); // Chuyển về chữ thường để so sánh
 
                 if (s.contains("thành công")) {
                     totalRevenue += o.getTotalMoney();
@@ -55,7 +55,7 @@ public class adminController extends HttpServlet {
                 }
             }
         }
-        request.setAttribute("listOrders", list); // Vẫn cần list để vẽ bảng
+        request.setAttribute("listOrders", list); 
         
         request.setAttribute("totalOrders", (list != null) ? list.size() : 0);
         request.setAttribute("totalRevenue", totalRevenue);

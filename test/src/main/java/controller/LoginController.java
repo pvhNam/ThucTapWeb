@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.user;
 import dao.UserDAO;
-import util.MD5; // Import class MD5
+import util.MD5; 
 import java.io.IOException;
 
 @WebServlet("/login")
@@ -23,8 +23,7 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // --- XỬ LÝ ADMIN CỨNG (Hardcoded) ---
-        // Admin này dùng mật khẩu thô "123" để test nhanh, không qua DB
+        // XỬ LÝ ADMIN CỨNG
         if ("admin".equals(username) && "123".equals(password)) {
             HttpSession session = request.getSession();
             user adminUser = new user();
@@ -36,12 +35,12 @@ public class LoginController extends HttpServlet {
             return;
         }
 
-        // --- XỬ LÝ USER THƯỜNG (Qua Database) ---
+        // XỬ LÝ USER
         
-        // 1. Mã hóa mật khẩu người dùng nhập vào
+        // Mã hóa mật khẩu người dùng nhập vào
         String hashedPassword = MD5.getMd5(password);
         
-        // 2. Gọi DAO kiểm tra
+        // Gọi DAO kiểm tra
         UserDAO dao = new UserDAO();
         user loginUser = dao.login(username, hashedPassword); // Truyền mật khẩu ĐÃ BĂM
 

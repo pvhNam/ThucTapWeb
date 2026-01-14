@@ -21,14 +21,13 @@ public class OrderDetailController extends HttpServlet {
             response.sendRedirect("order-history");
             return;
         }
-        // Chỉ cần forward sang JSP, vì trong JSP của bạn đã có code gọi DAO để lấy dữ liệu rồi
         request.getRequestDispatcher("order-detail.jsp").forward(request, response);
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         try {
-            // Lấy tham số action để biết người dùng muốn làm gì (phòng hờ sau này có thêm nút khác)
+            // Lấy tham số action để biết người dùng muốn làm gì
             String action = request.getParameter("action");
             int orderId = Integer.parseInt(request.getParameter("id"));
 

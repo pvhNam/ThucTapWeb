@@ -9,7 +9,7 @@ import model.product;
 
 public class ProductDAO {
 
-    // 1. Lấy tất cả sản phẩm
+    // Lấy tất cả sản phẩm
     public List<product> getAllProducts() {
         List<product> list = new ArrayList<>();
         String sql = "SELECT * FROM product";
@@ -26,7 +26,7 @@ public class ProductDAO {
         return list;
     }
 
-    // 2. [MỚI] TÌM KIẾM SẢN PHẨM THEO TÊN
+    // TÌM KIẾM SẢN PHẨM THEO TÊN
     public List<product> searchProduct(String keyword) {
         List<product> list = new ArrayList<>();
         String sql = "SELECT * FROM product WHERE name LIKE ?";
@@ -46,7 +46,7 @@ public class ProductDAO {
         return list;
     }
 
-    // 3. Lấy sản phẩm theo ID
+    // Lấy sản phẩm theo ID
     public product getProductById(int pid) {
         String sql = "SELECT * FROM product WHERE pid = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -64,7 +64,7 @@ public class ProductDAO {
         return null;
     }
 
-    // 4. Thêm sản phẩm
+    // Thêm sản phẩm
     public boolean addProduct(product p) {
         String sql = "INSERT INTO product (name, price, cateID, color, size, amount, img) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
@@ -82,7 +82,7 @@ public class ProductDAO {
         return false;
     }
 
-    // 5. Cập nhật sản phẩm
+    // Cập nhật sản phẩm
     public boolean updateProduct(product p) {
         String sql = "UPDATE product SET name=?, price=?, cateID=?, color=?, size=?, amount=?, img=? WHERE pid=?";
         try {
@@ -101,7 +101,7 @@ public class ProductDAO {
         return false;
     }
 
-    // 6. Xóa sản phẩm
+    // Xóa sản phẩm
     public void deleteProduct(int pid) {
         String sql = "DELETE FROM product WHERE pid=?";
         try {
@@ -112,7 +112,7 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 7. Nhập hàng (Cộng dồn)
+    // Nhập hàng 
     public boolean importStock(int pid, int quantityToAdd) {
         String sql = "UPDATE product SET amount = amount + ? WHERE pid = ?";
         try {
@@ -125,7 +125,7 @@ public class ProductDAO {
         return false;
     }
     
-    // 8. Trừ kho khi bán
+    // Trừ kho khi bán
     public void decreaseStock(int pid, int quantity) {
         String sql = "UPDATE product SET amount = amount - ? WHERE pid = ? AND amount >= ?";
         try {

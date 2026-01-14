@@ -30,8 +30,13 @@ public class CartController extends HttpServlet {
 		user currentUser = (user) session.getAttribute("user");
 		String action = request.getParameter("action");
 
-		// --- [MỚI] XỬ LÝ XÓA SP NGAY TRONG doGet (Vì thẻ <a> gửi request GET) ---
+		// xử lý xóa sp
 		if ("remove".equals(action)) {
+			// kiểm tra đăng nhập
+			if (currentUser == null) {
+		        response.sendRedirect("login.jsp");
+		        return; 
+		    }
 			int pid = 0;
 			try {
 				pid = Integer.parseInt(request.getParameter("pid"));
@@ -61,7 +66,6 @@ public class CartController extends HttpServlet {
 			response.sendRedirect("cart");
 			return;
 		}
-		// --- KẾT THÚC XỬ LÝ XÓA ---
 
 		List<cartItem> cart = new ArrayList<>();
 		List<Voucher> myVouchers = new ArrayList<>();
@@ -130,8 +134,12 @@ public class CartController extends HttpServlet {
 		HttpSession session = request.getSession();
 		user currentUser = (user) session.getAttribute("user");
 		String action = request.getParameter("action");
-
-		// --- 1. XỬ LÝ ÁP DỤNG MÃ ---
+		// kiểm  tra đăng nhập
+		if (currentUser == null) {
+	        response.sendRedirect("login.jsp");
+	        return;
+	    }
+		// xử lý áp dụng voucher
 		if ("apply_voucher".equals(action)) {
 			if (currentUser == null) {
 				response.sendRedirect("login.jsp");
@@ -166,7 +174,7 @@ public class CartController extends HttpServlet {
 			return;
 		}
 
-		// --- 2. XỬ LÝ GỠ MÃ ---
+		// xử lý gỡ mã voucher
 		if ("remove_voucher".equals(action)) {
 			session.removeAttribute("appliedVoucher");
 			session.setAttribute("voucherMsg", "Đã gỡ bỏ mã giảm giá.");
@@ -175,7 +183,7 @@ public class CartController extends HttpServlet {
 			return;
 		}
 
-		// --- 3. XỬ LÝ GIỎ HÀNG (ADD/UPDATE) ---
+		// thêm, cập nhật giỏ hàng
 		int pid = 0;
 		try {
 			if (request.getParameter("pid") != null)
@@ -187,7 +195,7 @@ public class CartController extends HttpServlet {
 		ProductDAO productDAO = new ProductDAO();
 		
 		if (currentUser != null) {
-			// --- ĐÃ ĐĂNG NHẬP ---
+			// đã đăng nhập
 			CartDAO dao = new CartDAO();
 			int uid = currentUser.getUid();
 			
@@ -210,7 +218,6 @@ public class CartController extends HttpServlet {
 				dao.addToCart(uid, pid, quantity);
 
 			} 
-			// Lưu ý: Logic remove đã chuyển lên doGet. Ở đây chỉ giữ lại update.
 			else if ("update_quantity".equals(action)) { 
 				
 				int currentQty = 1;

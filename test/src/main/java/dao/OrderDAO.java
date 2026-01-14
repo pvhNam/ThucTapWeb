@@ -14,7 +14,7 @@ public class OrderDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // 1. Lấy danh sách đơn hàng của User (Cho trang Lịch sử mua hàng)
+    // Lấy danh sách đơn hàng của User (Cho trang Lịch sử mua hàng)
     public List<Order> getOrdersByUserId(int userId) {
         List<Order> list = new ArrayList<>();
         String sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC";
@@ -31,8 +31,6 @@ public class OrderDAO {
                 o.setAddress(rs.getString("address"));
                 o.setStatus(rs.getString("status"));
                 o.setCreatedAt(rs.getDate("created_at"));
-                // Lưu ý: payment_method có thể lấy ra nếu cần hiển thị ở lịch sử
-                // o.setPaymentMethod(rs.getString("payment_method")); 
                 list.add(o);
             }
         } catch (Exception e) {
@@ -41,7 +39,7 @@ public class OrderDAO {
         return list;
     }
 
-    // 2. Lấy TẤT CẢ đơn hàng (Cho trang Admin Dashboard)
+    // Lấy TẤT CẢ đơn hàng (Cho trang Admin )
     public List<Order> getAllOrders() {
         List<Order> list = new ArrayList<>();
         String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o " 
@@ -69,7 +67,7 @@ public class OrderDAO {
         return list;
     }
 
-    // 3. Lấy chi tiết 1 đơn hàng theo ID
+    // Lấy chi tiết 1 đơn hàng theo ID
     public Order getOrderById(int orderId) {
         String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o " 
                    + "JOIN users u ON o.user_id = u.uid "
@@ -97,7 +95,7 @@ public class OrderDAO {
         return null;
     }
 
-    // 4. TẠO ĐƠN HÀNG MỚI (Đã cập nhật thêm tham số paymentMethod)
+    // TẠO ĐƠN HÀNG MỚI
     public int createOrder(int userId, double totalMoney, String address, String paymentMethod, List<cartItem> cart) {
         int orderId = 0;
         Connection conn = null;
@@ -105,18 +103,16 @@ public class OrderDAO {
         PreparedStatement psDetail = null;
 
         try {
-            conn = new DBConnect().getConnection();
-            // BẮT ĐẦU TRANSACTION (Tắt tự động lưu để đảm bảo toàn vẹn dữ liệu)
+            conn = new DBConnect().getConnection(); 
             conn.setAutoCommit(false); 
-
-            // Bước 1: Insert vào bảng ORDERS (Thêm cột payment_method)
+            // Insert vào bảng ORDERS
             String sqlOrder = "INSERT INTO orders (user_id, total_money, address, status, created_at, payment_method) VALUES (?, ?, ?, 'Đang xử lý', NOW(), ?)";
             
             psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
             psOrder.setInt(1, userId);
             psOrder.setDouble(2, totalMoney);
             psOrder.setString(3, address);
-            psOrder.setString(4, paymentMethod); // Lưu hình thức thanh toán (COD / BANKING)
+            psOrder.setString(4, paymentMethod);
 
             if (psOrder.executeUpdate() > 0) {
                 ResultSet rsKeys = psOrder.getGeneratedKeys();
@@ -124,8 +120,7 @@ public class OrderDAO {
                     orderId = rsKeys.getInt(1); // Lấy ID đơn hàng vừa tạo
                 }
             }
-
-            // Bước 2: Insert chi tiết sản phẩm vào bảng ORDER_DETAILS
+            // Insert chi tiết sản phẩm vào bảng ORDER_DETAILS
             if (orderId > 0 && cart != null) {
                 String sqlDetail = "INSERT INTO order_details (order_id, product_id, price, quantity) VALUES (?, ?, ?, ?)";
                 psDetail = conn.prepareStatement(sqlDetail);
@@ -139,8 +134,6 @@ public class OrderDAO {
                 }
                 psDetail.executeBatch();
             }
-
-            // CAM KẾT GIAO DỊCH (Lưu tất cả thay đổi vào DB)
             conn.commit();
 
         } catch (Exception e) {
@@ -163,7 +156,7 @@ public class OrderDAO {
         return orderId;
     }
 
-    // 5. Cập nhật trạng thái đơn hàng (Dùng cho Admin: Giao hàng, Hủy...)
+    // Cập nhật trạng thái đơn hàng (Dùng cho Admin: Giao hàng, Hủy...)
     public void updateOrderStatus(int orderId, String status) {
         String sql = "UPDATE orders SET status = ? WHERE id = ?";
         try {
@@ -177,7 +170,7 @@ public class OrderDAO {
         }
     }
 
-    // 6. Lấy danh sách sản phẩm trong 1 đơn hàng (Để hiển thị trang chi tiết)
+    // Lấy danh sách sản phẩm trong 1 đơn hàng (Để hiển thị trang chi tiết)
     public List<OrderDetail> getDetails(int orderId) {
         List<OrderDetail> list = new ArrayList<>();
         String sql = "SELECT d.*, p.* FROM order_details d " 

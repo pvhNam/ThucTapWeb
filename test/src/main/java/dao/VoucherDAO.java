@@ -12,10 +12,7 @@ public class VoucherDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    /**
-     * 1. Lấy TẤT CẢ Voucher công khai để hiển thị trên trang chủ
-     * Dựa trên cấu trúc bảng: id, code, description, discount_amount, discount_type, min_order, expiry_date
-     */
+    // Lấy TẤT CẢ Voucher công khai để hiển thị trên trang chủ
     public List<Voucher> getAllVouchers() {
         List<Voucher> list = new ArrayList<>();
         // Lấy những mã còn hạn sử dụng hoặc không để ngày hết hạn
@@ -41,9 +38,7 @@ public class VoucherDAO {
         return list;
     }
 
-    /**
-     * 2. Lấy thông tin chi tiết của 1 Voucher dựa vào mã Code
-     */
+    // Lấy thông tin chi tiết của 1 Voucher dựa vào mã Code
     public Voucher getVoucherByCode(String code) {
         String query = "SELECT * FROM vouchers WHERE code = ?";
         try {
@@ -68,9 +63,8 @@ public class VoucherDAO {
         return null;
     }
 
-    /**
-     * 3. Kiểm tra xem người dùng đã sở hữu Voucher này trong ví chưa (và chưa dùng)
-     */
+    // 3. Kiểm tra xem người dùng đã sở hữu Voucher này trong ví chưa 
+
     public boolean checkUserHasVoucher(int userId, int voucherId) {
         String query = "SELECT * FROM user_wallet WHERE user_id = ? AND voucher_id = ? AND is_used = FALSE";
         try {
@@ -87,7 +81,7 @@ public class VoucherDAO {
     }
 
     /**
-     * 4. Lấy danh sách Voucher có trong ví của một người dùng cụ thể (chưa dùng và còn hạn)
+     * Lấy danh sách Voucher có trong ví của một người dùng cụ thể 
      */
     public List<Voucher> getVouchersByUid(int uid) {
         List<Voucher> list = new ArrayList<>();
@@ -117,7 +111,7 @@ public class VoucherDAO {
     }
     
     /**
-     * 5. Lưu một Voucher vào ví người dùng (khi nhấn nút "Lưu mã")
+     * Lưu một Voucher vào ví người dùng 
      */
     public boolean saveVoucherToWallet(int userId, int voucherId) {
          if(checkUserHasVoucher(userId, voucherId)) return false;
@@ -136,7 +130,7 @@ public class VoucherDAO {
     }
 
     /**
-     * 6. Đánh dấu Voucher đã được sử dụng sau khi thanh toán thành công
+     * Đánh dấu Voucher đã được sử dụng sau khi thanh toán thành công
      */
     public void markVoucherUsed(int userId, int voucherId) {
         String query = "UPDATE user_wallet SET is_used = TRUE WHERE user_id = ? AND voucher_id = ?";
@@ -150,7 +144,7 @@ public class VoucherDAO {
             e.printStackTrace();
         }
     }
- // Thêm các phương thức này vào class VoucherDAO
+ // Thêm voucher
     public boolean insertVoucher(Voucher v) {
         String query = "INSERT INTO vouchers (code, description, discount_amount, discount_type, min_order, expiry_date) VALUES (?, ?, ?, ?, ?, ?)";
         try {
@@ -168,7 +162,7 @@ public class VoucherDAO {
         }
         return false;
     }
-
+    // cập nhật voucher
     public boolean updateVoucher(Voucher v) {
         String query = "UPDATE vouchers SET code=?, description=?, discount_amount=?, discount_type=?, min_order=?, expiry_date=? WHERE id=?";
         try {
@@ -187,9 +181,9 @@ public class VoucherDAO {
         }
         return false;
     }
-
+    // xóa voucher
     public boolean deleteVoucher(int id) {
-        // Lưu ý: Cần xóa bảng phụ user_wallet trước hoặc thiết lập foreign key ON DELETE CASCADE trong DB
+      
         String query = "DELETE FROM vouchers WHERE id = ?";
         try {
             conn = DBConnect.getConnection();

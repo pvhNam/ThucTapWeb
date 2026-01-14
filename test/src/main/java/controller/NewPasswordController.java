@@ -27,14 +27,14 @@ public class NewPasswordController extends HttpServlet {
             return;
         }
 
-        // 1. Kiểm tra khớp mật khẩu
+        // Kiểm tra khớp mật khẩu
 		if (!newPassword.equals(confPassword)) {
             request.setAttribute("message", "Mật khẩu xác nhận không khớp!");
 			request.getRequestDispatcher("new_password.jsp").forward(request, response);
             return;
         }
 
-        // 2. [MỚI] Kiểm tra độ mạnh mật khẩu
+        // Kiểm tra độ mạnh mật khẩu
         // Bạn có thể thêm ký tự đặc biệt bằng cách thêm (?=.*[@#$%^&+=]) vào regex
         if (!newPassword.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$")) {
             request.setAttribute("message", "Mật khẩu yếu! Cần 8 ký tự, 1 chữ hoa, 1 thường và 1 số.");

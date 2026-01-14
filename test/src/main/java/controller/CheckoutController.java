@@ -34,13 +34,13 @@ public class CheckoutController extends HttpServlet {
         HttpSession session = request.getSession();
         user currentUser = (user) session.getAttribute("user");
 
-        // 1. Kiểm tra đăng nhập
+        // Kiểm tra đăng nhập
         if (currentUser == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        // 2. Lấy giỏ hàng
+        // Lấy giỏ hàng
         CartDAO cartDao = new CartDAO();
         List<cartItem> cart = cartDao.getCartByUid(currentUser.getUid());
 
@@ -49,13 +49,13 @@ public class CheckoutController extends HttpServlet {
             return;
         }
 
-        // 3. Tính tổng tiền
+        // Tính tổng tiền
         double totalMoney = 0;
         for (cartItem item : cart) {
             totalMoney += item.getTotalPrice();
         }
 
-        // 4. Áp dụng Voucher (nếu có)
+        // Áp dụng Voucher (nếu có)
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         if (appliedVoucher != null) {
             if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
@@ -68,26 +68,26 @@ public class CheckoutController extends HttpServlet {
             if (totalMoney < 0) totalMoney = 0;
         }
 
-        // 5. Lấy địa chỉ giao hàng
+        // Lấy địa chỉ giao hàng
         String address = request.getParameter("address");
         if (address == null || address.trim().isEmpty()) {
             address = "Địa chỉ mặc định"; 
         }
 
-        // --- [MỚI] 6. Lấy Hình thức thanh toán từ Form ---
+        // -Lấy Hình thức thanh toán từ Form 
         String paymentMethod = request.getParameter("paymentMethod");
-        // Mặc định là COD nếu không chọn hoặc lỗi
+        // Mặc định là COD 
         if (paymentMethod == null || paymentMethod.isEmpty()) {
             paymentMethod = "COD"; 
         }
 
-        // 7. Lưu Đơn Hàng vào Database
+        // Lưu Đơn Hàng vào Database
         OrderDAO orderDao = new OrderDAO();
-        // Gọi hàm createOrder mới đã cập nhật ở bước trước (thêm tham số paymentMethod)
+        
         int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, paymentMethod, cart);
 
         if (newOrderId > 0) {
-            // 8. Nếu tạo đơn thành công -> Trừ kho, Xóa voucher, Xóa giỏ
+            // Nếu tạo đơn thành công -> Trừ kho, Xóa voucher, Xóa giỏ
             ProductDAO pDao = new ProductDAO();
             VoucherDAO vDao = new VoucherDAO();
 

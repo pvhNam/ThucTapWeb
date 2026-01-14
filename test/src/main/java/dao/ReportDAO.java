@@ -5,7 +5,7 @@ import java.util.*;
 
 public class ReportDAO {
     
-    // 1. Class Dữ liệu báo cáo NGÀY
+    //  Dữ liệu báo cáo NGÀY
     public static class DailyReportItem {
         public String productName;
         public int quantitySold;
@@ -14,7 +14,7 @@ public class ReportDAO {
         public String paymentMethod;
     }
 
-    // 2. Class Thống kê tổng quan THÁNG
+    // Thống kê tổng quan THÁNG
     public static class MonthlyStats {
         public double totalRevenue;
         public double totalImportCost;
@@ -23,7 +23,7 @@ public class ReportDAO {
         public double totalTax;
     }
 
-    // 3. Class Chi tiết sản phẩm bán
+    // Class Chi tiết sản phẩm bán
     public static class MonthlyProductReport {
         public String productName;
         public int totalQuantity;
@@ -31,7 +31,7 @@ public class ReportDAO {
         public double totalProfit;
     }
 
-    // 4. [MỚI] Class Dữ liệu NHẬP HÀNG
+    // Class Dữ liệu NHẬP HÀNG
     public static class ImportReportItem {
         public String productName;
         public int quantity;
@@ -40,7 +40,7 @@ public class ReportDAO {
         public Timestamp importDate;
     }
 
-    // --- HÀM 1: BÁO CÁO NGÀY ---
+    // BÁO CÁO NGÀY 
     public List<DailyReportItem> getDailyReport(String date) {
         List<DailyReportItem> list = new ArrayList<>();
         String sql = "SELECT p.name, d.quantity, d.price, o.payment_method " +
@@ -65,7 +65,7 @@ public class ReportDAO {
         return list;
     }
 
-    // --- HÀM 2: THỐNG KÊ TỔNG QUAN THÁNG ---
+    //THỐNG KÊ TỔNG QUAN THÁNG
     public MonthlyStats getMonthlyStats(int month, int year) {
         MonthlyStats stats = new MonthlyStats();
         String sqlRev = "SELECT " +
@@ -103,7 +103,7 @@ public class ReportDAO {
         return stats;
     }
 
-    // --- HÀM 3: CHI TIẾT SẢN PHẨM BÁN ---
+    // CHI TIẾT SẢN PHẨM BÁN
     public List<MonthlyProductReport> getMonthlyProductDetails(int month, int year) {
         List<MonthlyProductReport> list = new ArrayList<>();
         String sql = "SELECT p.name, " +
@@ -133,10 +133,10 @@ public class ReportDAO {
         return list;
     }
 
-    // --- HÀM 4: [MỚI] LẤY LỊCH SỬ NHẬP HÀNG ---
+    //LẤY LỊCH SỬ NHẬP HÀNG 
     public List<ImportReportItem> getImportHistory(int month, int year) {
         List<ImportReportItem> list = new ArrayList<>();
-        // Cần đảm bảo bạn đã tạo bảng import_history trong database
+        // tạo bảng import_history trong database
         String sql = "SELECT p.name, h.quantity, h.import_price, h.created_at " +
                      "FROM import_history h " +
                      "JOIN product p ON h.product_id = p.pid " +

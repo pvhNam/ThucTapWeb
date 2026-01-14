@@ -29,9 +29,4 @@ public class MD5 {
             throw new RuntimeException(e);
         }
     }
-    
-    // Test thử hàm main
-    public static void main(String[] args) {
-        System.out.println(getMd5("123456"));
-    }
 }

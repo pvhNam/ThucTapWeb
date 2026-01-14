@@ -29,13 +29,12 @@ public class RegisterController extends HttpServlet {
         String fullname = request.getParameter("fullname");
         String phone = request.getParameter("phone");
 
-        // 1. Kiểm tra mật khẩu nhập lại
+        // Kiểm tra mật khẩu nhập lại
         if(!pass.equals(re_pass)) {
             request.setAttribute("mess", "Mật khẩu nhập lại không khớp!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
         } 
-        // 2. [MỚI] Kiểm tra độ mạnh mật khẩu (Regex)
-        // Giải thích regex:
+        // Kiểm tra độ mạnh mật khẩu (Regex)
         // (?=.*[0-9]): Chứa ít nhất 1 số
         // (?=.*[a-z]): Chứa ít nhất 1 chữ thường
         // (?=.*[A-Z]): Chứa ít nhất 1 chữ hoa

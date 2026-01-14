@@ -26,11 +26,11 @@ public class ForgotPasswordController extends HttpServlet {
 		user u = dao.checkEmailExist(email);
 
 		if (u != null) {
-			// 1. Tạo mã OTP 6 số
+			// Tạo mã OTP 6 số
 			Random rand = new Random();
 			int otpValue = 100000 + rand.nextInt(900000); // 100000 -> 999999
 
-			// 2. Gửi Email
+			// Gửi Email
 			String subject = "Mã xác thực đặt lại mật khẩu";
 			String message = "Mã OTP của bạn là: " + otpValue;
 			
@@ -42,13 +42,13 @@ public class ForgotPasswordController extends HttpServlet {
 				return;
 			}
 
-			// 3. Lưu OTP và thông tin user vào Session để check ở bước sau
+			// Lưu OTP và thông tin user vào Session để check
 			HttpSession session = request.getSession();
 			session.setAttribute("otp", otpValue); 
 			session.setAttribute("email", email);
 			session.setAttribute("resetUsername", u.getUsername()); // Lưu username để đổi pass
 
-			// 4. Chuyển sang trang nhập OTP
+			// Chuyển sang trang nhập OTP
 			request.setAttribute("message", "Mã OTP đã được gửi đến email của bạn.");
 			request.getRequestDispatcher("verify_otp.jsp").forward(request, response);
 			

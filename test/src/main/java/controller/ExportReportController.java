@@ -44,7 +44,7 @@ public class ExportReportController extends HttpServlet {
 
             int rowIdx = 0;
 
-            // ================= 1. BÁO CÁO NGÀY =================
+            // ================= BÁO CÁO NGÀY =================
             if ("daily".equals(type)) {
                 String date = request.getParameter("date");
                 List<ReportDAO.DailyReportItem> list = dao.getDailyReport(date);
@@ -91,7 +91,7 @@ public class ExportReportController extends HttpServlet {
                 sumCell.setCellStyle(moneyStyle);
                 sumCell.getCellStyle().setFont(font);
             } 
-            // ================= 2. BÁO CÁO THÁNG =================
+            // ================= BÁO CÁO THÁNG =================
             else if ("monthly".equals(type)) {
                 int month = Integer.parseInt(request.getParameter("month"));
                 int year = Integer.parseInt(request.getParameter("year"));
@@ -100,7 +100,7 @@ public class ExportReportController extends HttpServlet {
                 List<ReportDAO.MonthlyProductReport> soldDetails = dao.getMonthlyProductDetails(month, year);
                 List<ReportDAO.ImportReportItem> importDetails = dao.getImportHistory(month, year);
 
-                // --- PHẦN 1: TỔNG QUAN ---
+                // --- TỔNG QUAN ---
                 Row title = sheet.createRow(rowIdx++);
                 title.createCell(0).setCellValue("BÁO CÁO TỔNG QUAN THÁNG " + month + "/" + year);
                 title.getCell(0).setCellStyle(headerStyle);
@@ -123,14 +123,13 @@ public class ExportReportController extends HttpServlet {
                     val.setCellStyle(moneyStyle);
                 }
 
-                // --- PHẦN 2: CHI TIẾT BÁN HÀNG ---
+                // --- CHI TIẾT BÁN HÀNG ---
                 rowIdx += 2;
                 Row soldHeaderTitle = sheet.createRow(rowIdx++);
                 soldHeaderTitle.createCell(0).setCellValue("I. CHI TIẾT SẢN PHẨM ĐÃ BÁN");
                 soldHeaderTitle.getCell(0).setCellStyle(headerStyle);
                 
                 Row soldHeader = sheet.createRow(rowIdx++);
-                // [ĐÃ SỬA] Xóa "Lợi Nhuận" khỏi mảng tiêu đề
                 String[] cols = {"Tên Sản Phẩm", "Số Lượng Bán", "Doanh Thu"};
                 for(int i=0; i<cols.length; i++) {
                     Cell c = soldHeader.createCell(i);
@@ -144,11 +143,11 @@ public class ExportReportController extends HttpServlet {
                         r.createCell(0).setCellValue(p.productName);
                         r.createCell(1).setCellValue(p.totalQuantity);
                         Cell c2 = r.createCell(2); c2.setCellValue(p.totalRevenue); c2.setCellStyle(moneyStyle);
-                        // [ĐÃ SỬA] Đã xóa dòng tạo cell cho lợi nhuận ở đây
+                        
                     }
                 }
 
-                // --- PHẦN 3: LỊCH SỬ NHẬP HÀNG ---
+                // --- LỊCH SỬ NHẬP HÀNG ---
                 rowIdx += 2;
                 Row impHeaderTitle = sheet.createRow(rowIdx++);
                 impHeaderTitle.createCell(0).setCellValue("II. LỊCH SỬ NHẬP KHO (NHẬP HÀNG)");

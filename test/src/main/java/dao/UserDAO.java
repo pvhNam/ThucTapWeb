@@ -12,7 +12,7 @@ public class UserDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // 1. LOGIN (UPDATED)
+    // LOGIN
     public user login(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try {
@@ -37,7 +37,7 @@ public class UserDAO {
         return null;
     }
 
-    // 2. REGISTER (No change needed, defaults to 0)
+    // REGISTER 
     public void register(String user, String pass, String email, String fullname, String phone) {
         String query = "INSERT INTO users (username, password, email, fullname, phonenumber, is_admin) VALUES (?, ?, ?, ?, ?, 0)";
         try {
@@ -71,7 +71,7 @@ public class UserDAO {
         return null;
     }
 
-    // 4. CHECK EMAIL EXIST (UPDATED)
+    // CHECK EMAIL EXIST 
     public user checkEmailExist(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
         try {
@@ -90,7 +90,7 @@ public class UserDAO {
         return null;
     }
 
-    // 5. CHANGE PASSWORD (No change needed)
+    // CHANGE PASSWORD 
     public boolean changePassword(String username, String newPassword) {
         String query = "UPDATE users SET password = ? WHERE username = ?";
         try {
@@ -103,7 +103,7 @@ public class UserDAO {
         return false;
     }
 
-    // 6. UPDATE USER INFO (No change needed)
+    // UPDATE USER INFO 
     public boolean updateUserInfo(user u) {
         String sql = "UPDATE users SET fullname = ?, email = ?, phonenumber = ? WHERE uid = ?";
         try {
@@ -132,7 +132,7 @@ public class UserDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 7. UPDATE AVATAR (No change needed)
+    // UPDATE AVATAR 
     public boolean updateAvatar(int uid, String filename) {
         String sql = "UPDATE users SET avatar = ? WHERE uid = ?";
         try {
@@ -145,7 +145,7 @@ public class UserDAO {
         return false;
     }
 
-    // 8. GET ALL USERS (UPDATED)
+    //  GET ALL USERS
     public List<user> getAllUsers() {
         List<user> list = new ArrayList<>();
         String query = "SELECT * FROM users";
@@ -164,7 +164,7 @@ public class UserDAO {
         return list;
     }
 
-    // 9. SEARCH USERS (UPDATED)
+    // SEARCH USERS 
     public List<user> searchUsers(String keyword) {
         List<user> list = new ArrayList<>();
         String query = "SELECT * FROM users WHERE username LIKE ? OR fullname LIKE ? OR email LIKE ? OR phonenumber LIKE ?";
@@ -188,7 +188,7 @@ public class UserDAO {
         return list;
     }
 
-    // 11. GET USER BY ID (UPDATED)
+    // GET USER BY ID 
     public user getUserById(int uid) {
         String query = "SELECT * FROM users WHERE uid = ?";
         try {

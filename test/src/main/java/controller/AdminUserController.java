@@ -22,8 +22,6 @@ public class AdminUserController extends HttpServlet {
         String keyword = request.getParameter("search");
         UserDAO dao = new UserDAO();
 
-
-        // --- 2. LẤY DANH SÁCH USER ---
         List<user> list;
         if (keyword != null && !keyword.trim().isEmpty()) {
             list = dao.searchUsers(keyword.trim());

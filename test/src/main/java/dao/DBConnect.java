@@ -13,7 +13,7 @@ public class DBConnect {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(url, user, pass);
-            System.out.println("Kết nối CSDL thành công!"); // Dòng này giúp kiểm tra
+            System.out.println("Kết nối CSDL thành công!");
         } catch (Exception e) {
             System.out.println("Kết nối thất bại!");
             e.printStackTrace();

@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// Đường dẫn này sẽ được gọi khi bấm vào tin tức
 @WebServlet("/news-detail")
 public class NewsDetailController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -17,18 +16,18 @@ public class NewsDetailController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
-		// 1. Lấy tham số ID từ URL (ví dụ: news-detail?id=5)
+		// Lấy tham số ID từ URL
 		String idStr = request.getParameter("id");
 		
 		try {
 			if (idStr != null && !idStr.isEmpty()) {
 				int id = Integer.parseInt(idStr);
 				
-				// 2. Gọi DAO lấy dữ liệu
+				// Gọi DAO lấy dữ liệu
 				NewsDAO dao = new NewsDAO();
 				News n = dao.getNewsById(id);
 				
-				// 3. Kiểm tra kết quả
+				// Kiểm tra kết quả
 				if (n != null) {
 					// Tìm thấy: Đẩy đối tượng "n" sang trang JSP
 					request.setAttribute("newsObj", n);
