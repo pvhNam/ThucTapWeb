@@ -46,7 +46,7 @@
 %>
 
 <header class="header">
-    <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="80"></a>
+    <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="60"></a>
     
     <nav class="menu">
         <a href="index.jsp" class="<%= "index".equals(currentPage) ? "active" : "" %>">
@@ -66,10 +66,17 @@
             <a href="change-lang?lang=en" style="color: ${sessionScope.lang == 'en' ? '#d4af37' : 'white'}; text-decoration: none;">EN</a>
         </div>
 
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i> 
-            <input type="text" placeholder="<fmt:message key='header.search_placeholder'/>" />
-        </div>
+        <form action="${pageContext.request.contextPath}/search" method="get" class="search-box" style="position:relative;">
+    
+    <button type="submit" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); border:none; background:none; cursor:pointer;">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+    
+    <input type="text" name="txt" 
+           placeholder="Tìm kiếm..." 
+           value="${param.txt}" 
+           style="padding-left: 35px;" />
+</form>
         
         <div class="account">
             <% if (!isLoggedIn) { %>
