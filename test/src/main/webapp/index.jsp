@@ -9,6 +9,7 @@
 <fmt:setBundle basename="resources.messages" />
 
 <!DOCTYPE html>
+<%--  đa ngôn ngữ  --%>
 <html lang="${sessionScope.lang != null ? sessionScope.lang : 'vi'}">
 <head>
 <meta charset="UTF-8">
@@ -21,11 +22,6 @@
     <jsp:include page="header.jsp">
         <jsp:param name="page" value="index" />
     </jsp:include>
-
-    <%-- 
-       BƯỚC 1 & 2: CHUẨN BỊ DỮ LIỆU GIỎ HÀNG 
-       Mục đích: Tạo mapCart chứa (ID Sản phẩm -> Số lượng đang có trong giỏ)
-    --%>
     <%
         Map<Integer, Integer> mapCart = new HashMap<>();
         user currentUser = (user) session.getAttribute("user");
