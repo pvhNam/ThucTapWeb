@@ -27,7 +27,7 @@
         <div class="footer-col">
             <h4 class="footer-title"><fmt:message key="footer.support" /></h4>
             <div class="contact-item"><i class="fa-solid fa-phone"></i> <span>0981 774 313</span></div>
-            <div class="contact-item"><i class="fa-solid fa-envelope"></i> <span>tranthanglo@gmail.com</span></div>
+            <div class="contact-item"><i class="fa-solid fa-envelope"></i> <span>phamvanhoain@gmail.com</span></div>
             <div class="contact-item"><i class="fa-solid fa-location-dot"></i> <span>S2, Hải Triều, Q.1, TP. HCM</span></div>
         </div>
         <div class="footer-col">

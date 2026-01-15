@@ -239,5 +239,6 @@ body {
             <a href="news.jsp" class="btn-back"> <i class="fa-solid fa-arrow-left"></i> <fmt:message key="news.back" /></a>
         </div>
     </div>
+        <jsp:include page="footer.jsp" />
 </body>
 </html>
