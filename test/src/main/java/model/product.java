@@ -9,7 +9,7 @@ public class product {
 	public String size;
 	public int stockquantyti;
 	public String image;
-
+	private Category category;
 	public product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti,
 			String image) {
 		this.pid = pid;
@@ -20,6 +20,14 @@ public class product {
 		this.size = size;
 		this.stockquantyti = stockquantyti;
 		this.image = image; 
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public int getPid() {
