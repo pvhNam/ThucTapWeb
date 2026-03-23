@@ -165,7 +165,7 @@ public class ProductDAO {
                 product p = new product(
                     rs.getInt("pid"),              // id
                     rs.getString("name"),          // -> pdescription
-                    rs.getDouble("price"),
+                    rs.getDouble("price"),			// 
                     rs.getInt("cateID"),          // -> cid
                     rs.getString("color"),
                     rs.getString("size"),
