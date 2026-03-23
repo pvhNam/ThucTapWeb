@@ -95,7 +95,7 @@
             <% } } %>
         </div>
     </div>
-
+//
     <div class="container product-section">
         <div class="section-header" id="products">
             <h2><fmt:message key="home.product.title" /></h2>
@@ -130,7 +130,7 @@
                         <i class="fa-regular fa-eye"></i>
                     </a>
                     
-                    <%-- Hiển thị nhãn Hết hàng nếu kho = 0 --%>
+                    
                     <% if (stock <= 0) { %>
                         <span style="position: absolute; top: 10px; left: 10px; background: #e74a3b; color: white; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 4px;">SOLD OUT</span>
                     <% } %>
@@ -221,5 +221,6 @@
         });
     }
     </script>
+    // hehehhehe
 </body>
 </html>
