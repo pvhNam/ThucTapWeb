@@ -46,7 +46,7 @@
 					<fmt:message key="collection.filter_party" />
 				</a>
 			</div>
-		</div>
+		</div> 
 
 		<!-- PRODUCT LIST -->
 		<div class="gallery-grid">
