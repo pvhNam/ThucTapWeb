@@ -49,9 +49,9 @@
     <a href="index.jsp"><img src="img/logover2_5.png" alt="Logo" class="logo" width="60"></a>
     
     <nav class="menu">
-        <a href="index.jsp" class="<%= "index".equals(currentPage) ? "active" : "" %>">
+        <a href="home" class="<%= "index".equals(currentPage) ? "active" : "" %>">
             <fmt:message key="menu.home" /> </a> 
-        <a href="collection.jsp" class="<%= "collection".equals(currentPage) ? "active" : "" %>">
+        <a href="collection" class="<%= "collection".equals(currentPage) ? "active" : "" %>">
             <fmt:message key="menu.collection" /> </a> 
         <a href="about.jsp" class="<%= "about".equals(currentPage) ? "active" : "" %>">
             <fmt:message key="menu.products" /> </a> 
