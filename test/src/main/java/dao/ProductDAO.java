@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Category;
 import model.product;
 
 public class ProductDAO {
@@ -136,5 +138,55 @@ public class ProductDAO {
             ps.setInt(3, quantity);
             ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
+    }
+
+	
+
+    public List<product> getProductsByCategory(String categoryName) {
+        List<product> list = new ArrayList<>();
+
+        String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
+                     "FROM product p JOIN category c ON p.cateID = c.id ";
+
+        if (categoryName != null && !categoryName.equals("all")) {
+            sql += "WHERE c.name = ?";
+        }
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (categoryName != null && !categoryName.equals("all")) {
+                ps.setString(1, categoryName);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                product p = new product(
+                    rs.getInt("pid"),              // id
+                    rs.getString("name"),          // -> pdescription
+                    rs.getDouble("price"),			// 
+                    rs.getInt("cateID"),          // -> cid
+                    rs.getString("color"),
+                    rs.getString("size"),
+                    rs.getInt("amount"),          // -> stockquantyti
+                    rs.getString("img")           // -> image
+                );
+
+                // category object
+                Category c = new Category();
+                c.setId(rs.getInt("cid2"));
+                c.setName(rs.getString("cname"));
+
+                p.setCategory(c);
+
+                list.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
