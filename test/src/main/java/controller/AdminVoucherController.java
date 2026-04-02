@@ -2,6 +2,7 @@ package controller;
 
 import dao.VoucherDAO;
 import model.Voucher;
+import model.user;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
@@ -10,42 +11,56 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/admin-vouchers")
 public class AdminVoucherController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    // HÀM KIỂM TRA QUYỀN
+    private boolean checkAdminPermission(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        user currUser = (user) session.getAttribute("user");
+        Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
+        int role = (currUser != null) ? currUser.getIsAdmin() : ((isHardcodedAdmin != null && isHardcodedAdmin) ? 1 : 0);
+        
+        if (role != 1) { 
+            response.sendRedirect("admin");
+            return false;
+        }
+        return true;
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!checkAdminPermission(request, response)) return;
+
         String action = request.getParameter("action");
         VoucherDAO vDao = new VoucherDAO();
 
         if (action == null) {
-            // Liệt kê danh sách
             List<Voucher> list = vDao.getAllVouchers();
             request.setAttribute("listVouchers", list);
             request.getRequestDispatcher("admin-vouchers.jsp").forward(request, response);
         } else if (action.equals("delete")) {
-            // Xóa voucher
             int id = Integer.parseInt(request.getParameter("id"));
             vDao.deleteVoucher(id);
             response.sendRedirect("admin-vouchers?msg=deleted");
         } else if (action.equals("edit")) {
-            // Chuyển sang trang sửa
             int id = Integer.parseInt(request.getParameter("id"));
             Voucher v = vDao.getVoucherById(id);
             request.setAttribute("voucher", v);
             request.getRequestDispatcher("admin-voucher-form.jsp").forward(request, response);
         } else if (action.equals("add")) {
-            // Chuyển sang trang thêm mới
             request.getRequestDispatcher("admin-voucher-form.jsp").forward(request, response);
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!checkAdminPermission(request, response)) return;
+
         String action = request.getParameter("action");
         VoucherDAO vDao = new VoucherDAO();
         
-        // Lấy dữ liệu từ form
         String code = request.getParameter("code");
         String desc = request.getParameter("description");
         double amount = Double.parseDouble(request.getParameter("discountAmount"));
