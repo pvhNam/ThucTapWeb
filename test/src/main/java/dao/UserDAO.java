@@ -188,6 +188,15 @@ public class UserDAO {
         return list;
     }
 
+    public void deleteUser(int uid) {
+        String query = "DELETE FROM users WHERE uid = ?";
+        try {
+            conn = DBConnect.getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, uid);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
     // GET USER BY ID 
     public user getUserById(int uid) {
         String query = "SELECT * FROM users WHERE uid = ?";
@@ -205,5 +214,23 @@ public class UserDAO {
             }
         } catch (Exception e) { e.printStackTrace(); }
         return null;
+    }
+    public boolean registerStaff(String username, String pass, String email, String fullname, String phone) {
+        // is_admin = 2 được gán cứng để hệ thống nhận diện đây là Nhân viên
+        String query = "INSERT INTO users (username, password, email, fullname, phonenumber, is_admin) VALUES (?, ?, ?, ?, ?, 2)";
+        try {
+            conn = new DBConnect().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            ps.setString(2, pass); // Chú ý: password truyền vào đây phải được MD5 từ Controller
+            ps.setString(3, email);
+            ps.setString(4, fullname);
+            ps.setString(5, phone);
+            
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
+        return false;
     }
 }
