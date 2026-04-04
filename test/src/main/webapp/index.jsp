@@ -212,7 +212,7 @@ function saveVoucher(btn, code) {
             btn.disabled = true;
         } else if (result === "LOGIN_REQUIRED") {
             if(confirm("Bạn cần đăng nhập để lưu mã. Đi đến trang đăng nhập?")) {
-                window.location.href = "login.jsp";
+                window.location.href = "login";
             } else {
                 btn.innerText = originalText;
             }
