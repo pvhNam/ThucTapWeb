@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import dao.ProductDAO;
 import model.product;
+import model.user;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/admin-products")
 public class AdminProductController extends HttpServlet {
@@ -18,11 +20,28 @@ public class AdminProductController extends HttpServlet {
             throws ServletException, IOException {
         
         request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        
+        // KIỂM TRA ROLE ĐĂNG NHẬP
+        user currUser = (user) session.getAttribute("user");
+        Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
+        int role = (currUser != null) ? currUser.getIsAdmin() : ((isHardcodedAdmin != null && isHardcodedAdmin) ? 1 : 0);
+        
+        if (role == 0) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
         String type = request.getParameter("type");
-        String keyword = request.getParameter("search"); // Lấy từ khóa
+        String keyword = request.getParameter("search"); 
         ProductDAO dao = new ProductDAO();
 
+        // NẾU LÀ NHÂN VIÊN THÌ CHẶN HÀNH ĐỘNG XÓA
         if ("delete".equals(type)) {
+            if (role == 2) {
+                response.sendRedirect("admin-products?msg=error_permission");
+                return;
+            }
             try {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 dao.deleteProduct(pid);
@@ -33,40 +52,51 @@ public class AdminProductController extends HttpServlet {
             }
         } else {
             List<product> list;
-            // Nếu có từ khóa -> Tìm kiếm, ngược lại -> Lấy tất cả
             if(keyword != null && !keyword.trim().isEmpty()){
                 list = dao.searchProduct(keyword.trim());
-                request.setAttribute("searchKeyword", keyword); // Để hiển thị lại trên ô input
+                request.setAttribute("searchKeyword", keyword);
             } else {
                 list = dao.getAllProducts();
             }
             
+            request.setAttribute("listProducts", list);
             request.setAttribute("listP", list);
+
             request.getRequestDispatcher("admin-products.jsp").forward(request, response);
         }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         request.setCharacterEncoding("UTF-8");
-        String action = request.getParameter("action"); 
+        HttpSession session = request.getSession();
+        
+        // NHÂN VIÊN KHÔNG ĐƯỢC THÊM / SỬA / NHẬP KHO
+        user currUser = (user) session.getAttribute("user");
+        Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
+        int role = (currUser != null) ? currUser.getIsAdmin() : ((isHardcodedAdmin != null && isHardcodedAdmin) ? 1 : 0);
+        
+        if (role == 2) {
+            response.sendRedirect("admin-products?msg=error_permission");
+            return;
+        }
+
+        String action = request.getParameter("action");
         ProductDAO dao = new ProductDAO();
 
         try {
-            // Xử lý nhập hàng
-            if ("import_stock".equals(action)) {
+            if ("import".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
-                int quantityToAdd = Integer.parseInt(request.getParameter("quantityAdded"));
-                if (quantityToAdd > 0) {
-                    dao.importStock(pid, quantityToAdd);
+                int addQty = Integer.parseInt(request.getParameter("addQty"));
+                if (dao.importStock(pid, addQty)) {
                     response.sendRedirect("admin-products?msg=imported");
                 } else {
-                    response.sendRedirect("admin-products?msg=error_quantity");
+                    response.sendRedirect("admin-products?msg=error_import");
                 }
                 return;
             }
 
-            // Xử lý thêm/sửa
             String name = request.getParameter("name");
             String priceStr = request.getParameter("price");
             double price = (priceStr != null && !priceStr.isEmpty()) ? Double.parseDouble(priceStr) : 0;
