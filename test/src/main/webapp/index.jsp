@@ -21,7 +21,7 @@
     <jsp:param name="page" value="index" />
 </jsp:include>
 
-<!-- HERO -->
+
 <div class="hero-banner" style="background-image: url('img/banner.png');">
     <div class="hero-content">
         <span class="hero-subtitle"><fmt:message key="home.hero.subtitle" /></span>
