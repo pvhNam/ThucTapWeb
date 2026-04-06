@@ -92,76 +92,6 @@
             </div>
         </c:forEach>
     </div>
-//
-    <div class="container product-section">
-        <div class="section-header" id="products">
-            <h2><fmt:message key="home.product.title" /></h2>
-            <div class="section-line"></div>
-        </div>
-
-        <div class="product-grid">
-            <%
-                ProductDAO pdao = new ProductDAO();
-                List<product> products = pdao.getAllProducts();
-                DecimalFormat dfFull = new DecimalFormat("#,### VNĐ");
-                
-                if (products != null && !products.isEmpty()) {
-                    int count = 0;
-                    int maxDisplay = 8;
-                    
-                    for (product p : products) {
-                        if (count >= maxDisplay) break;
-                        count++;
-                        
-                        // --- BƯỚC 3: KIỂM TRA TỒN KHO VS GIỎ HÀNG ---
-                        int stock = p.getStockquantyti(); // Tồn kho thực tế
-                        int inCart = mapCart.getOrDefault(p.getPid(), 0); // Số lượng đã có trong giỏ
-                        boolean canAdd = (inCart < stock); // Còn thêm được không?
-            %>
-            <div class="product-card">
-                <div class="product-image">
-                    <a href="product-detail?pid=<%=p.getPid()%>"> 
-                        <img src="<%= (p.getImage() != null) ? p.getImage() : "img/no-image.png" %>" alt="<%=p.getPdescription()%>">
-                    </a> 
-                    <a href="product-detail?pid=<%=p.getPid()%>" class="overlay-btn">
-                        <i class="fa-regular fa-eye"></i>
-                    </a>
-                    
-                    
-                    <% if (stock <= 0) { %>
-                        <span style="position: absolute; top: 10px; left: 10px; background: #e74a3b; color: white; padding: 5px 10px; font-size: 12px; font-weight: bold; border-radius: 4px;">SOLD OUT</span>
-                    <% } %>
-                </div>
-                
-                <div class="product-details">
-                    <h3 class="product-name">
-                        <a href="product-detail?pid=<%=p.getPid()%>"><%=p.getPdescription()%></a>
-                    </h3>
-                    <span class="price"><%=dfFull.format(p.getPrice())%></span>
-                    
-                    <form action="cart" method="post">
-                        <input type="hidden" name="action" value="add"> 
-                        <input type="hidden" name="pid" value="<%=p.getPid()%>"> 
-                        <input type="hidden" name="quantity" value="1">
-                        
-                        <% if (canAdd && stock > 0) { %>
-                            <%-- TRƯỜNG HỢP: VẪN CÒN HÀNG ĐỂ THÊM --%>
-                            <button type="submit" class="btn-add-cart">
-                                <fmt:message key="home.product.add_cart" />
-                            </button>
-                        <% } else { %>
-                            <%-- TRƯỜNG HỢP: ĐÃ HẾT HÀNG HOẶC ĐẠT GIỚI HẠN --%>
-                            <button type="button" class="btn-add-cart" disabled 
-                                    style="background-color: #ccc; color: #666; cursor: not-allowed; border: 1px solid #ccc;">
-                                <% if (stock <= 0) { %>
-                                    Hết hàng
-                                <% } else { %>
-                                    Đã đạt giới hạn
-                                <% } %>
-                            </button>
-                        <% } %>
-                    </form>
-
 </div>
 
 <!-- PRODUCTS -->
@@ -289,10 +219,6 @@ function saveVoucher(btn, code) {
         } else {
             alert("Lỗi: " + result);
             btn.innerText = originalText;
-        });
-    }
-    </script>
-
         }
     })
     .catch(error => {
