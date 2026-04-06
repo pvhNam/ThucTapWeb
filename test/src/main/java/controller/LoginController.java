@@ -45,6 +45,7 @@ public class LoginController extends HttpServlet {
         if (loginUser != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", loginUser);
+
             
             int role = loginUser.getIsAdmin();
             if (role == 1 || role == 2) {
@@ -56,6 +57,9 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("isAdmin", false);
                 response.sendRedirect("index.jsp");
             }
+
+            response.sendRedirect("home");
+
         } else {
             // Đăng nhập thất bại
             request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
