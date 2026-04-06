@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import dao.OrderDAO;
 import model.Order;
+import model.user;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,9 +20,17 @@ public class adminController extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
-        
-        if (isAdmin == null || !isAdmin) {
+        user currUser = (user) session.getAttribute("user");
+        Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
+
+        int role = 0;
+        if (currUser != null) {
+            role = currUser.getIsAdmin();
+        } else if (isHardcodedAdmin != null && isHardcodedAdmin) {
+            role = 1;
+        }
+
+        if (role == 0) {
             response.sendRedirect("login.jsp");
             return;
         }
@@ -38,27 +47,31 @@ public class adminController extends HttpServlet {
         if (list != null) {
             for (Order o : list) {
                 String s = o.getStatus();
-                // Kiểm tra null để tránh lỗi
                 if(s == null) s = ""; 
-                s = s.toLowerCase(); // Chuyển về chữ thường để so sánh
+                s = s.toLowerCase();
 
                 if (s.contains("thành công")) {
                     totalRevenue += o.getTotalMoney();
                     countSuccess++;
-                } else if (s.contains("giao")) {
+                } else if (s.contains("giao")) {	
                     countShipping++;
                 } else if (s.contains("hủy")) {
                     countCancel++;
                 } else {
-                    // Còn lại là Đang xử lý / Chờ xác nhận
                     countProcessing++;
                 }
             }
         }
-        request.setAttribute("listOrders", list); 
         
+        request.setAttribute("listOrders", list); 
         request.setAttribute("totalOrders", (list != null) ? list.size() : 0);
-        request.setAttribute("totalRevenue", totalRevenue);
+        
+        
+        if (role == 2) {
+            request.setAttribute("totalRevenue", totalRevenue);
+        } else {
+            request.setAttribute("totalRevenue", totalRevenue); 
+        }
         
         request.setAttribute("countSuccess", countSuccess);
         request.setAttribute("countShipping", countShipping);

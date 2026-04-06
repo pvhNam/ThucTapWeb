@@ -23,32 +23,43 @@ public class LoginController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // XỬ LÝ ADMIN CỨNG
         if ("admin".equals(username) && "123".equals(password)) {
             HttpSession session = request.getSession();
             user adminUser = new user();
             adminUser.setFullname("Administrator");
+            adminUser.setUsername("admin");
             adminUser.setUid(0); 
+            adminUser.setIsAdmin(1);
+            
             session.setAttribute("user", adminUser);
             session.setAttribute("isAdmin", true);
-            response.sendRedirect("admin"); // Chuyển hướng trang admin
+            response.sendRedirect("admin"); 
             return;
         }
 
-        // XỬ LÝ USER
-        
-        // Mã hóa mật khẩu người dùng nhập vào
+        // XỬ LÝ ĐĂNG NHẬP TỪ DATABASE (Khách hàng & Nhân viên)
         String hashedPassword = MD5.getMd5(password);
-        
-        // Gọi DAO kiểm tra
         UserDAO dao = new UserDAO();
-        user loginUser = dao.login(username, hashedPassword); // Truyền mật khẩu ĐÃ BĂM
+        user loginUser = dao.login(username, hashedPassword);
 
         if (loginUser != null) {
-            // Đăng nhập thành công
             HttpSession session = request.getSession();
             session.setAttribute("user", loginUser);
+
+            
+            int role = loginUser.getIsAdmin();
+            if (role == 1 || role == 2) {
+                // Nếu là Admin hoặc Nhân viên thì vào trang quản trị
+                session.setAttribute("isAdmin", true);
+                response.sendRedirect("admin");
+            } else {
+                // Nếu là khách hàng bình thường
+                session.setAttribute("isAdmin", false);
+                response.sendRedirect("index.jsp");
+            }
+
             response.sendRedirect("home");
+
         } else {
             // Đăng nhập thất bại
             request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");

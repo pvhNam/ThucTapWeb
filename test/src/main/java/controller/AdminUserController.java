@@ -25,16 +25,15 @@ public class AdminUserController extends HttpServlet {
         List<user> list;
         if (keyword != null && !keyword.trim().isEmpty()) {
             list = dao.searchUsers(keyword.trim());
-            request.setAttribute("searchKeyword", keyword);
         } else {
             list = dao.getAllUsers();
         }
-        
-        // Lọc ẩn Admin
+
         if (list != null) {
-            list.removeIf(u -> u.getIsAdmin() == 1);
+            list.removeIf(u -> u.getIsAdmin() != 0); 
         }
 
+        
         request.setAttribute("listUsers", list);
         request.getRequestDispatcher("admin-users.jsp").forward(request, response);
     }
