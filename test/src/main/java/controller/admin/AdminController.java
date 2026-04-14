@@ -70,6 +70,6 @@ public class AdminController extends HttpServlet {
         request.setAttribute("countShipping", countShipping);
         request.setAttribute("countProcessing", countProcessing);
         request.setAttribute("countCancel", countCancel);
-        request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin.jsp").forward(request, response);
     }
 }

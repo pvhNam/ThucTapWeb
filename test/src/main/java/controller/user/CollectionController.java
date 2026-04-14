@@ -28,6 +28,6 @@ public class CollectionController extends HttpServlet {
         request.setAttribute("products", products);
         request.setAttribute("selectedCategory", category);
 
-        request.getRequestDispatcher("/views/user/collection.jsp").forward(request, response);
+        request.getRequestDispatcher("/collection.jsp").forward(request, response);
     }
 }

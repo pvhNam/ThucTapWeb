@@ -41,7 +41,7 @@ public class AdminNewsController extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             News n = dao.getNewsById(id);
             request.setAttribute("n", n);
-            request.getRequestDispatcher("/views/admin/edit-news.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-edit-news.jsp").forward(request, response);
         } else if ("delete".equals(type)) {
             int id = Integer.parseInt(request.getParameter("id"));
             dao.deleteNews(id);
@@ -49,7 +49,7 @@ public class AdminNewsController extends HttpServlet {
         } else {
             List<News> list = dao.getAllNews();
             request.setAttribute("listN", list);
-            request.getRequestDispatcher("/views/admin/news.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-news.jsp").forward(request, response);
         }
     }
 

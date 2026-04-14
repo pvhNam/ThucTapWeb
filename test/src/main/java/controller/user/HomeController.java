@@ -53,6 +53,6 @@ public class HomeController extends HttpServlet {
         request.setAttribute("vouchers", vouchers);
         request.setAttribute("mapCart", mapCart);
 
-        request.getRequestDispatcher("/views/user/index.jsp").forward(request, response);
+        request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

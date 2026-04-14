@@ -27,7 +27,7 @@ public class NewsDetailController extends HttpServlet {
 
                 if (n != null) {
                     request.setAttribute("newsObj", n);
-                    request.getRequestDispatcher("/views/user/news-detail.jsp").forward(request, response);
+                    request.getRequestDispatcher("/news-detail.jsp").forward(request, response);
                 } else {
                     response.sendRedirect("news");
                 }

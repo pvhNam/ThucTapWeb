@@ -35,7 +35,7 @@ public class SearchController extends HttpServlet {
             request.setAttribute("txt", txtSearch);
             request.setAttribute("tag", "about");
 
-            request.getRequestDispatcher("/views/user/about.jsp").forward(request, response);
+            request.getRequestDispatcher("/about.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

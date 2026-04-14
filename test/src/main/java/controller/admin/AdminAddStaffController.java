@@ -37,7 +37,7 @@ public class AdminAddStaffController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!checkAdminPermission(request, response)) return;
-        request.getRequestDispatcher("/views/admin/add-staff.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin-add-staff.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,7 +56,7 @@ public class AdminAddStaffController extends HttpServlet {
 
         if (existingUser != null) {
             request.setAttribute("error", "Lỗi: Email hoặc Tài khoản này đã tồn tại trong hệ thống!");
-            request.getRequestDispatcher("/views/admin/add-staff.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-add-staff.jsp").forward(request, response);
             return;
         }
 
@@ -67,7 +67,7 @@ public class AdminAddStaffController extends HttpServlet {
             response.sendRedirect("admin-staffs?msg=staff_added");
         } else {
             request.setAttribute("error", "Lỗi hệ thống!");
-            request.getRequestDispatcher("/views/admin/add-staff.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-add-staff.jsp").forward(request, response);
         }
     }
 }

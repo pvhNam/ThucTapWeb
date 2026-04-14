@@ -30,7 +30,7 @@ public class ProfileController extends HttpServlet {
         if (session.getAttribute("user") == null) {
             response.sendRedirect("login");
         } else {
-            request.getRequestDispatcher("/views/user/profile.jsp").forward(request, response);
+            request.getRequestDispatcher("/profile.jsp").forward(request, response);
         }
     }
 
@@ -114,6 +114,6 @@ public class ProfileController extends HttpServlet {
             }
         }
 
-        request.getRequestDispatcher("/views/user/profile.jsp").forward(request, response);
+        request.getRequestDispatcher("/profile.jsp").forward(request, response);
     }
 }

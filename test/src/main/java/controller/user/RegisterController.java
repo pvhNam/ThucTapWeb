@@ -15,7 +15,7 @@ public class RegisterController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/user/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/register.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -31,10 +31,10 @@ public class RegisterController extends HttpServlet {
 
         if (!pass.equals(re_pass)) {
             request.setAttribute("mess", "Mat khau nhap lai khong khop!");
-            request.getRequestDispatcher("/views/user/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
         } else if (!pass.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$")) {
             request.setAttribute("mess", "Mat khau phai co it nhat 8 ky tu, bao gom chu hoa, chu thuong va so!");
-            request.getRequestDispatcher("/views/user/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
         } else {
             UserDAO dao = new UserDAO();
             User existing = dao.checkUserExist(username);
@@ -45,7 +45,7 @@ public class RegisterController extends HttpServlet {
                 response.sendRedirect("login");
             } else {
                 request.setAttribute("mess", "Ten dang nhap da ton tai!");
-                request.getRequestDispatcher("/views/user/register.jsp").forward(request, response);
+                request.getRequestDispatcher("/register.jsp").forward(request, response);
             }
         }
     }

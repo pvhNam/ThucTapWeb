@@ -109,7 +109,7 @@ public class CartController extends HttpServlet {
         request.setAttribute("myVouchers", myVouchers);
         request.setAttribute("walletCount", myVouchers.size());
 
-        request.getRequestDispatcher("/views/user/cart.jsp").forward(request, response);
+        request.getRequestDispatcher("/cartitem.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

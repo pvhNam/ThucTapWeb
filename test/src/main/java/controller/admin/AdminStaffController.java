@@ -53,6 +53,6 @@ public class AdminStaffController extends HttpServlet {
             list.removeIf(u -> u.getIsAdmin() != 2);
         }
         request.setAttribute("listStaffs", list);
-        request.getRequestDispatcher("/views/admin/staffs.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin-staffs.jsp").forward(request, response);
     }
 }

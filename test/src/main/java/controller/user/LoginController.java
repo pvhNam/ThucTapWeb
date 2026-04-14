@@ -16,7 +16,7 @@ public class LoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/user/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -55,7 +55,7 @@ public class LoginController extends HttpServlet {
             }
         } else {
             request.setAttribute("error", "Sai tai khoan hoac mat khau!");
-            request.getRequestDispatcher("/views/user/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
 }

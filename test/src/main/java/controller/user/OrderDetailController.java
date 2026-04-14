@@ -21,7 +21,7 @@ public class OrderDetailController extends HttpServlet {
             response.sendRedirect("order-history");
             return;
         }
-        request.getRequestDispatcher("/views/user/order-detail.jsp").forward(request, response);
+        request.getRequestDispatcher("/order-detail.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

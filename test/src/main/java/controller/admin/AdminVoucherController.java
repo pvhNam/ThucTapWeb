@@ -39,7 +39,7 @@ public class AdminVoucherController extends HttpServlet {
         if (action == null) {
             List<Voucher> list = vDao.getAllVouchers();
             request.setAttribute("listVouchers", list);
-            request.getRequestDispatcher("/views/admin/vouchers.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-vouchers.jsp").forward(request, response);
         } else if (action.equals("delete")) {
             int id = Integer.parseInt(request.getParameter("id"));
             vDao.deleteVoucher(id);
@@ -48,9 +48,9 @@ public class AdminVoucherController extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             Voucher v = vDao.getVoucherById(id);
             request.setAttribute("voucher", v);
-            request.getRequestDispatcher("/views/admin/voucher-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-voucher-form.jsp").forward(request, response);
         } else if (action.equals("add")) {
-            request.getRequestDispatcher("/views/admin/voucher-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-voucher-form.jsp").forward(request, response);
         }
     }
 
