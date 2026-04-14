@@ -22,19 +22,19 @@ public class NewPasswordController extends HttpServlet {
 
         if (newPassword == null || confPassword == null) {
             request.setAttribute("message", "Vui long nhap mat khau!");
-            request.getRequestDispatcher("/views/user/new-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/new_password.jsp").forward(request, response);
             return;
         }
 
         if (!newPassword.equals(confPassword)) {
             request.setAttribute("message", "Mat khau xac nhan khong khop!");
-            request.getRequestDispatcher("/views/user/new-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/new_password.jsp").forward(request, response);
             return;
         }
 
         if (!newPassword.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$")) {
             request.setAttribute("message", "Mat khau yeu! Can 8 ky tu, 1 chu hoa, 1 thuong va 1 so.");
-            request.getRequestDispatcher("/views/user/new-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/new_password.jsp").forward(request, response);
             return;
         }
 
@@ -46,10 +46,10 @@ public class NewPasswordController extends HttpServlet {
             session.removeAttribute("otp");
             session.removeAttribute("resetUsername");
             request.setAttribute("error", "Doi mat khau thanh cong! Hay dang nhap lai.");
-            request.getRequestDispatcher("/views/user/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else {
             request.setAttribute("message", "Loi he thong, vui long thu lai sau.");
-            request.getRequestDispatcher("/views/user/new-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/new_password.jsp").forward(request, response);
         }
     }
 }

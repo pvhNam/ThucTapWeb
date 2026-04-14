@@ -27,11 +27,11 @@ public class UpdateOrderController extends HttpServlet {
         OrderDAO dao = new OrderDAO();
 
         if ("ship".equals(action)) {
-            dao.updateOrderStatus(orderId, "Dang giao hang");
+            dao.updateOrderStatus(orderId, "Đang giao hàng");
         } else if ("cancel".equals(action)) {
-            dao.updateOrderStatus(orderId, "Da huy");
+            dao.updateOrderStatus(orderId, "Đã hủy");
         } else if ("success".equals(action)) {
-            dao.updateOrderStatus(orderId, "Giao thanh cong");
+            dao.updateOrderStatus(orderId, "Giao thành công");
         }
 
         response.sendRedirect("admin-orders");

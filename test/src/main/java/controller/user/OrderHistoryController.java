@@ -27,6 +27,6 @@ public class OrderHistoryController extends HttpServlet {
         OrderDAO orderDao = new OrderDAO();
         List<Order> listOrders = orderDao.getOrdersByUserId(currentUser.getUid());
         request.setAttribute("listOrders", listOrders);
-        request.getRequestDispatcher("/views/user/order-history.jsp").forward(request, response);
+        request.getRequestDispatcher("/order-history.jsp").forward(request, response);
     }
 }

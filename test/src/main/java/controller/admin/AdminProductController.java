@@ -59,7 +59,7 @@ public class AdminProductController extends HttpServlet {
 
             request.setAttribute("listProducts", list);
             request.setAttribute("listP", list);
-            request.getRequestDispatcher("/views/admin/products.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin-products.jsp").forward(request, response);
         }
     }
 

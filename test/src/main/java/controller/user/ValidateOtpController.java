@@ -19,10 +19,10 @@ public class ValidateOtpController extends HttpServlet {
 
         if (otp != null && value == otp) {
             request.setAttribute("email", session.getAttribute("email"));
-            request.getRequestDispatcher("/views/user/new-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/new_password.jsp").forward(request, response);
         } else {
             request.setAttribute("message", "Ma OTP khong chinh xac!");
-            request.getRequestDispatcher("/views/user/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/verify_otp.jsp").forward(request, response);
         }
     }
 }

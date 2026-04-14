@@ -33,7 +33,7 @@ public class ProductDetailController extends HttpServlet {
                 response.sendRedirect("home");
             } else {
                 request.setAttribute("p", p);
-                request.getRequestDispatcher("/views/user/product-detail.jsp").forward(request, response);
+                request.getRequestDispatcher("/product-detail.jsp").forward(request, response);
             }
 
         } catch (NumberFormatException e) {

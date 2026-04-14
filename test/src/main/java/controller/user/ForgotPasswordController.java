@@ -17,7 +17,7 @@ public class ForgotPasswordController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/user/forgot-password.jsp").forward(request, response);
+        request.getRequestDispatcher("/forgot_password.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,7 +36,7 @@ public class ForgotPasswordController extends HttpServlet {
                 EmailUtil.sendEmail(email, subject, message);
             } catch (Exception e) {
                 request.setAttribute("message", "Loi gui mail! Vui long thu lai.");
-                request.getRequestDispatcher("/views/user/forgot-password.jsp").forward(request, response);
+                request.getRequestDispatcher("/forgot_password.jsp").forward(request, response);
                 return;
             }
 
@@ -46,11 +46,11 @@ public class ForgotPasswordController extends HttpServlet {
             session.setAttribute("resetUsername", u.getUsername());
 
             request.setAttribute("message", "Ma OTP da duoc gui den email cua ban.");
-            request.getRequestDispatcher("/views/user/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/verify_otp.jsp").forward(request, response);
 
         } else {
             request.setAttribute("message", "Email khong ton tai trong he thong!");
-            request.getRequestDispatcher("/views/user/forgot-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/forgot_password.jsp").forward(request, response);
         }
     }
 }

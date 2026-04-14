@@ -37,7 +37,7 @@ public class AdminUserDetailController extends HttpServlet {
             if (u != null) {
                 request.setAttribute("userInfo", u);
                 request.setAttribute("userOrders", orders);
-                request.getRequestDispatcher("/views/admin/user-detail.jsp").forward(request, response);
+                request.getRequestDispatcher("/admin-user-detail.jsp").forward(request, response);
             } else {
                 response.sendRedirect("admin-users");
             }
