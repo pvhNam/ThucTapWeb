@@ -2,15 +2,16 @@ package controller.admin;
 
 import java.io.IOException;
 import java.util.List;
+
 import dao.OrderDAO;
-import model.Order;
-import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Order;
+import model.User;
 
 @WebServlet("/admin")
 public class AdminController extends HttpServlet {
@@ -45,17 +46,13 @@ public class AdminController extends HttpServlet {
         int countCancel = 0;
 
         if (list != null) {
-            for (Order o : list) {
-                String s = o.getStatus();
-                if (s == null) s = "";
-                s = s.toLowerCase();
-
-                if (s.contains("thành công")) {
-                    totalRevenue += o.getTotalMoney();
+            for (Order order : list) {
+                if (order.isSuccessStatus()) {
+                    totalRevenue += order.getTotalMoney();
                     countSuccess++;
-                } else if (s.contains("giao")) {
+                } else if (order.isShippingStatus()) {
                     countShipping++;
-                } else if (s.contains("hủy")) {
+                } else if (order.isCancelledStatus()) {
                     countCancel++;
                 } else {
                     countProcessing++;
@@ -64,7 +61,7 @@ public class AdminController extends HttpServlet {
         }
 
         request.setAttribute("listOrders", list);
-        request.setAttribute("totalOrders", (list != null) ? list.size() : 0);
+        request.setAttribute("totalOrders", list != null ? list.size() : 0);
         request.setAttribute("totalRevenue", totalRevenue);
         request.setAttribute("countSuccess", countSuccess);
         request.setAttribute("countShipping", countShipping);
