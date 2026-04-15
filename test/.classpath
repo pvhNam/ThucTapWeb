@@ -46,18 +46,10 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/json-20231013.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/kotlin-stdlib-1.6.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okhttp-4.10.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okio-fakefilesystem-jvm-3.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okio-jvm-3.0.0-alpha.10.jar"/>
-=======
 	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/json-20231013.jar"/>
 	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/kotlin-stdlib-1.6.21.jar"/>
 	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okhttp-4.10.0.jar"/>
 	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okio-fakefilesystem-jvm-3.0.0.jar"/>
 	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okio-jvm-3.0.0-alpha.10.jar"/>
->>>>>>> branch 'main' of https://github.com/pvhNam/ThucTapWeb.git
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
