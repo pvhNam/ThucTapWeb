@@ -1,0 +1,32 @@
+/* admin-edit-news.css — edit news specific styles only
+   (layout and body styles are in Admin.css) */
+
+.form-container {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 30px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+.form-group input,
+.form-group textarea {
+    width: 100%; padding: 10px;
+    border: 1px solid #ccc; border-radius: 6px;
+    box-sizing: border-box; font-size: 14px;
+    font-family: 'Inter', sans-serif;
+}
+.form-group input:focus,
+.form-group textarea:focus { border-color: var(--primary); outline: none; }
+
+.btn-submit {
+    background: var(--primary); color: white;
+    padding: 12px; border: none; width: 100%;
+    cursor: pointer; border-radius: 6px;
+    font-size: 15px; font-weight: 600;
+    transition: background 0.2s;
+}
+.btn-submit:hover { background: #2e59d9; }

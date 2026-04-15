@@ -1,0 +1,226 @@
+/* admin-products-modal.css */
+
+/* ── Fallback variables ── */
+:root {
+    --primary:  #4e73df;
+    --success:  #1cc88a;
+    --warning:  #f6c23e;
+    --danger:   #e74a3b;
+    --dark:     #5a5c69;
+    --radius:   10px;
+    --shadow:   0 4px 6px rgba(0,0,0,0.07);
+}
+
+.modal {
+    display: none; position: fixed; z-index: 2000;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white; padding: 30px;
+    border-radius: var(--radius); width: 600px; max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative; animation: slideDown 0.3s ease-out;
+    max-height: 90vh; overflow-y: auto;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.close-btn {
+    position: absolute; right: 20px; top: 15px;
+    font-size: 28px; cursor: pointer; color: #aaa; transition: color 0.2s;
+}
+.close-btn:hover { color: var(--danger); }
+
+.modal-title {
+    text-align: center; margin-top: 0;
+    color: var(--dark); margin-bottom: 20px; font-weight: 700;
+}
+
+.form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+
+.form-group { flex: 1; margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: #555; font-size: 14px; }
+.form-group input,
+.form-group select {
+    width: 100%; padding: 10px; border: 1px solid #ccc;
+    border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus { border-color: var(--primary); outline: none; }
+
+.btn-submit-modal {
+    background: var(--success); color: white;
+    padding: 12px; border: none; width: 100%;
+    cursor: pointer; font-size: 15px; border-radius: 6px;
+    font-weight: 600; margin-top: 10px; transition: background 0.2s;
+}
+.btn-submit-modal:hover { background: #169b6b; }
+
+/* btn-import is unique to product management */
+.btn-import { background: linear-gradient(135deg,#36b9cc,#1a9eac); color: white; }
+.btn-import:hover { filter: brightness(92%); }
+
+/* ===== IMPORT MODAL REDESIGN ===== */
+.import-modal-content {
+    width: 580px !important;
+    padding: 28px !important;
+}
+
+.im-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+.im-header-icon {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg,#36b9cc,#1a9eac);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 22px;
+    flex-shrink: 0;
+}
+.im-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--dark); }
+.im-sub   { margin: 3px 0 0 0; font-size: 13px; color: #aaa; }
+
+.im-product-banner {
+    background: #f8f9fc;
+    border: 1.5px solid #e3e6f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.im-banner-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: #555;
+}
+.im-banner-row i { color: #b0b5c9; width: 16px; }
+
+.im-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.im-field {
+    margin-bottom: 16px;
+}
+.im-field label {
+    display: block;
+    font-size: 13px; font-weight: 600; color: #555;
+    margin-bottom: 7px;
+}
+.req { color: var(--danger); }
+
+.im-input-wrap { position: relative; }
+.im-input-wrap i {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: #b0b5c9; font-size: 13px; pointer-events: none;
+}
+.im-input-wrap input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1.5px solid #e3e6f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    background: #fafbfc;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.im-input-wrap input:focus {
+    border-color: #36b9cc;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(54,185,204,0.12);
+    background: white;
+}
+
+.im-hint {
+    font-size: 12px; color: #aaa;
+    margin-top: 5px;
+}
+.im-hint strong { color: #36b9cc; }
+
+/* Size chips in modal */
+.im-size-chips {
+    display: flex; flex-wrap: wrap; gap: 7px;
+    margin-bottom: 0;
+}
+.im-sz-chip {
+    padding: 5px 14px;
+    border: 2px solid #e3e6f0;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+    color: #888; cursor: pointer;
+    background: #fafbfc;
+    transition: all 0.15s;
+    user-select: none;
+}
+.im-sz-chip:hover { border-color: #36b9cc; color: #36b9cc; }
+.im-sz-chip.active { background: #36b9cc; border-color: #36b9cc; color: white; }
+
+/* Color swatches in modal */
+.im-color-swatches {
+    display: flex; flex-wrap: wrap; gap: 8px;
+}
+.im-clr {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.im-clr:hover { transform: scale(1.15); }
+.im-clr.active::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.im-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #e3e6f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    background: #fafbfc;
+    box-sizing: border-box;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+.im-textarea:focus { border-color: #36b9cc; outline: none; }
+
+.im-submit-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg,#36b9cc,#1a9eac);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(54,185,204,0.4);
+    transition: all 0.2s;
+    margin-top: 6px;
+}
+.im-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(54,185,204,0.5); }

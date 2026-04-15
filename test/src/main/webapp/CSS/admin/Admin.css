@@ -1,0 +1,328 @@
+/* ============================================================
+   ADMIN SHARED CSS — nguồn duy nhất cho tất cả trang admin
+   ============================================================ */
+
+/* --- VARIABLES --- */
+:root {
+    --sidebar-width: 250px;
+    --primary:   #4e73df;
+    --success:   #1cc88a;
+    --warning:   #f6c23e;
+    --danger:    #e74a3b;
+    --dark:      #5a5c69;
+    --light:     #f8f9fc;
+    --bg:        #f3f4f6;
+    --text:      #444;
+    --shadow:    0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+    --radius:    10px;
+}
+
+/* --- BASE --- */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- LAYOUT --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: 30px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e3e6f0;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0;
+}
+
+.user-info {
+    background: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+    font-weight: 600;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- CARD BOX (table wrapper) --- */
+.card-box {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 25px;
+    overflow-x: auto;
+    margin-bottom: 25px;
+}
+
+/* --- TABLE --- */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.admin-table thead th {
+    background-color: var(--light);
+    color: var(--primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 2px solid #e3e6f0;
+    white-space: nowrap;
+}
+
+.admin-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e3e6f0;
+    color: #555;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #fafbfc;
+}
+
+/* --- BADGE --- */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.bg-process  { background-color: #fff3cd; color: #856404; }
+.bg-shipping { background-color: #cce5ff; color: #004085; }
+.bg-success  { background-color: #d4edda; color: #155724; }
+.bg-cancel   { background-color: #f8d7da; color: #721c24; }
+
+/* --- ACTION BUTTONS --- */
+.action-group {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-action,
+.btn-icon {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, filter 0.15s;
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-action:hover,
+.btn-icon:hover {
+    transform: scale(1.1) translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    filter: brightness(92%);
+}
+
+/* Button color variants — gradient upgrade */
+.btn-view    { background: linear-gradient(135deg, #5a5c69, #3a3b45); }
+.btn-edit    { background: linear-gradient(135deg, #f6c23e, #d4a017); color: #fff; }
+.btn-del,
+.btn-delete,
+.btn-cancel  { background: linear-gradient(135deg, #e74a3b, #c0392b); }
+.btn-ship    { background: linear-gradient(135deg, #36b9cc, #1a9eac); }
+.btn-success { background: linear-gradient(135deg, #1cc88a, #13855c); }
+.btn-primary { background: linear-gradient(135deg, #4e73df, #224abe); }
+
+/* --- ADD NEW BUTTON --- */
+.btn-add-new {
+    background: linear-gradient(135deg, #1cc88a, #13855c);
+    color: white;
+    padding: 9px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(28, 200, 138, 0.35);
+    letter-spacing: 0.3px;
+}
+
+.btn-add-new:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(28, 200, 138, 0.45);
+}
+
+/* --- MONEY / PRICE --- */
+.money,
+.price-text {
+    font-family: 'Consolas', monospace;
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* --- PRODUCT IMAGE THUMBNAIL --- */
+.product-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+/* --- STOCK BADGE --- */
+.stock-badge {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* --- ALERT --- */
+.alert {
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 5px solid var(--success);
+}
+
+.alert-danger {
+    background-color: #fce8e6;
+    color: #7f1d1d;
+    border-left: 5px solid var(--danger);
+}
+
+/* --- STATS CARDS (shared structure) --- */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card-stat {
+    background: white;
+    padding: 22px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-left: 5px solid transparent;
+    overflow: hidden;
+}
+
+.card-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* --- STAT LINK WRAPPER --- */
+.stat-link {
+    text-decoration: none;
+    display: block;
+}
+.stat-link .card-stat {
+    position: relative;
+    overflow: hidden;
+}
+.stat-link .card-stat::after {
+    content: '\f0a9';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    font-size: 11px;
+    color: #ccc;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.2s, transform 0.2s;
+}
+.stat-link:hover .card-stat::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card-stat.blue   { border-left-color: var(--primary); }
+.card-stat.blue .stat-icon   { color: var(--primary);  background: #e8f0fe; }
+.card-stat.green  { border-left-color: var(--success); }
+.card-stat.green .stat-icon  { color: var(--success);  background: #e0fdf4; }
+.card-stat.orange { border-left-color: var(--warning); }
+.card-stat.orange .stat-icon { color: var(--warning);  background: #fff8e1; }
+.card-stat.red    { border-left-color: var(--danger); }
+.card-stat.red .stat-icon    { color: var(--danger);   background: #fce8e6; }
+.card-stat.teal   { border-left-color: #36b9cc; }
+.card-stat.teal .stat-icon   { color: #36b9cc;         background: #d8f4f8; }
+.card-stat.purple { border-left-color: #6f42c1; }
+.card-stat.purple .stat-icon { color: #6f42c1;         background: #ede7f6; }
+
+.stat-info h3 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    color: #333;
+}
+
+.stat-info p {
+    margin: 5px 0 0;
+    color: #888;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
