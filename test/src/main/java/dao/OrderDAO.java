@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Order;
 import model.OrderDetail;
-import model.cartItem;
-import model.product;
+import model.CartItem;
+import model.Product;
 
 public class OrderDAO {
 
@@ -96,7 +96,7 @@ public class OrderDAO {
     }
 
     // TẠO ĐƠN HÀNG MỚI
-    public int createOrder(int userId, double totalMoney, String address, String paymentMethod, List<cartItem> cart) {
+    public int createOrder(int userId, double totalMoney, String address, String paymentMethod, List<CartItem> cart) {
         int orderId = 0;
         Connection conn = null;
         PreparedStatement psOrder = null;
@@ -125,7 +125,7 @@ public class OrderDAO {
                 String sqlDetail = "INSERT INTO order_details (order_id, product_id, price, quantity) VALUES (?, ?, ?, ?)";
                 psDetail = conn.prepareStatement(sqlDetail);
 
-                for (cartItem item : cart) {
+                for (CartItem item : cart) {
                     psDetail.setInt(1, orderId);
                     psDetail.setInt(2, item.getProduct().getPid());
                     psDetail.setDouble(3, item.getProduct().getPrice()); // Lưu giá tại thời điểm mua
@@ -183,7 +183,7 @@ public class OrderDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 // Tạo đối tượng Product
-                product p = new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                         rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
                         rs.getString("img"));
                 

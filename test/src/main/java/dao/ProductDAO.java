@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Category;
-import model.product;
+import model.Product;
 
 public class ProductDAO {
 
     // Lấy tất cả sản phẩm
-    public List<product> getAllProducts() {
-        List<product> list = new ArrayList<>();
+    public List<Product> getAllProducts() {
+        List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM product";
         try (Connection conn = DBConnect.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"), rs.getInt("cateID"),
+                list.add(new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"), rs.getInt("cateID"),
                         rs.getString("color"), rs.getString("size"), rs.getInt("amount"), rs.getString("img")));
             }
         } catch (Exception e) {
@@ -29,15 +29,15 @@ public class ProductDAO {
     }
 
     // TÌM KIẾM SẢN PHẨM THEO TÊN
-    public List<product> searchProduct(String keyword) {
-        List<product> list = new ArrayList<>();
+    public List<Product> searchProduct(String keyword) {
+        List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM product WHERE name LIKE ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%"); // Tìm gần đúng
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                    list.add(new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                             rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
                             rs.getString("img")));
                 }
@@ -49,13 +49,13 @@ public class ProductDAO {
     }
 
     // Lấy sản phẩm theo ID
-    public product getProductById(int pid) {
+    public Product getProductById(int pid) {
         String sql = "SELECT * FROM product WHERE pid = ?";
         try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, pid);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                    return new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                             rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
                             rs.getString("img"));
                 }
@@ -67,7 +67,7 @@ public class ProductDAO {
     }
 
     // Thêm sản phẩm
-    public boolean addProduct(product p) {
+    public boolean addProduct(Product p) {
         String sql = "INSERT INTO product (name, price, cateID, color, size, amount, img) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try {
             Connection conn = DBConnect.getConnection();
@@ -85,7 +85,7 @@ public class ProductDAO {
     }
 
     // Cập nhật sản phẩm
-    public boolean updateProduct(product p) {
+    public boolean updateProduct(Product p) {
         String sql = "UPDATE product SET name=?, price=?, cateID=?, color=?, size=?, amount=?, img=? WHERE pid=?";
         try {
             Connection conn = DBConnect.getConnection();
@@ -142,11 +142,11 @@ public class ProductDAO {
 
 	
 
-    public List<product> getProductsByCategory(String categoryName) {
-        List<product> list = new ArrayList<>();
+    public List<Product> getProductsByCategory(String categoryName) {
+        List<Product> list = new ArrayList<>();
 
         String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
-                     "FROM product p JOIN category c ON p.cateID = c.id ";
+                     "FROM Product p JOIN category c ON p.cateID = c.id ";
 
         if (categoryName != null && !categoryName.equals("all")) {
             sql += "WHERE c.name = ?";
@@ -162,7 +162,7 @@ public class ProductDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
 
-                product p = new product(
+                Product p = new Product(
                     rs.getInt("pid"),              // id
                     rs.getString("name"),          // -> pdescription
                     rs.getDouble("price"),			// 

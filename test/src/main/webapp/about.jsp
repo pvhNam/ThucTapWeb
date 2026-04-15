@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*, dao.ProductDAO, model.product, java.text.DecimalFormat"%>
+<%@ page import="java.util.*, dao.ProductDAO, model.Product, java.text.DecimalFormat"%>
 
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
@@ -13,9 +13,9 @@
     <meta charset="UTF-8">
     <title><fmt:message key="shop.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="CSS/about.css">
+    <link rel="stylesheet" href="CSS/user/about.css">
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/index.css">  
+    <link rel="stylesheet" href="CSS/user/index.css">  
 </head>
 <body>
     <jsp:include page="header.jsp"><jsp:param name="page" value="about" /></jsp:include>
@@ -37,12 +37,12 @@
     <div class="page-container">
         <%
             ProductDAO pdao = new ProductDAO();
-            List<product> allProducts = new ArrayList<>();
+            List<Product> allProducts = new ArrayList<>();
             
             // 1. XÁC ĐỊNH NGUỒN DỮ LIỆU (TÌM KIẾM HAY LẤY TẤT CẢ)
             // Ưu tiên lấy từ attribute (do Controller gửi sang)
             if (request.getAttribute("listP") != null) {
-                allProducts = (List<product>) request.getAttribute("listP");
+                allProducts = (List<Product>) request.getAttribute("listP");
             } 
             // Nếu không có, kiểm tra tham số URL 'txt' để tự tìm lại (khi chuyển trang/lọc)
             else if (txtSearch != null && !txtSearch.trim().isEmpty()) {
@@ -54,14 +54,14 @@
             }
 
             // 2. LỌC THEO GIÁ (Logic cũ của bạn + xử lý null)
-            List<product> filteredProducts = new ArrayList<>();
+            List<Product> filteredProducts = new ArrayList<>();
             String priceFilter = request.getParameter("price");
             
             if (allProducts != null) {
                 if (priceFilter == null || priceFilter.equals("all")) { 
                     filteredProducts.addAll(allProducts); 
                 } else {
-                    for (product p : allProducts) {
+                    for (Product p : allProducts) {
                         double price = p.getPrice();
                         if (priceFilter.equals("under500") && price < 500000) filteredProducts.add(p);
                         else if (priceFilter.equals("500to1000") && price >= 500000 && price <= 1000000) filteredProducts.add(p);
@@ -92,7 +92,7 @@
             int start = (pageCurrent - 1) * productsPerPage;
             int end = Math.min(start + productsPerPage, totalProducts);
             
-            List<product> pageProducts = new ArrayList<>();
+            List<Product> pageProducts = new ArrayList<>();
             if (start < totalProducts && start >= 0) { 
                 pageProducts = filteredProducts.subList(start, end); 
             }
@@ -161,7 +161,7 @@
                         </a>
                     </div>
                 <% } else {
-                    for (product p : pageProducts) { %>
+                    for (Product p : pageProducts) { %>
                     <div class="product-card">
                         <div class="product-image">
                             <a href="product-detail?pid=<%=p.getPid()%>">

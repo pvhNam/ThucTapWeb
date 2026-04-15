@@ -46,10 +46,5 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/json-20231013.jar"/>
-	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/kotlin-stdlib-1.6.21.jar"/>
-	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okhttp-4.10.0.jar"/>
-	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okio-fakefilesystem-jvm-3.0.0.jar"/>
-	<classpathentry kind="lib" path="F:/usecase LTMB/thuvienWEB/okio-jvm-3.0.0-alpha.10.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

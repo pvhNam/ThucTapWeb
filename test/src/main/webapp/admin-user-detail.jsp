@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.user, model.Order, java.text.DecimalFormat"%>
+<%@ page import="java.util.List, model.User, model.Order, java.text.DecimalFormat"%>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -8,14 +8,8 @@
 <title>Chi Tiết Khách Hàng | Admin</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="CSS/Admin.css">
-<style>
-    .detail-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .info-row { display: flex; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
-    .info-label { width: 150px; font-weight: 600; color: #555; }
-    .btn-back { display: inline-flex; align-items: center; text-decoration: none; color: #555; font-weight: 600; margin-bottom: 15px; }
-    .btn-back:hover { color: #3498db; }
-</style>
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/admin-user-detail.css">
 </head>
 <body>
 
@@ -25,9 +19,9 @@
 
     <main class="main-content">
         <a href="admin-users" class="btn-back"><i class="fa-solid fa-arrow-left"></i> &nbsp; Quay lại danh sách</a>
-        
+
         <%
-            user u = (user) request.getAttribute("userInfo");
+            User u = (User) request.getAttribute("userInfo");
             List<Order> orders = (List<Order>) request.getAttribute("userOrders");
             DecimalFormat df = new DecimalFormat("#,### VNĐ");
             if(u != null) {
@@ -87,7 +81,7 @@
                 </tbody>
             </table>
         </div>
-        
+
         <% } else { %>
             <div class="alert alert-danger">Không tìm thấy thông tin khách hàng!</div>
         <% } %>

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.Order, model.user"%>
+<%@ page import="java.util.List, model.Order, model.User"%>
 <%@ page import="java.text.DecimalFormat"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -14,7 +14,7 @@
 <title><fmt:message key="history.page_title" /> | Fashion Store</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/oder-history.css" />
+<link rel="stylesheet" href="CSS/user/oder-history.css" />
 </head>
 <body>
     <header>

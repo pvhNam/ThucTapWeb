@@ -5,48 +5,7 @@
 <html>
 <head>
 <title>Sửa Tin Tức</title>
-<style>
-body {
-	background: #f4f6f9;
-	font-family: sans-serif;
-}
-
-.form-container {
-	max-width: 700px;
-	margin: 50px auto;
-	padding: 30px;
-	background: white;
-	border-radius: 8px;
-}
-
-.form-group {
-	margin-bottom: 15px;
-}
-
-.form-group label {
-	display: block;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
-
-.form-group input, .form-group textarea {
-	width: 100%;
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-}
-
-.btn-submit {
-	background: #007bff;
-	color: white;
-	padding: 12px;
-	border: none;
-	width: 100%;
-	cursor: pointer;
-	border-radius: 4px;
-}
-</style>
+<link rel="stylesheet" href="CSS/admin/admin-edit-news.css">
 </head>
 <body>
 	<%

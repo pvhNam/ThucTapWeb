@@ -1,25 +1,25 @@
 package model;
 
 public class CartItemDTO {
-	private product product; 
+	private Product product;
 	private int quantity; // Số lượng mua
-	private boolean isSelected; 
+	private boolean isSelected;
 
-	public CartItemDTO(model.product product, int quantity) {
+	public CartItemDTO(Product product, int quantity) {
 		this.product = product;
 		this.quantity = quantity;
-		this.isSelected = true; 
+		this.isSelected = true;
 	}
 
 	public double getTotalPrice() {
 		return product.getPrice() * quantity;
 	}
 
-	public product getProduct() {
+	public Product getProduct() {
 		return product;
 	}
 
-	public void setProduct(product product) {
+	public void setProduct(Product product) {
 		this.product = product;
 	}
 
