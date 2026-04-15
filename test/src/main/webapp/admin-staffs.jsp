@@ -1,71 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.user" %>
+<%@ page import="java.util.List, model.User"%>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Danh Sách Nhân Viên | Admin Panel</title>
+<title>Quản Lý Nhân Viên | Admin</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="CSS/Admin.css">
-
-<style>
-/* Bổ sung một chút CSS cho bảng danh sách đẹp hơn */
-.user-info-cell {
-	display: flex;
-	align-items: center;
-	gap: 15px;
-}
-
-.user-avatar-sm {
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	object-fit: cover;
-	border: 1px solid #ddd;
-}
-
-.user-fullname {
-	font-weight: 600;
-	color: #333;
-}
-
-.user-username {
-	font-size: 12px;
-	color: #888;
-}
-
-.status-tag {
-	padding: 5px 12px;
-	border-radius: 20px;
-	font-size: 12px;
-	font-weight: bold;
-}
-
-.status-active {
-	background-color: #d4edda;
-	color: #155724;
-}
-
-.action-group {
-	display: flex;
-	gap: 8px;
-	align-items: center;
-}
-
-.btn-icon {
-	border: none;
-	cursor: pointer;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	transition: 0.2s;
-}
-
-.btn-icon:hover {
-	opacity: 0.8;
-}
-</style>
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/admin-staffs.css">
 </head>
 <body>
 
@@ -74,84 +18,91 @@
     </jsp:include>
 
     <main class="main-content">
-        <div class="content-header">
-            <h1 class="page-title">Danh Sách Tài Khoản Nhân Viên</h1>
-            
-            <%-- KIỂM TRA QUYỀN: CHỈ ADMIN (ROLE = 1) MỚI THẤY NÚT THÊM NHÂN VIÊN NÀY --%>
-            <% 
-                user curr = (user) session.getAttribute("user");
-                Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
-                int role = (curr != null) ? curr.getIsAdmin() : ((isHardcodedAdmin != null && isHardcodedAdmin) ? 1 : 0);
-                
-                if (role == 1) { 
-            %>
-                <a href="admin-add-staff" class="btn-add-new" style="background: #1cc88a; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
-                    <i class="fa-solid fa-user-plus"></i> Cấp thêm tài khoản
+        <div class="content-header" style="justify-content: space-between;">
+            <h1 class="page-title">Quản Lý Nhân Viên</h1>
+            <div style="display:flex; gap: 10px; align-items: center;">
+                <a href="admin-add-staff" class="btn-add-new">
+                    <i class="fa-solid fa-user-plus"></i> Thêm Nhân Viên
                 </a>
-            <% } %>
+            </div>
         </div>
+
+        <% String msg = request.getParameter("msg"); if (msg != null) { %>
+            <% if ("deleted".equals(msg)) { %>
+            <div class="alert alert-success" style="padding:12px;background:#d4edda;color:#155724;border-radius:6px;margin-bottom:20px;border-left:4px solid #28a745;">
+                <i class="fa-solid fa-check-circle"></i> Đã xóa nhân viên thành công!
+            </div>
+            <% } else if ("pass_changed".equals(msg)) { %>
+            <div class="alert alert-success" style="padding:12px;background:#d4edda;color:#155724;border-radius:6px;margin-bottom:20px;border-left:4px solid #28a745;">
+                <i class="fa-solid fa-check-circle"></i> Đổi mật khẩu thành công!
+            </div>
+            <% } else if ("staff_added".equals(msg)) { %>
+            <div class="alert alert-success" style="padding:12px;background:#d4edda;color:#155724;border-radius:6px;margin-bottom:20px;border-left:4px solid #28a745;">
+                <i class="fa-solid fa-check-circle"></i> Thêm nhân viên thành công!
+            </div>
+            <% } else if ("error_permission".equals(msg)) { %>
+            <div class="alert alert-danger" style="padding:12px;background:#f8d7da;color:#721c24;border-radius:6px;margin-bottom:20px;border-left:4px solid #dc3545;">
+                <i class="fa-solid fa-circle-exclamation"></i> Bạn không có quyền thực hiện thao tác này!
+            </div>
+            <% } %>
+        <% } %>
 
         <div class="card-box">
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Thông tin nhân viên</th>
+                        <th style="width:50px;">ID</th>
+                        <th>Thông Tin Nhân Viên</th>
                         <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Thao tác</th> </tr>
+                        <th>Số Điện Thoại</th>
+                        <th style="width:120px; text-align:center;">Thao Tác</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <% 
-                        // Lấy danh sách từ AdminStaffController truyền sang
-                        List<user> list = (List<user>) request.getAttribute("listStaffs");
-                        if (list != null && !list.isEmpty()) {
-                            for (user u : list) {
+                    <%
+                    List<User> list = (List<User>) request.getAttribute("listStaffs");
+                    if (list != null && !list.isEmpty()) {
+                        for (User u : list) {
+                            String avatarUrl = (u.getAvatar() != null && !u.getAvatar().isEmpty()) ? "img/avatars/" + u.getAvatar() : "img/images.jpg";
                     %>
                     <tr>
-                        <td style="font-weight: bold; color: #555;">#<%=u.getUid()%></td>
+                        <td><strong>#<%=u.getUid()%></strong></td>
                         <td>
                             <div class="user-info-cell">
-                                <%-- Avatar mặc định nếu nhân viên chưa cập nhật ảnh --%>
-                                <img src="img/avatars/<%= (u.getAvatar()!=null && !u.getAvatar().isEmpty()) ? u.getAvatar() : "default.png" %>" class="user-avatar-sm" onerror="this.src='img/images.jpg'">
+                                <img src="<%=avatarUrl%>" class="user-avatar-small" onerror="this.src='img/images.jpg'">
                                 <div>
-                                    <div class="user-fullname"><%=u.getFullname() != null ? u.getFullname() : "Chưa cập nhật"%></div>
+                                    <div class="user-name"><%=u.getFullname() != null ? u.getFullname() : "Chưa cập nhật"%></div>
                                     <div class="user-username">@<%=u.getUsername()%></div>
                                 </div>
                             </div>
                         </td>
-                        <td><%=u.getEmail()%></td>
-                        <td><%= (u.getPhonenumber() != null && !u.getPhonenumber().isEmpty()) ? u.getPhonenumber() : "<span style='color: #ccc; font-style: italic;'>Chưa cập nhật</span>" %></td>
+                        <td style="color:#555;"><%=u.getEmail()%></td>
                         <td>
-                            <div class="action-group">
-                                <% if (role == 1) { // CHỈ ADMIN MỚI ĐƯỢC XÓA VÀ ĐỔI PASS %>
-                                    
-                                    <button class="btn-icon btn-edit" title="Cấp lại mật khẩu" 
-                                            onclick="changePassStaff('<%=u.getUsername()%>')" 
-                                            style="background: #f6c23e; color: white; padding: 6px 10px; border-radius: 4px;">
-                                        <i class="fa-solid fa-key"></i>
-                                    </button>
-                                    
-                                    <a href="admin-staffs?type=delete&uid=<%=u.getUid()%>" 
-                                       class="btn-icon btn-del" title="Xóa nhân viên"
-                                       style="background:#e74a3b; color:white; padding: 6px 10px; border-radius:4px; text-decoration: none;"
-                                       onclick="return confirm('CẢNH BÁO: Bạn có chắc chắn muốn xóa nhân viên <%=u.getUsername()%> ra khỏi hệ thống không?')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </a>
-
-                                <% } else { // Nhân viên xem danh sách nhau thì chỉ hiện trạng thái %>
-                                    <span class="status-tag status-active">Đang hoạt động</span>
-                                <% } %>
+                            <% if (u.getPhonenumber() != null && !u.getPhonenumber().isEmpty()) { %>
+                                <%=u.getPhonenumber()%>
+                            <% } else { %>
+                                <span style="color:#ccc;font-style:italic;">---</span>
+                            <% } %>
+                        </td>
+                        <td style="text-align:center;">
+                            <div style="display:flex;gap:6px;justify-content:center;">
+                                <button class="btn-icon btn-edit" title="Đổi mật khẩu"
+                                    onclick="openChangePass('<%=u.getUsername()%>', '<%=u.getFullname() != null ? u.getFullname() : u.getUsername()%>')">
+                                    <i class="fa-solid fa-key"></i>
+                                </button>
+                                <a href="admin-staffs?type=delete&uid=<%=u.getUid()%>"
+                                   class="btn-icon btn-delete" title="Xóa nhân viên"
+                                   onclick="return confirm('Bạn có chắc muốn xóa nhân viên này?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
-                    <%      } 
-                        } else { 
-                    %>
+                    <% } } else { %>
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 50px; color: #999;">
-                            <i class="fa-solid fa-users-slash" style="font-size: 40px; margin-bottom: 15px; display: block;"></i>
-                            Chưa có dữ liệu nhân viên nào trong hệ thống.
+                        <td colspan="5" style="text-align:center;padding:40px;color:#888;">
+                            <i class="fa-solid fa-user-slash" style="font-size:30px;margin-bottom:10px;"></i><br>
+                            Chưa có nhân viên nào trong hệ thống.
                         </td>
                     </tr>
                     <% } %>
@@ -160,19 +111,38 @@
         </div>
     </main>
 
+    <!-- Modal đổi mật khẩu -->
+    <div class="modal-overlay" id="changePassModal">
+        <div class="modal-box">
+            <h3><i class="fa-solid fa-key"></i> Đổi Mật Khẩu Nhân Viên</h3>
+            <p id="modal-staff-name" style="color:#555; margin-bottom:15px;"></p>
+            <form action="admin-staffs" method="get" id="changePassForm">
+                <input type="hidden" name="type" value="changepass">
+                <input type="hidden" name="uname" id="modal-uname">
+                <label style="font-weight:600;color:#333;">Mật khẩu mới:</label>
+                <input type="password" name="newpass" id="modal-newpass" placeholder="Nhập mật khẩu mới..." required>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel-modal" onclick="closeChangePass()">Hủy</button>
+                    <button type="submit" class="btn-confirm"><i class="fa-solid fa-check"></i> Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-    function changePassStaff(username) {
-        let newPass = prompt("Nhập mật khẩu mới cho nhân viên @" + username + ":\n(Lưu ý: Mật khẩu mới phải có ít nhất 6 ký tự)");
-        
-        if (newPass !== null) { // Nếu không bấm Hủy
-            if (newPass.length >= 6) {
-               
-                window.location.href = "admin-staffs?type=changepass&uname=" + username + "&newpass=" + encodeURIComponent(newPass);
-            } else {
-                alert("Lỗi: Mật khẩu quá ngắn. Vui lòng nhập từ 6 ký tự trở lên!");
-            }
+        function openChangePass(username, fullname) {
+            document.getElementById('modal-uname').value = username;
+            document.getElementById('modal-staff-name').textContent = 'Nhân viên: ' + fullname + ' (@' + username + ')';
+            document.getElementById('modal-newpass').value = '';
+            document.getElementById('changePassModal').classList.add('active');
         }
-    }
+        function closeChangePass() {
+            document.getElementById('changePassModal').classList.remove('active');
+        }
+        document.getElementById('changePassModal').addEventListener('click', function(e) {
+            if (e.target === this) closeChangePass();
+        });
     </script>
+
 </body>
 </html>

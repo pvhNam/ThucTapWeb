@@ -10,7 +10,8 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet"  href="CSS/AdminOrder.css">
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/AdminOrder.css">
 </head>
 <body>
 
@@ -28,6 +29,28 @@
         <div class="alert alert-success">
             <i class="fa-solid fa-check-circle"></i> 
             <span>Thao tác thành công!</span>
+        </div>
+        <% } %>
+
+        <%
+            String filterParam = (String) request.getAttribute("filter");
+            String filterName = null;
+            String filterColor = "#4e73df";
+            if ("processing".equals(filterParam)) { filterName = "Đang xử lý"; filterColor = "#f6c23e"; }
+            else if ("shipping".equals(filterParam)) { filterName = "Đang giao hàng"; filterColor = "#36b9cc"; }
+            else if ("cancel".equals(filterParam)) { filterName = "Đã hủy"; filterColor = "#e74a3b"; }
+            else if ("success".equals(filterParam)) { filterName = "Giao thành công"; filterColor = "#1cc88a"; }
+        %>
+        <% if (filterName != null) { %>
+        <div class="filter-bar">
+            <span class="filter-tag" style="border-color: <%=filterColor%>; color: <%=filterColor%>;">
+                <i class="fa-solid fa-filter"></i>
+                Lọc: <strong><%=filterName%></strong>
+                &nbsp;·&nbsp; <%=((java.util.List)request.getAttribute("listOrders")).size()%> đơn
+            </span>
+            <a href="admin-orders" class="btn-clear-filter">
+                <i class="fa-solid fa-xmark"></i> Xem tất cả
+            </a>
         </div>
         <% } %>
 
@@ -56,8 +79,8 @@
                             String st = o.getStatus();
                             String badgeClass = "bg-process"; // Mặc định là chờ xử lý
                             if (st.contains("giao")) badgeClass = "bg-shipping";
-                            if (st.contains("thành công")) badgeClass = "bg-success";
-                            if (st.contains("hủy")) badgeClass = "bg-cancel";
+                            if (st.contains("thành công")) { badgeClass = "bg-success"; }
+                            if (st.contains("hủy") || st.contains("huy")) badgeClass = "bg-cancel";
                     %>
                     <tr>
                         <td><strong>#<%=o.getId()%></strong></td>
@@ -83,17 +106,17 @@
                                 </a>
 
                                 <%-- Nút xử lý: Chỉ hiện khi Đang xử lý --%>
-                                <% if (st.equals("Đang xử lý")) { %>
+                                <% if (st.contains("xử lý") || st.equals("Đang xử lý")) { %>
                                     <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>"> 
+                                        <input type="hidden" name="id" value="<%=o.getId()%>">
                                         <input type="hidden" name="action" value="ship">
                                         <button type="submit" class="btn-action btn-ship" title="Xác nhận giao hàng">
                                             <i class="fa-solid fa-truck"></i>
                                         </button>
                                     </form>
-                                    
+
                                     <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>"> 
+                                        <input type="hidden" name="id" value="<%=o.getId()%>">
                                         <input type="hidden" name="action" value="cancel">
                                         <button type="submit" class="btn-action btn-cancel" title="Hủy đơn hàng" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
                                             <i class="fa-solid fa-xmark"></i>
@@ -102,7 +125,7 @@
                                 <% } %>
 
                                 <%-- Nút xử lý: Chỉ hiện khi Đang giao hàng --%>
-                                <% if (st.equals("Đang giao hàng")) { %>
+                                <% if (st.contains("giao") && !st.contains("thành công")) { %>
                                     <form action="update-order" method="post" style="margin: 0;">
                                         <input type="hidden" name="id" value="<%=o.getId()%>"> 
                                         <input type="hidden" name="action" value="success">

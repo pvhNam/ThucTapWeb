@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.cartItem, model.Voucher, java.text.DecimalFormat"%>
+<%@ page import="java.util.List, model.CartItem, model.Voucher, java.text.DecimalFormat"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
@@ -11,30 +11,15 @@
     <title><fmt:message key="cart.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/cart.css">
-    <style>
-        .stock-limit { font-size: 11px; color: #e74a3b; margin-top: 5px; display: block; font-style: italic; font-weight: bold;}
-        .stock-info { font-size: 11px; color: #858796; margin-top: 5px; display: block; }
-        .btn-qty:disabled { background-color: #eaecf4; color: #d1d3e2; cursor: not-allowed; border-color: #d1d3e2; }
-        
-        /* Style cho nút checkout bị khóa */
-        .btn-checkout:disabled {
-            background-color: #858796;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .error-alert-box {
-            background: #ffebee; color: #c62828; padding: 10px; border-radius: 5px; 
-            margin-top: 15px; font-size: 13px; text-align: center; border: 1px solid #ffcdd2;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/user/cart.css">
+    <link rel="stylesheet" href="CSS/user/cartitem.css">
 </head>
 <body>
     <jsp:include page="header.jsp" />
 
     <%
     DecimalFormat df = new DecimalFormat("#,### VNĐ");
-    List<cartItem> cartList = (List<cartItem>) request.getAttribute("cartList");
+    List<CartItem> cartList = (List<CartItem>) request.getAttribute("cartList");
     List<Voucher> myVouchers = (List<Voucher>) request.getAttribute("myVouchers");
     
     // [QUAN TRỌNG] Biến cờ để kiểm tra xem giỏ hàng có lỗi không
@@ -47,7 +32,7 @@
         <div class="cart-layout">
             <div class="cart-items-section">
                 <% if (cartList != null && !cartList.isEmpty()) {
-                    for (cartItem item : cartList) { 
+                    for (CartItem item : cartList) { 
                         // Logic kiểm tra tồn kho
                         int currentQty = item.getQuantity();
                         int maxStock = item.getProduct().getStockquantyti(); 

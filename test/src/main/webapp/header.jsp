@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <head>
-<link rel="stylesheet" href="CSS/Header.css">
+<link rel="stylesheet" href="CSS/user/Header.css">
 </head>
 
 <fmt:setLocale

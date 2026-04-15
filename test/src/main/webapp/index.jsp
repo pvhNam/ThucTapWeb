@@ -12,7 +12,7 @@
 <title><fmt:message key="home.page_title" /> | Fashion Store</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css">
-<link rel="stylesheet" href="CSS/index.css">
+<link rel="stylesheet" href="CSS/user/index.css">
 </head>
 
 <body>

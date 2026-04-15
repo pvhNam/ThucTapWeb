@@ -18,7 +18,7 @@
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/login.css" />
+<link rel="stylesheet" href="CSS/user/login.css" />
 </head>
 <body>
 	<jsp:include page="header.jsp" />

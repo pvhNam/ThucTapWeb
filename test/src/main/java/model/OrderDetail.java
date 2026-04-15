@@ -6,9 +6,9 @@ public class OrderDetail {
 	private int productId;
 	private double price;
 	private int quantity;
-	private product product; 
+	private Product product;
 
-	public OrderDetail(int id, int orderId, int productId, double price, int quantity, product product) {
+	public OrderDetail(int id, int orderId, int productId, double price, int quantity, Product product) {
 		this.id = id;
 		this.orderId = orderId;
 		this.productId = productId;
@@ -29,7 +29,7 @@ public class OrderDetail {
 		return quantity;
 	}
 
-	public product getProduct() {
+	public Product getProduct() {
 		return product;
 	}
 }

@@ -1,0 +1,75 @@
+/* sidebar.css — admin sidebar navigation */
+
+:root {
+    --sidebar-bg:   #2d3748;
+    --sidebar-text: rgba(255, 255, 255, 0.8);
+    --active-color: #4e73df;
+    --hover-bg:     rgba(255, 255, 255, 0.08);
+}
+
+.sidebar {
+    width: var(--sidebar-width, 250px);
+    background-color: var(--sidebar-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0; top: 0;
+    z-index: 1000;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.15);
+    font-family: 'Inter', sans-serif;
+}
+
+.sidebar-brand {
+    padding: 22px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: 1px;
+    color: #fff;
+    background: rgba(0,0,0,0.1);
+}
+
+.sidebar-menu {
+    padding: 15px 0;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.menu-item {
+    padding: 13px 24px;
+    display: flex;
+    align-items: center;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: all 0.25s ease;
+    font-weight: 500;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+}
+
+.menu-item i {
+    width: 22px;
+    font-size: 16px;
+    margin-right: 12px;
+    text-align: center;
+    opacity: 0.85;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background-color: var(--hover-bg);
+    color: white;
+    border-left-color: var(--active-color);
+}
+
+.menu-item.active {
+    font-weight: 600;
+}
+
+.menu-item:hover i,
+.menu-item.active i {
+    opacity: 1;
+}
