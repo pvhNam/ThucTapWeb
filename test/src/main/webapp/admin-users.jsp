@@ -94,7 +94,12 @@
     <main class="main-content">
         <div class="content-header" style="justify-content: space-between;">
             <h1 class="page-title">Quản Lý Khách Hàng</h1>
-            
+            <div class="content-header">
+    <h1 class="page-title">Quản Lý Khách Hàng</h1>
+    
+
+    
+</div>
             <form action="admin-users" method="get" class="search-box">
                 <input type="text" name="search" placeholder="Tìm tên, email, sđt..." value="${param.search}">
                 <button type="submit" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
