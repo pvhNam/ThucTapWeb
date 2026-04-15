@@ -46,13 +46,10 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-<<<<<<< HEAD
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/json-20231013.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/kotlin-stdlib-1.6.21.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okhttp-4.10.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okio-fakefilesystem-jvm-3.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/ASUS/git/ThucTapWeb/test/src/main/webapp/WEB-INF/lib/okio-jvm-3.0.0-alpha.10.jar"/>
-=======
->>>>>>> branch 'main' of https://github.com/pvhNam/ThucTapWeb.git
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okio-jvm-3.0.0-alpha.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/kotlin-stdlib-1.6.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okio-fakefilesystem-jvm-3.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okhttp-4.10.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/json-20231013.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
