@@ -1,0 +1,364 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap');
+
+/* --- BIẾN MÀU SẮC & FONT --- */
+:root {
+    --gold: #d4af37;        
+    --black: #1a1a1a;       
+    --white: #ffffff;
+    --gray-bg: #f9f9f9;     
+    --text-gray: #666;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+}
+
+/* --- HERO BANNER SETUP --- */
+.hero-banner {
+    position: relative;
+    /* Hãy thay đường dẫn ảnh banner của bạn ở đây */
+    background-image: url('../img/banner.jpg'); 
+    background-size: cover;           
+    background-position: center;      
+    background-repeat: no-repeat;
+    height: 600px;                    
+    display: flex;
+    align-items: center;              
+    justify-content: center;          
+    width: 100%;
+    margin-bottom: 60px;
+}
+
+/* Lớp phủ tối màu để chữ nổi bật */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    max-width: 800px;
+    padding: 0 20px;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    display: block;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+.btn-hero {
+    display: inline-block;
+    padding: 15px 40px;
+    background-color: var(--gold);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid var(--gold);
+    transition: all 0.3s ease;
+}
+
+.btn-hero:hover {
+    background-color: transparent;
+    color: var(--gold);
+    transform: translateY(-3px);
+}
+
+/* --- COMMON SECTION STYLES --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--black);
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.section-line {
+    width: 80px;
+    height: 2px;
+    background-color: var(--gold);
+    margin: 0 auto;
+}
+
+/* --- VOUCHER SECTION --- */
+.voucher-section { margin-bottom: 80px; }
+
+.voucher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.voucher-card {
+    display: flex;
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: transform 0.3s;
+}
+
+.voucher-card:hover { transform: translateY(-5px); }
+
+.voucher-left {
+    background: var(--black);
+    color: var(--gold);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
+    border-right: 2px dashed var(--white);
+    text-align: center;
+}
+
+.voucher-amount { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.voucher-unit { font-size: 0.8rem; text-transform: uppercase; margin-top: 5px; }
+
+.voucher-right {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.voucher-code {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #999;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.voucher-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 5px 0;
+    color: #333;
+}
+
+.voucher-expiry { font-size: 0.8rem; color: #888; font-style: italic; margin-bottom: 15px; }
+
+.btn-save-voucher {
+    align-self: flex-start;
+    background: transparent;
+    border: 1px solid var(--black);
+    color: var(--black);
+    padding: 6px 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 4px;
+}
+
+.btn-save-voucher:hover { background: var(--black); color: var(--white); }
+
+/* --- PRODUCT SECTION --- */
+.product-section {
+    background-color: #f5f5f5;
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin-bottom: 100px;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 40px;
+}
+
+.product-card {
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding-bottom: 15px;
+}
+
+.product-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.overlay-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--white);
+    color: var(--black);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.product-image:hover .overlay-btn {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.product-details {
+    padding: 10px 15px;
+    text-align: center;
+}
+
+.product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 8px 0;
+}
+
+.product-name a {
+    text-decoration: none;
+    color: var(--black);
+    transition: color 0.2s;
+}
+
+.product-name a:hover { color: var(--gold); }
+
+.price {
+    font-weight: 700;
+    color: var(--black);
+    font-size: 1.1rem;
+}
+
+.btn-add-cart {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: var(--black);
+    color: var(--white);
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.product-card:hover .btn-add-cart {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.btn-add-cart:hover { background-color: var(--gold); }
+
+/* --- NÚT XEM THÊM (MỚI) --- */
+.btn-see-more {
+    display: inline-block;
+    padding: 12px 35px;
+    background-color: transparent;
+    color: var(--black);
+    border: 2px solid var(--black);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+}
+
+.btn-see-more:hover {
+    background-color: var(--black);
+    color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.btn-see-more i {
+    margin-left: 8px;
+    transition: margin-left 0.3s;
+}
+
+.btn-see-more:hover i {
+    margin-left: 12px;
+}
+
+/* --- ANIMATION --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .hero-banner { height: 400px; }
+    .hero-title { font-size: 2.5rem; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .product-image { height: 250px; }
+    .btn-add-cart { opacity: 1; transform: none; }
+}
