@@ -1,11 +1,16 @@
 package dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.CartItem;
 import model.Order;
 import model.OrderDetail;
-import model.CartItem;
 import model.Product;
 
 public class OrderDAO {
@@ -14,7 +19,6 @@ public class OrderDAO {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    // Lấy danh sách đơn hàng của User (Cho trang Lịch sử mua hàng)
     public List<Order> getOrdersByUserId(int userId) {
         List<Order> list = new ArrayList<>();
         String sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC";
@@ -24,14 +28,7 @@ public class OrderDAO {
             ps.setInt(1, userId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Order o = new Order();
-                o.setId(rs.getInt("id"));
-                o.setUserId(rs.getInt("user_id"));
-                o.setTotalMoney(rs.getDouble("total_money"));
-                o.setAddress(rs.getString("address"));
-                o.setStatus(rs.getString("status"));
-                o.setCreatedAt(rs.getDate("created_at"));
-                list.add(o);
+                list.add(mapOrder(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,27 +36,17 @@ public class OrderDAO {
         return list;
     }
 
-    // Lấy TẤT CẢ đơn hàng (Cho trang Admin )
     public List<Order> getAllOrders() {
         List<Order> list = new ArrayList<>();
-        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o " 
-                   + "JOIN users u ON o.user_id = u.uid "
-                   + "ORDER BY o.created_at DESC";
+        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o "
+                + "JOIN users u ON o.user_id = u.uid "
+                + "ORDER BY o.created_at DESC";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Order o = new Order();
-                o.setId(rs.getInt("id"));
-                o.setUserId(rs.getInt("user_id"));
-                o.setTotalMoney(rs.getDouble("total_money"));
-                o.setAddress(rs.getString("address"));
-                o.setStatus(rs.getString("status"));
-                o.setCreatedAt(rs.getDate("created_at"));
-                o.setUserName(rs.getString("fullname"));
-                o.setPhoneNumber(rs.getString("phonenumber"));
-                list.add(o);
+                list.add(mapOrder(rs));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,27 +54,17 @@ public class OrderDAO {
         return list;
     }
 
-    // Lấy chi tiết 1 đơn hàng theo ID
     public Order getOrderById(int orderId) {
-        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o " 
-                   + "JOIN users u ON o.user_id = u.uid "
-                   + "WHERE o.id = ?";
+        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o "
+                + "JOIN users u ON o.user_id = u.uid "
+                + "WHERE o.id = ?";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
             rs = ps.executeQuery();
             if (rs.next()) {
-                Order o = new Order();
-                o.setId(rs.getInt("id"));
-                o.setUserId(rs.getInt("user_id"));
-                o.setTotalMoney(rs.getDouble("total_money"));
-                o.setAddress(rs.getString("address"));
-                o.setStatus(rs.getString("status"));
-                o.setCreatedAt(rs.getDate("created_at"));
-                o.setUserName(rs.getString("fullname"));
-                o.setPhoneNumber(rs.getString("phonenumber"));
-                return o;
+                return mapOrder(rs);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,68 +72,83 @@ public class OrderDAO {
         return null;
     }
 
-    // TẠO ĐƠN HÀNG MỚI
     public int createOrder(int userId, double totalMoney, String address, String paymentMethod, List<CartItem> cart) {
+        return createOrder(userId, totalMoney, address, paymentMethod, Order.STATUS_PROCESSING, cart);
+    }
+
+    public int createOrder(int userId, double totalMoney, String address, String paymentMethod, String status,
+            List<CartItem> cart) {
         int orderId = 0;
-        Connection conn = null;
+        Connection connection = null;
         PreparedStatement psOrder = null;
         PreparedStatement psDetail = null;
 
         try {
-            conn = new DBConnect().getConnection(); 
-            conn.setAutoCommit(false); 
-            // Insert vào bảng ORDERS
-            String sqlOrder = "INSERT INTO orders (user_id, total_money, address, status, created_at, payment_method) VALUES (?, ?, ?, 'Đang xử lý', NOW(), ?)";
-            
-            psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
+            connection = new DBConnect().getConnection();
+            connection.setAutoCommit(false);
+
+            String sqlOrder = "INSERT INTO orders (user_id, total_money, address, status, created_at, payment_method) "
+                    + "VALUES (?, ?, ?, ?, NOW(), ?)";
+
+            psOrder = connection.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
             psOrder.setInt(1, userId);
             psOrder.setDouble(2, totalMoney);
             psOrder.setString(3, address);
-            psOrder.setString(4, paymentMethod);
+            psOrder.setString(4, status);
+            psOrder.setString(5, paymentMethod);
 
             if (psOrder.executeUpdate() > 0) {
-                ResultSet rsKeys = psOrder.getGeneratedKeys();
-                if (rsKeys.next()) {
-                    orderId = rsKeys.getInt(1); // Lấy ID đơn hàng vừa tạo
+                try (ResultSet rsKeys = psOrder.getGeneratedKeys()) {
+                    if (rsKeys.next()) {
+                        orderId = rsKeys.getInt(1);
+                    }
                 }
             }
-            // Insert chi tiết sản phẩm vào bảng ORDER_DETAILS
-            if (orderId > 0 && cart != null) {
+
+            if (orderId > 0 && cart != null && !cart.isEmpty()) {
                 String sqlDetail = "INSERT INTO order_details (order_id, product_id, price, quantity) VALUES (?, ?, ?, ?)";
-                psDetail = conn.prepareStatement(sqlDetail);
+                psDetail = connection.prepareStatement(sqlDetail);
 
                 for (CartItem item : cart) {
                     psDetail.setInt(1, orderId);
                     psDetail.setInt(2, item.getProduct().getPid());
-                    psDetail.setDouble(3, item.getProduct().getPrice()); // Lưu giá tại thời điểm mua
+                    psDetail.setDouble(3, item.getProduct().getPrice());
                     psDetail.setInt(4, item.getQuantity());
-                    psDetail.addBatch(); // Gom nhóm để chạy 1 lần cho nhanh
+                    psDetail.addBatch();
                 }
                 psDetail.executeBatch();
             }
-            conn.commit();
 
+            connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                if (conn != null) conn.rollback(); // Nếu có lỗi thì hoàn tác (không tạo đơn hàng lỗi)
-            } catch (SQLException ex) { ex.printStackTrace(); }
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             orderId = 0;
         } finally {
-            // Đóng kết nối
             try {
-                if (psOrder != null) psOrder.close();
-                if (psDetail != null) psDetail.close();
-                if (conn != null) {
-                    conn.setAutoCommit(true); // Trả về trạng thái mặc định
-                    conn.close();
+                if (psOrder != null) {
+                    psOrder.close();
                 }
-            } catch (Exception e) {}
+                if (psDetail != null) {
+                    psDetail.close();
+                }
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return orderId;
     }
 
-    // Cập nhật trạng thái đơn hàng (Dùng cho Admin: Giao hàng, Hủy...)
     public void updateOrderStatus(int orderId, String status) {
         String sql = "UPDATE orders SET status = ? WHERE id = ?";
         try {
@@ -170,36 +162,75 @@ public class OrderDAO {
         }
     }
 
-    // Lấy danh sách sản phẩm trong 1 đơn hàng (Để hiển thị trang chi tiết)
+    public boolean updateOrderStatusIfCurrent(int orderId, String currentStatus, String newStatus) {
+        String sql = "UPDATE orders SET status = ? WHERE id = ? AND status = ?";
+        try (Connection connection = DBConnect.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newStatus);
+            statement.setInt(2, orderId);
+            statement.setString(3, currentStatus);
+            return statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<OrderDetail> getDetails(int orderId) {
         List<OrderDetail> list = new ArrayList<>();
-        String sql = "SELECT d.*, p.* FROM order_details d " 
-                   + "JOIN product p ON d.product_id = p.pid "
-                   + "WHERE d.order_id = ?";
+        String sql = "SELECT d.*, p.* FROM order_details d "
+                + "JOIN product p ON d.product_id = p.pid "
+                + "WHERE d.order_id = ?";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(sql);
             ps.setInt(1, orderId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                // Tạo đối tượng Product
-                Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
-                        rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
+                Product p = new Product(
+                        rs.getInt("pid"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("cateID"),
+                        rs.getString("color"),
+                        rs.getString("size"),
+                        rs.getInt("amount"),
                         rs.getString("img"));
-                
-                // Tạo đối tượng OrderDetail
+
                 list.add(new OrderDetail(
-                        rs.getInt("d.id"), 
-                        rs.getInt("order_id"), 
+                        rs.getInt("d.id"),
+                        rs.getInt("order_id"),
                         rs.getInt("product_id"),
-                        rs.getDouble("d.price"), 
-                        rs.getInt("d.quantity"), 
-                        p
-                ));
+                        rs.getDouble("d.price"),
+                        rs.getInt("d.quantity"),
+                        p));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private Order mapOrder(ResultSet resultSet) throws SQLException {
+        Order order = new Order();
+        order.setId(resultSet.getInt("id"));
+        order.setUserId(resultSet.getInt("user_id"));
+        order.setTotalMoney(resultSet.getDouble("total_money"));
+        order.setAddress(resultSet.getString("address"));
+        order.setStatus(resultSet.getString("status"));
+        order.setCreatedAt(resultSet.getDate("created_at"));
+        order.setPaymentMethod(resultSet.getString("payment_method"));
+
+        try {
+            order.setUserName(resultSet.getString("fullname"));
+        } catch (SQLException ignored) {
+        }
+
+        try {
+            order.setPhoneNumber(resultSet.getString("phonenumber"));
+        } catch (SQLException ignored) {
+        }
+
+        return order;
     }
 }
