@@ -70,7 +70,9 @@ public class ExportReportController extends HttpServlet {
                         Cell c3 = row.createCell(3); c3.setCellValue(item.totalMoney); c3.setCellStyle(moneyStyle);
                         String payMethod = "Tien mat";
                         if (item.paymentMethod != null &&
-                          (item.paymentMethod.toUpperCase().contains("BANK") || item.paymentMethod.toUpperCase().contains("CHUYEN"))) {
+                          (item.paymentMethod.toUpperCase().contains("BANK")
+                           || item.paymentMethod.toUpperCase().contains("CHUYEN")
+                           || item.paymentMethod.toUpperCase().contains("MOMO"))) {
                             payMethod = "Chuyen khoan";
                         }
                         row.createCell(4).setCellValue(payMethod);
