@@ -12,301 +12,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="CSS/Admin.css">
-
-<style>
-    :root {
-        --primary: #4e73df;
-        --success: #1cc88a;
-        --warning: #f6c23e;
-        --danger: #e74a3b;
-        --dark: #5a5c69;
-        --light: #f8f9fc;
-        --text: #444;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f3f4f6;
-        color: var(--text);
-    }
-
-    /* --- 1. HEADER AREA --- */
-    .content-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #e3e6f0;
-    }
-
-    .page-title {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--dark);
-        margin: 0;
-    }
-
-    .user-info {
-        background: white;
-        padding: 8px 20px;
-        border-radius: 50px;
-        box-shadow: var(--shadow);
-        font-weight: 600;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* --- 2. STATS CARDS (THẺ THỐNG KÊ) --- */
-    .stats-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 24px;
-        margin-bottom: 30px;
-    }
-
-    .card-stat {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: all 0.3s ease;
-        border-left: 5px solid transparent;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .card-stat:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-hover);
-    }
-
-    /* Màu sắc riêng cho từng thẻ */
-    .card-stat.blue { border-left-color: var(--primary); }
-    .card-stat.blue .stat-icon { color: var(--primary); background: #e8f0fe; }
-    
-    .card-stat.green { border-left-color: var(--success); }
-    .card-stat.green .stat-icon { color: var(--success); background: #e0fdf4; }
-    
-    .card-stat.orange { border-left-color: var(--warning); }
-    .card-stat.orange .stat-icon { color: var(--warning); background: #fff8e1; }
-    
-    .card-stat.red { border-left-color: var(--danger); }
-    .card-stat.red .stat-icon { color: var(--danger); background: #fce8e6; }
-
-    .stat-info h3 {
-        font-size: 28px;
-        font-weight: 800;
-        margin: 0;
-        color: #333;
-    }
-
-    .stat-info p {
-        margin: 5px 0 0;
-        color: #888;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-    }
-
-    .stat-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-    }
-
-    /* --- 3. EXPORT SECTION (KHU VỰC BÁO CÁO) --- */
-    .export-container {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: var(--shadow);
-        margin-bottom: 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .section-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--dark);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
-        margin: 0;
-    }
-
-    .export-tools {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 30px;
-    }
-
-    .export-form {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        background: #f8f9fc;
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: 1px dashed #d1d3e2;
-    }
-
-    .export-label {
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--dark);
-        white-space: nowrap;
-    }
-
-    .custom-input {
-        padding: 8px 12px;
-        border: 1px solid #d1d3e2;
-        border-radius: 6px;
-        outline: none;
-        color: #555;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .custom-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
-    }
-
-    .btn-export {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.2s;
-    }
-
-    .btn-green { background-color: var(--success); }
-    .btn-green:hover { background-color: #169b6b; box-shadow: 0 4px 10px rgba(28, 200, 138, 0.3); }
-
-    .btn-blue { background-color: #36b9cc; }
-    .btn-blue:hover { background-color: #2c9faf; box-shadow: 0 4px 10px rgba(54, 185, 204, 0.3); }
-
-    /* --- 4. DATA TABLE (BẢNG DỮ LIỆU) --- */
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        overflow: hidden; /* Để bo tròn góc bảng */
-    }
-
-    .table-header-box {
-        padding: 20px 25px;
-        background: white;
-        border-bottom: 1px solid #e3e6f0;
-    }
-
-    .admin-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .admin-table thead th {
-        background-color: #f8f9fc;
-        color: var(--primary);
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-        padding: 15px 25px;
-        text-align: left;
-        border-bottom: 2px solid #e3e6f0;
-    }
-
-    .admin-table tbody td {
-        padding: 15px 25px;
-        border-bottom: 1px solid #e3e6f0;
-        color: #555;
-        font-size: 14px;
-        vertical-align: middle;
-    }
-
-    .admin-table tbody tr:hover {
-        background-color: #fafbfc;
-    }
-
-    .money {
-        font-family: 'Consolas', monospace;
-        font-weight: 700;
-        color: var(--dark);
-    }
-
-    /* Badges */
-    .badge {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        display: inline-block;
-    }
-
-    .bg-process { background-color: #fff3cd; color: #856404; }
-    .bg-shipping { background-color: #cce5ff; color: #004085; }
-    .bg-success { background-color: #d4edda; color: #155724; }
-    .bg-cancel { background-color: #f8d7da; color: #721c24; }
-
-    /* Action Buttons in Table */
-    .action-group { display: flex; gap: 8px; }
-    .btn-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        cursor: pointer;
-        color: white;
-        transition: transform 0.2s;
-        text-decoration: none;
-    }
-    .btn-icon:hover { transform: scale(1.1); }
-    .btn-view { background: var(--dark); }
-    .btn-ship { background: var(--warning); color: #333; }
-
-    /* Alert */
-    .alert-modern {
-        padding: 15px 20px;
-        background: #d1fae5;
-        color: #065f46;
-        border-left: 5px solid #10b981;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        box-shadow: var(--shadow);
-    }
-</style>
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/admin-dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -315,7 +23,7 @@
     </jsp:include>
 
     <main class="main-content">
-        
+
         <div class="content-header">
             <h1 class="page-title">Tổng quan Dashboard</h1>
             <div class="user-info">
@@ -329,8 +37,10 @@
             int totalOrders = request.getAttribute("totalOrders") != null ? (int) request.getAttribute("totalOrders") : 0;
             double totalRevenue = request.getAttribute("totalRevenue") != null ? (double) request.getAttribute("totalRevenue") : 0.0;
             int countProcessing = request.getAttribute("countProcessing") != null ? (int) request.getAttribute("countProcessing") : 0;
-            int countCancel = request.getAttribute("countCancel") != null ? (int) request.getAttribute("countCancel") : 0;
-            
+            int countCancel    = request.getAttribute("countCancel")    != null ? (int) request.getAttribute("countCancel")    : 0;
+            int countSuccess   = request.getAttribute("countSuccess")   != null ? (int) request.getAttribute("countSuccess")   : 0;
+            int countShipping  = request.getAttribute("countShipping")  != null ? (int) request.getAttribute("countShipping")  : 0;
+
             // Format tiền tệ & Thời gian
             DecimalFormat df = new DecimalFormat("#,### VNĐ");
             int currentYear = LocalDate.now().getYear();
@@ -338,36 +48,109 @@
         %>
 
         <div class="stats-cards">
-            <div class="card-stat blue">
-                <div class="stat-info">
-                    <h3><%= totalOrders %></h3>
-                    <p>Tổng đơn hàng</p>
+            <a href="admin-orders" class="stat-link">
+                <div class="card-stat blue">
+                    <div class="stat-info">
+                        <h3><%= totalOrders %></h3>
+                        <p>Tổng đơn hàng</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                 </div>
-                <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            </div>
-            
-            <div class="card-stat green">
-                <div class="stat-info">
-                    <h3 style="color: var(--success);"><%= df.format(totalRevenue) %></h3>
-                    <p>Doanh thu thực</p>
+            </a>
+
+            <a href="admin-orders?filter=success" class="stat-link">
+                <div class="card-stat green">
+                    <div class="stat-info">
+                        <h3 style="color: var(--success);"><%= df.format(totalRevenue) %></h3>
+                        <p>Doanh thu thực</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
                 </div>
-                <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-            </div>
-            
-            <div class="card-stat orange">
-                <div class="stat-info">
-                    <h3><%= countProcessing %></h3>
-                    <p>Đang chờ xử lý</p>
+            </a>
+
+            <a href="admin-orders?filter=processing" class="stat-link">
+                <div class="card-stat orange">
+                    <div class="stat-info">
+                        <h3><%= countProcessing %></h3>
+                        <p>Đang chờ xử lý</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
                 </div>
-                <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-            </div>
-            
-            <div class="card-stat red">
-                <div class="stat-info">
-                    <h3><%= countCancel %></h3>
-                    <p>Đơn bị hủy</p>
+            </a>
+
+            <a href="admin-orders?filter=cancel" class="stat-link">
+                <div class="card-stat red">
+                    <div class="stat-info">
+                        <h3><%= countCancel %></h3>
+                        <p>Đơn bị hủy</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-ban"></i></div>
                 </div>
-                <div class="stat-icon"><i class="fa-solid fa-ban"></i></div>
+            </a>
+
+            <a href="admin-orders?filter=shipping" class="stat-link">
+                <div class="card-stat teal">
+                    <div class="stat-info">
+                        <h3><%= countShipping %></h3>
+                        <p>Đang giao hàng</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                </div>
+            </a>
+
+            <a href="admin-orders?filter=success" class="stat-link">
+                <div class="card-stat purple">
+                    <div class="stat-info">
+                        <h3><%= countSuccess %></h3>
+                        <p>Giao thành công</p>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                </div>
+            </a>
+        </div>
+
+        <%-- ===== BIỂU ĐỒ TRÒN TRẠNG THÁI ĐƠN HÀNG ===== --%>
+        <div class="charts-section">
+            <div class="chart-container donut-card">
+                <h4 class="chart-title">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    Phân tích trạng thái đơn hàng
+                </h4>
+                <div class="donut-wrapper">
+                    <div class="donut-canvas-wrap">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                    <div class="donut-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: linear-gradient(135deg,#1cc88a,#13855c);"></span>
+                            <div>
+                                <div class="legend-label">Giao thành công</div>
+                                <div class="legend-count" style="color:#1cc88a;"><%= countSuccess %> đơn</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: linear-gradient(135deg,#36b9cc,#1a9eac);"></span>
+                            <div>
+                                <div class="legend-label">Đang giao hàng</div>
+                                <div class="legend-count" style="color:#36b9cc;"><%= countShipping %> đơn</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: linear-gradient(135deg,#e74a3b,#c0392b);"></span>
+                            <div>
+                                <div class="legend-label">Đơn đã hủy</div>
+                                <div class="legend-count" style="color:#e74a3b;"><%= countCancel %> đơn</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: linear-gradient(135deg,#f6c23e,#d4a017);"></span>
+                            <div>
+                                <div class="legend-label">Đang xử lý</div>
+                                <div class="legend-count" style="color:#d4a017;"><%= countProcessing %> đơn</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -380,10 +163,10 @@
 
         <div class="export-container">
             <h3 class="section-title">
-                <i class="fa-solid fa-file-export" style="color: var(--primary);"></i> 
+                <i class="fa-solid fa-file-export" style="color: var(--primary);"></i>
                 Xuất Báo Cáo Doanh Thu
             </h3>
-            
+
             <div class="export-tools">
                 <form action="admin-export-report" method="get" class="export-form">
                     <input type="hidden" name="type" value="daily">
@@ -397,7 +180,7 @@
                 <form action="admin-export-report" method="get" class="export-form">
                     <input type="hidden" name="type" value="monthly">
                     <span class="export-label">📊 Theo tháng:</span>
-                    
+
                     <select name="month" class="custom-input">
                         <% for(int i=1; i<=12; i++) { %>
                             <option value="<%=i%>" <%= i == currentMonth ? "selected" : "" %>>Tháng <%=i%></option>
@@ -405,7 +188,7 @@
                     </select>
 
                     <input type="number" name="year" value="<%= currentYear %>" class="custom-input" style="width: 80px;">
-                    
+
                     <button type="submit" class="btn-export btn-blue">
                         <i class="fa-solid fa-download"></i> Tải về
                     </button>
@@ -419,7 +202,7 @@
                     <i class="fa-solid fa-list-ul" style="margin-right: 10px;"></i> Đơn hàng gần đây
                 </h3>
             </div>
-            
+
             <table class="admin-table">
                 <thead>
                     <tr>
@@ -464,7 +247,7 @@
                                 </a>
                                 <% if ("Đang xử lý".equals(st)) { %>
                                     <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>"> 
+                                        <input type="hidden" name="id" value="<%=o.getId()%>">
                                         <input type="hidden" name="action" value="ship">
                                         <button class="btn-icon btn-ship" title="Giao hàng">
                                             <i class="fa-solid fa-truck"></i>
@@ -484,5 +267,51 @@
             </table>
         </div>
     </main>
+
+<script>
+(function() {
+    var success  = <%= countSuccess %>;
+    var shipping = <%= countShipping %>;
+    var cancel   = <%= countCancel %>;
+    var process  = <%= countProcessing %>;
+
+    if (success + shipping + cancel + process === 0) return;
+
+    var ctx = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Giao thành công', 'Đang giao', 'Đã hủy', 'Đang xử lý'],
+            datasets: [{
+                data: [success, shipping, cancel, process],
+                backgroundColor: ['#1cc88a', '#36b9cc', '#e74a3b', '#f6c23e'],
+                borderColor: '#ffffff',
+                borderWidth: 4,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            cutout: '68%',
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(30,30,40,0.85)',
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(c) {
+                            var total = c.dataset.data.reduce(function(a,b){return a+b;},0);
+                            var pct = total ? Math.round(c.raw/total*100) : 0;
+                            return '  ' + c.label + ': ' + c.raw + ' đơn (' + pct + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+})();
+</script>
 </body>
 </html>

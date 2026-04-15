@@ -1,87 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.user"%>
+<%@ page import="model.User"%>
 <%
 String activePage = request.getParameter("pageName");
 if (activePage == null)
 	activePage = "";
 
 // Xử lý Phân quyền
-user currUser = (user) session.getAttribute("user");
+User currUser = (User) session.getAttribute("user");
 Boolean isHardcodedAdmin = (Boolean) session.getAttribute("isAdmin");
 
 int role = 0;
 if (currUser != null) {
 	role = currUser.getIsAdmin();
 } else if (isHardcodedAdmin != null && isHardcodedAdmin) {
-	role = 1; 
+	role = 1;
 }
 %>
 
-<style>
-:root {
-	--sidebar-width: 250px;
-	--sidebar-bg: #343a40;
-	--sidebar-color: white;
-	--active-color: #3498db;
-	--hover-bg: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar {
-	width: var(--sidebar-width);
-	background-color: var(--sidebar-bg);
-	color: var(--sidebar-color);
-	display: flex;
-	flex-direction: column;
-	position: fixed;
-	height: 100vh;
-	left: 0;
-	top: 0;
-	z-index: 1000;
-	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-	font-family: 'Inter', sans-serif;
-}
-
-.sidebar-brand {
-	padding: 20px;
-	font-size: 20px;
-	font-weight: 700;
-	text-align: center;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	letter-spacing: 1px;
-	color: #fff;
-}
-
-.sidebar-menu {
-	padding: 20px 0;
-	flex: 1;
-	overflow-y: auto;
-}
-
-.menu-item {
-	padding: 15px 25px;
-	display: flex;
-	align-items: center;
-	color: rgba(255, 255, 255, 0.8);
-	text-decoration: none;
-	transition: 0.3s;
-	font-weight: 500;
-}
-
-.menu-item i {
-	width: 25px;
-	font-size: 18px;
-	margin-right: 10px;
-	text-align: center;
-}
-
-.menu-item:hover, .menu-item.active {
-	background-color: var(--hover-bg);
-	color: white;
-	border-left: 4px solid var(--active-color);
-	padding-left: 21px;
-}
-</style>
+<link rel="stylesheet" href="CSS/admin/sidebar.css">
 
 <div class="sidebar">
 	<div class="sidebar-brand">
@@ -111,7 +48,7 @@ if (currUser != null) {
 		</a>
 
 		<%
-		if (role == 1) { 
+		if (role == 1) {
 		%>
 		 <a href="admin-news"
 			class="menu-item <%=activePage.equals("news") ? "active" : ""%>">

@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="model.user" %>
+<%@ page import="model.User" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 
 <%
-    user currentUser = (user) session.getAttribute("user");
+    User currentUser = (User) session.getAttribute("user");
     if (currentUser == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -23,8 +23,8 @@
     <title><fmt:message key="profile.page_title" /></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
-    <link rel="stylesheet" href="CSS/login.css" /> 
-    <link rel="stylesheet" href="CSS/profile.css" /> 
+    <link rel="stylesheet" href="CSS/user/login.css" /> 
+    <link rel="stylesheet" href="CSS/user/profile.css" /> 
 </head>
 <body>
     <header>

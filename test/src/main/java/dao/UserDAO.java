@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import model.user;
+import model.User;
 
 public class UserDAO {
     Connection conn = null;
@@ -13,7 +13,7 @@ public class UserDAO {
     ResultSet rs = null;
 
     // LOGIN
-    public user login(String username, String password) {
+    public User login(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try {
             conn = new DBConnect().getConnection();
@@ -22,7 +22,7 @@ public class UserDAO {
             ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(
+                return new User(
                     rs.getInt("uid"), 
                     rs.getString("username"), 
                     rs.getString("password"),
@@ -53,7 +53,7 @@ public class UserDAO {
     }
 
 
-    public user checkUserExist(String username) {
+    public User checkUserExist(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
         try {
             conn = new DBConnect().getConnection();
@@ -61,7 +61,7 @@ public class UserDAO {
             ps.setString(1, username);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(
+                return new User(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
                     rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
@@ -72,7 +72,7 @@ public class UserDAO {
     }
 
     // CHECK EMAIL EXIST 
-    public user checkEmailExist(String email) {
+    public User checkEmailExist(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
         try {
             conn = new DBConnect().getConnection();
@@ -80,7 +80,7 @@ public class UserDAO {
             ps.setString(1, email);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(
+                return new User(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
                     rs.getString("avatar"), rs.getInt("is_admin") 
@@ -104,7 +104,7 @@ public class UserDAO {
     }
 
     // UPDATE USER INFO 
-    public boolean updateUserInfo(user u) {
+    public boolean updateUserInfo(User u) {
         String sql = "UPDATE users SET fullname = ?, email = ?, phonenumber = ? WHERE uid = ?";
         try {
             conn = new DBConnect().getConnection();
@@ -146,15 +146,15 @@ public class UserDAO {
     }
 
     //  GET ALL USERS
-    public List<user> getAllUsers() {
-        List<user> list = new ArrayList<>();
+    public List<User> getAllUsers() {
+        List<User> list = new ArrayList<>();
         String query = "SELECT * FROM users";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new user(
+                list.add(new User(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
                     rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
@@ -165,8 +165,8 @@ public class UserDAO {
     }
 
     // SEARCH USERS 
-    public List<user> searchUsers(String keyword) {
-        List<user> list = new ArrayList<>();
+    public List<User> searchUsers(String keyword) {
+        List<User> list = new ArrayList<>();
         String query = "SELECT * FROM users WHERE username LIKE ? OR fullname LIKE ? OR email LIKE ? OR phonenumber LIKE ?";
         try {
             conn = new DBConnect().getConnection();
@@ -178,7 +178,7 @@ public class UserDAO {
             ps.setString(4, pattern);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new user(
+                list.add(new User(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
                     rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
@@ -198,7 +198,7 @@ public class UserDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
     // GET USER BY ID 
-    public user getUserById(int uid) {
+    public User getUserById(int uid) {
         String query = "SELECT * FROM users WHERE uid = ?";
         try {
             conn = new DBConnect().getConnection();
@@ -206,7 +206,7 @@ public class UserDAO {
             ps.setInt(1, uid);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return new user(
+                return new User(
                     rs.getInt("uid"), rs.getString("username"), rs.getString("password"),
                     rs.getString("email"), rs.getString("fullname"), rs.getString("phonenumber"),
                     rs.getString("avatar"), rs.getInt("is_admin") // <--- ADDED
