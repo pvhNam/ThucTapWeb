@@ -172,6 +172,16 @@
                                         </div>
                                     </label>
                                 </div>
+                                <div class="payment-option">
+                                    <input type="radio" id="pay-momo" name="paymentMethod" value="MOMO">
+                                    <label for="pay-momo" class="payment-card-label">
+                                        <div class="payment-icon-box"><i class="fa-solid fa-wallet"></i></div>
+                                        <div class="payment-info">
+                                            <span class="p-name">Vi MoMo</span>
+                                            <span class="p-desc">Thanh toan online qua cong thanh toan MoMo</span>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         
