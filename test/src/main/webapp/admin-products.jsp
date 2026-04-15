@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.product"%>
+<%@ page import="java.util.List, model.Product"%>
 <%@ page import="java.text.DecimalFormat"%>
 
 <!DOCTYPE html>
@@ -10,63 +10,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="CSS/AdminProduct.css">
-
-<style>
-    /* CSS Modal (Popup) - Giữ nguyên của bạn */
-    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-    .modal-content { background-color: white; padding: 30px; border-radius: 10px; width: 600px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: slideDown 0.3s ease-out; max-height: 90vh; overflow-y: auto; }
-    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .close-btn { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #aaa; transition: color 0.2s; }
-    .close-btn:hover { color: #dc3545; }
-    .modal-title { text-align: center; margin-top: 0; color: #333; margin-bottom: 20px; font-weight: 700; }
-    .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
-    .form-group { flex: 1; margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; transition: border-color 0.2s; }
-    .form-group input:focus, .form-group select:focus { border-color: #3498db; outline: none; }
-    
-    .btn-submit-modal { background: #28a745; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; font-size: 16px; border-radius: 6px; font-weight: 600; margin-top: 10px; transition: background 0.2s; }
-    .btn-submit-modal:hover { background: #218838; }
-
-    /* --- MỚI THÊM: CSS CHO 3 NÚT HÀNH ĐỘNG ĐỒNG BỘ --- */
-    .action-group {
-        display: flex;
-        gap: 8px; /* Khoảng cách giữa các nút */
-        justify-content: flex-start; /* Hoặc center nếu muốn ra giữa */
-    }
-
-    .btn-icon {
-        width: 36px;       /* Chiều rộng cố định */
-        height: 36px;      /* Chiều cao cố định */
-        border: none;
-        border-radius: 6px; /* Bo góc nhẹ */
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none; /* Dành cho thẻ a */
-        font-size: 14px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn-icon:hover {
-        transform: translateY(-2px); /* Hiệu ứng nhấc lên khi di chuột */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-
-    /* Màu sắc riêng từng nút */
-    .btn-import { background-color: #17a2b8; color: white; } /* Xanh cyan */
-    .btn-edit   { background-color: #ffc107; color: #333; }   /* Vàng */
-    .btn-delete { background-color: #dc3545; color: white; } /* Đỏ */
-
-    /* Hiệu ứng hover màu đậm hơn */
-    .btn-import:hover { background-color: #138496; }
-    .btn-edit:hover   { background-color: #e0a800; }
-    .btn-delete:hover { background-color: #c82333; }
-</style>
-
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/AdminProduct.css">
+<link rel="stylesheet" href="CSS/admin/admin-products-modal.css">
 </head>
 <body>
 
@@ -81,7 +27,7 @@
                 <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm sản phẩm mới
             </button>
         </div>
-        
+
         <% if (request.getParameter("msg") != null) {
             String msg = request.getParameter("msg");
             String alertClass = "alert-success";
@@ -108,11 +54,11 @@
                 </thead>
                 <tbody>
                     <%
-                    List<product> list = (List<product>) request.getAttribute("listP");
+                    List<Product> list = (List<Product>) request.getAttribute("listP");
                     DecimalFormat df = new DecimalFormat("#,### VNĐ");
-                    
+
                     if (list != null && !list.isEmpty()) {
-                        for (product p : list) {
+                        for (Product p : list) {
                     %>
                     <tr>
                         <td>#<%=p.getPid()%></td>
@@ -129,19 +75,19 @@
 
                                 <button type="button" class="btn-icon btn-edit" title="Sửa"
                                     onclick="openEditModal(
-                                        '<%=p.getPid()%>', 
-                                        '<%=p.getPdescription()%>', 
-                                        '<%=p.getPrice()%>', 
-                                        '<%=p.getCid()%>', 
-                                        '<%=p.getColor()%>', 
-                                        '<%=p.getSize()%>', 
-                                        '<%=p.getStockquantyti()%>', 
+                                        '<%=p.getPid()%>',
+                                        '<%=p.getPdescription()%>',
+                                        '<%=p.getPrice()%>',
+                                        '<%=p.getCid()%>',
+                                        '<%=p.getColor()%>',
+                                        '<%=p.getSize()%>',
+                                        '<%=p.getStockquantyti()%>',
                                         '<%=p.getImage()%>'
                                     )">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                
-                                <a href="admin-products?type=delete&pid=<%=p.getPid()%>" 
+
+                                <a href="admin-products?type=delete&pid=<%=p.getPid()%>"
                                    class="btn-icon btn-delete"
                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')" title="Xóa">
                                     <i class="fa-solid fa-trash"></i>
@@ -149,9 +95,9 @@
                             </div>
                         </td>
                     </tr>
-                    <% 
+                    <%
                         }
-                    } else { 
+                    } else {
                     %>
                     <tr><td colspan="6" style="text-align: center; padding: 30px; color: #777;">Chưa có sản phẩm nào.</td></tr>
                     <% } %>
@@ -187,20 +133,101 @@
     </div>
 
     <div id="importModal" class="modal">
-        <div class="modal-content" style="width: 400px;">
-            <span class="close-btn" onclick="closeImportModal()">&times;</span>
-            <h2 class="modal-title" style="color: #17a2b8;">Nhập Kho</h2>
-            <p style="margin-bottom: 5px;">Sản phẩm: <strong id="import-name" style="color: #333;"></strong></p>
-            <p style="margin-bottom: 20px;">Tồn kho hiện tại: <strong id="current-stock" style="color: #dc3545;"></strong></p>
-            <form action="admin-products" method="post">
-                <input type="hidden" name="action" value="import_stock">
-                <input type="hidden" name="pid" id="import-pid">
-                <div class="form-group">
-                    <label>Số lượng nhập thêm:</label>
-                    <input type="number" name="quantityAdded" min="1" required placeholder="Ví dụ: 50" style="font-size: 18px; font-weight: bold; padding: 12px;">
-                    <p style="font-size: 12px; color: #666; margin-top: 5px;">* Số lượng này sẽ được cộng thêm vào kho hiện tại.</p>
+        <div class="modal-content import-modal-content">
+            <button class="close-btn" onclick="closeImportModal()" style="background:none;border:none;">&times;</button>
+
+            <div class="im-header">
+                <div class="im-header-icon"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                <div>
+                    <h3 class="im-title">Phiếu Nhập Kho</h3>
+                    <p class="im-sub">Cộng thêm hàng vào kho sản phẩm</p>
                 </div>
-                <button type="submit" class="btn-submit-modal" style="background: #17a2b8;"><i class="fa-solid fa-plus-circle"></i> Xác Nhận Nhập</button>
+            </div>
+
+            <div class="im-product-banner">
+                <div class="im-banner-row">
+                    <i class="fa-solid fa-box"></i>
+                    <span>Sản phẩm: <strong id="import-name"></strong></span>
+                </div>
+                <div class="im-banner-row">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Tồn kho hiện tại: <strong id="current-stock" style="color:var(--danger);"></strong></span>
+                </div>
+            </div>
+
+            <form action="admin-products" method="post">
+                <input type="hidden" name="action" value="import">
+                <input type="hidden" name="pid" id="import-pid">
+
+                <div class="im-row">
+                    <div class="im-field">
+                        <label>Ngày nhập <span class="req">*</span></label>
+                        <div class="im-input-wrap">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="date" name="importDate" id="importDateField" required>
+                        </div>
+                    </div>
+                    <div class="im-field">
+                        <label>Nhà cung cấp <span class="req">*</span></label>
+                        <div class="im-input-wrap">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" name="supplier" required placeholder="Tên công ty / NCC...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="im-field">
+                    <label>Số lượng nhập thêm <span class="req">*</span></label>
+                    <div class="im-input-wrap">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <input type="number" name="addQty" id="addQtyInput" min="1" required placeholder="0">
+                    </div>
+                    <div class="im-hint">Tồn kho sau nhập: <strong id="newStockDisplay">—</strong></div>
+                </div>
+
+                <div class="im-field">
+                    <label>Kích thước nhập</label>
+                    <div class="im-size-chips" id="imSizeChips">
+                        <span class="im-sz-chip" data-val="S">S</span>
+                        <span class="im-sz-chip" data-val="M">M</span>
+                        <span class="im-sz-chip" data-val="L">L</span>
+                        <span class="im-sz-chip" data-val="XL">XL</span>
+                        <span class="im-sz-chip" data-val="XXL">XXL</span>
+                        <span class="im-sz-chip" data-val="Freesize">Free</span>
+                    </div>
+                    <div class="im-input-wrap" style="margin-top:8px;">
+                        <i class="fa-solid fa-ruler-horizontal"></i>
+                        <input type="text" name="size" id="imSizeInput" placeholder="Hoặc nhập thủ công: S, M, L...">
+                    </div>
+                </div>
+
+                <div class="im-field">
+                    <label>Màu sắc nhập</label>
+                    <div class="im-color-swatches" id="imColorSwatches">
+                        <span class="im-clr" data-val="Đen"   style="background:#222;"     title="Đen"></span>
+                        <span class="im-clr" data-val="Trắng" style="background:#fff;border:2px solid #ddd;" title="Trắng"></span>
+                        <span class="im-clr" data-val="Đỏ"   style="background:#e74a3b;" title="Đỏ"></span>
+                        <span class="im-clr" data-val="Xanh navy" style="background:#224abe;" title="Xanh navy"></span>
+                        <span class="im-clr" data-val="Xanh lá"  style="background:#1cc88a;" title="Xanh lá"></span>
+                        <span class="im-clr" data-val="Vàng" style="background:#f6c23e;" title="Vàng"></span>
+                        <span class="im-clr" data-val="Xám"  style="background:#888;"    title="Xám"></span>
+                        <span class="im-clr" data-val="Hồng" style="background:#e91e8c;" title="Hồng"></span>
+                    </div>
+                    <div class="im-input-wrap" style="margin-top:8px;">
+                        <i class="fa-solid fa-palette"></i>
+                        <input type="text" name="color" id="imColorInput" placeholder="Hoặc nhập thủ công: Đỏ, Xanh...">
+                    </div>
+                </div>
+
+                <div class="im-field">
+                    <label>Ghi chú</label>
+                    <textarea name="importNote" rows="2" class="im-textarea"
+                              placeholder="Ghi chú về lô hàng, điều kiện, chất lượng..."></textarea>
+                </div>
+
+                <button type="submit" class="im-submit-btn">
+                    <i class="fa-solid fa-circle-check"></i> Xác Nhận Nhập Kho
+                </button>
             </form>
         </div>
     </div>
@@ -239,17 +266,73 @@
             document.getElementById('size').value = size;
             document.getElementById('stock').value = stock;
             document.getElementById('image').value = image;
-            if(image) { imgPreview.src = image; imgPreview.style.display = 'inline-block'; } 
+            if(image) { imgPreview.src = image; imgPreview.style.display = 'inline-block'; }
             else { imgPreview.style.display = 'none'; }
             modal.style.display = 'flex';
         }
 
+        var currentStockVal = 0;
+
         function openImportModal(id, name, currentStock) {
+            currentStockVal = parseInt(currentStock);
             document.getElementById('import-pid').value = id;
             document.getElementById('import-name').innerText = name;
-            document.getElementById('current-stock').innerText = currentStock + " sản phẩm";
+            document.getElementById('current-stock').innerText = currentStock + ' sản phẩm';
+            document.getElementById('newStockDisplay').innerText = '—';
+            document.getElementById('addQtyInput').value = '';
+
+            // Set today's date
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('importDateField').value = today;
+
+            // Reset chips & inputs
+            document.querySelectorAll('.im-sz-chip').forEach(function(c){ c.classList.remove('active'); });
+            document.querySelectorAll('.im-clr').forEach(function(c){ c.classList.remove('active'); });
+            document.getElementById('imSizeInput').value = '';
+            document.getElementById('imColorInput').value = '';
+
             importModal.style.display = 'flex';
         }
+
+        // Live calc new stock
+        document.getElementById('addQtyInput') && document.getElementById('addQtyInput').addEventListener('input', function() {
+            var qty = parseInt(this.value) || 0;
+            document.getElementById('newStockDisplay').innerText = qty > 0 ? (currentStockVal + qty) + ' sản phẩm' : '—';
+        });
+
+        // Size chips in modal
+        document.querySelectorAll('.im-sz-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                var input = document.getElementById('imSizeInput');
+                var val = this.dataset.val;
+                var current = input.value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    current = current.filter(function(s){ return s !== val; });
+                } else {
+                    this.classList.add('active');
+                    if (!current.includes(val)) current.push(val);
+                }
+                input.value = current.join(', ');
+            });
+        });
+
+        // Color swatches in modal
+        document.querySelectorAll('.im-clr').forEach(function(sw) {
+            sw.addEventListener('click', function() {
+                var input = document.getElementById('imColorInput');
+                var val = this.dataset.val;
+                var current = input.value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    current = current.filter(function(s){ return s !== val; });
+                } else {
+                    this.classList.add('active');
+                    if (!current.includes(val)) current.push(val);
+                }
+                input.value = current.join(', ');
+            });
+        });
 
         function closeModal() { modal.style.display = 'none'; }
         function closeImportModal() { importModal.style.display = 'none'; }

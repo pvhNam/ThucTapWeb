@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/order-success.css" />
+<link rel="stylesheet" href="CSS/user/order-success.css" />
 </head>
 <body>
     <header class="header">

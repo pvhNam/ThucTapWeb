@@ -7,7 +7,9 @@
 <meta charset="UTF-8">
 <title>Quản lý Voucher | Fashion Store</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="CSS/Admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="CSS/admin/Admin.css">
+<link rel="stylesheet" href="CSS/admin/admin-vouchers.css">
 </head>
 <body>
     <jsp:include page="sidebarAdmin.jsp">
@@ -15,88 +17,92 @@
     </jsp:include>
 
     <main class="main-content">
-     <div class="content-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1 class="page-title" style="margin: 0;">Quản lý Mã Giảm Giá</h1>
-    
-    <a href="admin-vouchers?action=add" class="btn-add-new">
-        <i class="fa-solid fa-plus"></i> <span>Thêm Voucher mới</span>
-    </a>
-</div>
 
-<style>
-    .btn-add-new {
-        background-color: #28a745; /* Màu xanh lá */
-        color: white;
-        padding: 10px 20px; /* Tăng khoảng cách đệm */
-        border-radius: 8px; /* Bo góc mềm mại hơn */
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 14px;
-        display: inline-flex; /* Giúp icon và chữ thẳng hàng */
-        align-items: center;
-        gap: 8px; /* Khoảng cách giữa icon và chữ */
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3); /* Đổ bóng nhẹ */
-        white-space: nowrap; /* QUAN TRỌNG: Chống xuống dòng */
-    }
-
-    .btn-add-new:hover {
-        background-color: #218838;
-        transform: translateY(-2px); /* Hiệu ứng nhấc nút lên khi di chuột */
-        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
-    }
-</style>
-
-        <div class="card-box">
-            <div class="chart-title" style="margin-bottom: 20px; font-weight: bold; color: #444;">
-                Danh sách Voucher hiện có
+        <div class="content-header">
+            <div>
+                <h1 class="page-title">Quản lý Mã Giảm Giá</h1>
+                <%
+                List<Voucher> listV = (List<Voucher>) request.getAttribute("listVouchers");
+                int total = (listV != null) ? listV.size() : 0;
+                %>
+                <p class="voucher-subtitle"><%= total %> voucher đang hoạt động</p>
             </div>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Mã Code</th>
-                        <th>Giảm giá</th>
-                        <th>Đơn tối thiểu</th>
-                        <th>Hạn sử dụng</th>
-                        <th>Mô tả</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%
-                    List<Voucher> list = (List<Voucher>) request.getAttribute("listVouchers");
-                    DecimalFormat df = new DecimalFormat("#,### VNĐ");
-                    if (list != null && !list.isEmpty()) {
-                        for (Voucher v : list) {
-                            String discountDisplay = v.getDiscountType().equals("PERCENT") ? 
-                                                     (int)v.getDiscountAmount() + "%" : 
-                                                     df.format(v.getDiscountAmount());
-                    %>
-                    <tr>
-                        <td>#<%=v.getId()%></td>
-                        <td><strong style="color:#007bff"><%=v.getCode()%></strong></td>
-                        <td style="font-weight:bold; color:#e63946"><%=discountDisplay%></td>
-                        <td><%=df.format(v.getMinOrder())%></td>
-                        <td><%=v.getExpiryDate()%></td>
-                        <td><%=v.getDescription()%></td>
-                        <td>
-                            <div class="action-group">
-                                <a href="admin-vouchers?action=edit&id=<%=v.getId()%>" class="btn-action btn-view" title="Sửa">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <a href="admin-vouchers?action=delete&id=<%=v.getId()%>" class="btn-action btn-ship" style="background:#dc3545;" onclick="return confirm('Bạn chắc chắn muốn xóa?')" title="Xóa">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <% } } else { %>
-                        <tr><td colspan="7" style="text-align:center; padding:20px;">Không có voucher nào.</td></tr>
-                    <% } %>
-                </tbody>
-            </table>
+            <a href="admin-vouchers?action=add" class="btn-add-new">
+                <i class="fa-solid fa-plus"></i> Thêm Voucher
+            </a>
         </div>
+
+        <% if (request.getParameter("msg") != null) { %>
+        <div class="alert alert-success">
+            <i class="fa-solid fa-circle-check"></i> Thao tác thành công!
+        </div>
+        <% } %>
+
+        <%
+        DecimalFormat df = new DecimalFormat("#,### VNĐ");
+        if (listV != null && !listV.isEmpty()) {
+        %>
+        <div class="voucher-grid">
+            <% for (Voucher v : listV) {
+                boolean isPercent = "PERCENT".equals(v.getDiscountType());
+                String discountLabel = isPercent ? (int)v.getDiscountAmount() + "%" : df.format(v.getDiscountAmount());
+                String cardAccent = isPercent ? "accent-purple" : "accent-green";
+            %>
+            <div class="voucher-card <%=cardAccent%>">
+                <div class="vc-top">
+                    <div class="vc-code">
+                        <i class="fa-solid fa-ticket"></i>
+                        <span><%=v.getCode()%></span>
+                    </div>
+                    <div class="vc-discount"><%=discountLabel%></div>
+                </div>
+
+                <div class="vc-divider">
+                    <span class="vc-cut left"></span>
+                    <div class="vc-dash"></div>
+                    <span class="vc-cut right"></span>
+                </div>
+
+                <div class="vc-bottom">
+                    <div class="vc-info-row">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span><%=v.getDescription() != null && !v.getDescription().isEmpty() ? v.getDescription() : "Không có mô tả"%></span>
+                    </div>
+                    <div class="vc-info-row">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Đơn tối thiểu: <strong><%=df.format(v.getMinOrder())%></strong></span>
+                    </div>
+                    <div class="vc-info-row">
+                        <i class="fa-regular fa-calendar-xmark"></i>
+                        <span>Hết hạn: <strong><%=v.getExpiryDate()%></strong></span>
+                    </div>
+
+                    <div class="vc-actions">
+                        <a href="admin-vouchers?action=edit&id=<%=v.getId()%>" class="vc-btn vc-edit">
+                            <i class="fa-solid fa-pen"></i> Sửa
+                        </a>
+                        <a href="admin-vouchers?action=delete&id=<%=v.getId()%>"
+                           class="vc-btn vc-delete"
+                           onclick="return confirm('Xóa voucher <%=v.getCode()%>?')">
+                            <i class="fa-solid fa-trash"></i> Xóa
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+        <% } else { %>
+        <div class="empty-state">
+            <i class="fa-solid fa-ticket-simple"></i>
+            <h3>Chưa có voucher nào</h3>
+            <p>Tạo voucher đầu tiên để bắt đầu khuyến mãi</p>
+            <a href="admin-vouchers?action=add" class="btn-add-new" style="margin-top:12px;">
+                <i class="fa-solid fa-plus"></i> Tạo Voucher
+            </a>
+        </div>
+        <% } %>
+
     </main>
 </body>
 </html>

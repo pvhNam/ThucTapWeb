@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="model.product, model.user, java.text.DecimalFormat"%>
+<%@ page import="model.Product, model.User, java.text.DecimalFormat"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 
 <%
-product p = (product) request.getAttribute("p");
+Product p = (Product) request.getAttribute("p");
 if (p == null) {
     response.sendRedirect("index.jsp");
     return;
@@ -25,7 +25,7 @@ DecimalFormat df = new DecimalFormat("#,### VNĐ");
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="CSS/style.css" />
-<link rel="stylesheet" href="CSS/product-detail.css" />
+<link rel="stylesheet" href="CSS/user/product-detail.css" />
 </head>
 <body>
     <header> 

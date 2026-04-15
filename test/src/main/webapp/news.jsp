@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, dao.NewsDAO, model.News, model.user"%>
+<%@ page import="java.util.List, dao.NewsDAO, model.News, model.User"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
@@ -11,7 +11,7 @@
     <title><fmt:message key="news.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
-    <link rel="stylesheet" href="CSS/news.css">
+    <link rel="stylesheet" href="CSS/user/news.css">
 </head>
 <body>
     <jsp:include page="header.jsp"><jsp:param name="page" value="news" /></jsp:include>

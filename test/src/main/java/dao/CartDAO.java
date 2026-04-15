@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.cartItem;
-import model.product;
+import model.CartItem;
+import model.Product;
 
 public class CartDAO {
 
@@ -16,8 +16,8 @@ public class CartDAO {
 	ResultSet rs = null;
 
 	// Lấy danh sách giỏ hàng
-	public List<cartItem> getCartByUid(int uid) {
-		List<cartItem> list = new ArrayList<>();
+	public List<CartItem> getCartByUid(int uid) {
+		List<CartItem> list = new ArrayList<>();
 		String query = "SELECT c.quantity, p.* FROM cart c " + "JOIN product p ON c.product_id = p.pid "
 				+ "WHERE c.user_id = ?";
 		try {
@@ -26,11 +26,11 @@ public class CartDAO {
 			ps.setInt(1, uid);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				product p = new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+				Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
 						rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
 						rs.getString("img"));
 				int quantity = rs.getInt("quantity");
-				list.add(new cartItem(p, quantity));
+				list.add(new CartItem(p, quantity));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
