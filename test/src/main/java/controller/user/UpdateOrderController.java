@@ -1,6 +1,7 @@
 package controller.user;
 
 import java.io.IOException;
+
 import dao.OrderDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.Order;
 
 @WebServlet("/update-order")
 public class UpdateOrderController extends HttpServlet {
@@ -27,13 +29,13 @@ public class UpdateOrderController extends HttpServlet {
         OrderDAO dao = new OrderDAO();
 
         if ("ship".equals(action)) {
-            dao.updateOrderStatus(orderId, "Đang giao hàng");
+            dao.updateOrderStatus(orderId, Order.STATUS_SHIPPING);
         } else if ("cancel".equals(action)) {
-            dao.updateOrderStatus(orderId, "Đã hủy");
+            dao.updateOrderStatus(orderId, Order.STATUS_CANCELLED);
         } else if ("success".equals(action)) {
-            dao.updateOrderStatus(orderId, "Giao thành công");
+            dao.updateOrderStatus(orderId, Order.STATUS_SUCCESS);
         }
 
-        response.sendRedirect("admin-orders");
+        response.sendRedirect("admin-orders?msg=updated");
     }
 }
