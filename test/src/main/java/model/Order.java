@@ -102,27 +102,27 @@ public class Order {
 		String rawStatus = status == null ? "" : status.trim();
 		String lowerStatus = rawStatus.toLowerCase();
 
-		if (lowerStatus.contains("momo") && lowerStatus.contains("thất bại")) {
+		if (lowerStatus.contains("momo") && lowerStatus.contains("that bai")) {
 			return STATUS_MOMO_FAILED;
 		}
-		if (lowerStatus.contains("chờ thanh toán momo")) {
+		if (lowerStatus.contains("cho thanh toan momo")) {
 			return STATUS_PENDING_MOMO;
 		}
-		if (lowerStatus.contains("đã thanh toán") && lowerStatus.contains("xử lý")) {
+		if (lowerStatus.contains("da thanh toan") && lowerStatus.contains("xu ly")) {
 			return STATUS_PAID_PROCESSING;
 		}
-		if (lowerStatus.contains("giao thành công") || lowerStatus.contains("success")
-				|| lowerStatus.contains("thành công")) {
+		if (lowerStatus.contains("giao thanh cong") || lowerStatus.contains("success")
+				|| lowerStatus.contains("thanh cong")) {
 			return STATUS_SUCCESS;
 		}
-		if (lowerStatus.contains("đang giao hàng")
-				|| (lowerStatus.contains("giao") && !lowerStatus.contains("thành công"))) {
+		if (lowerStatus.contains("dang giao hang")
+				|| (lowerStatus.contains("giao") && !lowerStatus.contains("thanh cong"))) {
 			return STATUS_SHIPPING;
 		}
-		if (lowerStatus.contains("đã hủy") || lowerStatus.contains("cancel") || lowerStatus.contains("huy")) {
+		if (lowerStatus.contains("da huy") || lowerStatus.contains("cancel") || lowerStatus.contains("huy")) {
 			return STATUS_CANCELLED;
 		}
-		if (lowerStatus.contains("đang xử lý") || lowerStatus.contains("processing") || lowerStatus.contains("xu ly")) {
+		if (lowerStatus.contains("dang xu ly") || lowerStatus.contains("processing") || lowerStatus.contains("xu ly")) {
 			return STATUS_PROCESSING;
 		}
 		return rawStatus;
