@@ -1,0 +1,193 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Category;
+import model.product;
+
+public class ProductDAO {
+
+    // Lấy tất cả sản phẩm
+    public List<product> getAllProducts() {
+        List<product> list = new ArrayList<>();
+        String sql = "SELECT * FROM product";
+        try (Connection conn = DBConnect.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"), rs.getInt("cateID"),
+                        rs.getString("color"), rs.getString("size"), rs.getInt("amount"), rs.getString("img")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // TÌM KIẾM SẢN PHẨM THEO TÊN
+    public List<product> searchProduct(String keyword) {
+        List<product> list = new ArrayList<>();
+        String sql = "SELECT * FROM product WHERE name LIKE ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%"); // Tìm gần đúng
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                            rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
+                            rs.getString("img")));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // Lấy sản phẩm theo ID
+    public product getProductById(int pid) {
+        String sql = "SELECT * FROM product WHERE pid = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                            rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
+                            rs.getString("img"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Thêm sản phẩm
+    public boolean addProduct(product p) {
+        String sql = "INSERT INTO product (name, price, cateID, color, size, amount, img) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, p.getPdescription());
+            ps.setDouble(2, p.getPrice());
+            ps.setInt(3, p.getCid());
+            ps.setString(4, p.getColor());
+            ps.setString(5, p.getSize());
+            ps.setInt(6, p.getStockquantyti());
+            ps.setString(7, p.getImage());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // Cập nhật sản phẩm
+    public boolean updateProduct(product p) {
+        String sql = "UPDATE product SET name=?, price=?, cateID=?, color=?, size=?, amount=?, img=? WHERE pid=?";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, p.getPdescription());
+            ps.setDouble(2, p.getPrice());
+            ps.setInt(3, p.getCid());
+            ps.setString(4, p.getColor());
+            ps.setString(5, p.getSize());
+            ps.setInt(6, p.getStockquantyti());
+            ps.setString(7, p.getImage());
+            ps.setInt(8, p.getPid());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // Xóa sản phẩm
+    public void deleteProduct(int pid) {
+        String sql = "DELETE FROM product WHERE pid=?";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, pid);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // Nhập hàng 
+    public boolean importStock(int pid, int quantityToAdd) {
+        String sql = "UPDATE product SET amount = amount + ? WHERE pid = ?";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, quantityToAdd);
+            ps.setInt(2, pid);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+    
+    // Trừ kho khi bán
+    public void decreaseStock(int pid, int quantity) {
+        String sql = "UPDATE product SET amount = amount - ? WHERE pid = ? AND amount >= ?";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, quantity);
+            ps.setInt(2, pid);
+            ps.setInt(3, quantity);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+	
+
+    public List<product> getProductsByCategory(String categoryName) {
+        List<product> list = new ArrayList<>();
+
+        String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
+                     "FROM product p JOIN category c ON p.cateID = c.id ";
+
+        if (categoryName != null && !categoryName.equals("all")) {
+            sql += "WHERE c.name = ?";
+        }
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (categoryName != null && !categoryName.equals("all")) {
+                ps.setString(1, categoryName);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+
+                product p = new product(
+                    rs.getInt("pid"),              // id
+                    rs.getString("name"),          // -> pdescription
+                    rs.getDouble("price"),			// 
+                    rs.getInt("cateID"),          // -> cid
+                    rs.getString("color"),
+                    rs.getString("size"),
+                    rs.getInt("amount"),          // -> stockquantyti
+                    rs.getString("img")           // -> image
+                );
+
+                // category object
+                Category c = new Category();
+                c.setId(rs.getInt("cid2"));
+                c.setName(rs.getString("cname"));
+
+                p.setCategory(c);
+
+                list.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+}

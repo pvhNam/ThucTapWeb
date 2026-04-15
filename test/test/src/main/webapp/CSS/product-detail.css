@@ -1,0 +1,172 @@
+@charset "UTF-8";
+.detail-wrapper {
+	max-width: 1000px;
+	margin: 60px auto;
+	display: flex;
+	gap: 50px;
+	padding: 0 20px;
+}
+
+.detail-left {
+	flex: 1;
+}
+
+.detail-left img {
+	width: 100%;
+	border-radius: 5px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.detail-right {
+	flex: 1;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 20px;
+}
+
+.p-cat {
+	color: #888;
+	font-size: 0.9rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.p-title {
+	font-family: 'Playfair Display', serif;
+	font-size: 2.5rem;
+	margin: 15px 0;
+	color: #1a1a1a;
+	line-height: 1.2;
+}
+
+.p-price {
+	font-size: 1.8rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	margin-bottom: 25px;
+}
+
+.p-desc {
+	line-height: 1.8;
+	color: #555;
+	margin-bottom: 30px;
+	font-size: 0.95rem;
+}
+
+.meta-info {
+	margin-bottom: 30px;
+	padding: 20px;
+	background: #f9f9f9;
+	border-radius: 5px;
+}
+
+.meta-row {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	border-bottom: 1px dashed #ddd;
+	padding-bottom: 10px;
+}
+
+.meta-row:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.meta-label {
+	font-weight: 600;
+	color: #333;
+}
+
+.stock-tag {
+	font-weight: 700;
+}
+
+.instock {
+	color: #27ae60;
+}
+
+.outstock {
+	color: #c0392b;
+}
+
+.action-box {
+	display: flex;
+	gap: 15px;
+	margin-top: 20px;
+}
+
+.qty-input {
+	width: 70px;
+	text-align: center;
+	font-weight: 600;
+	border: 1px solid #333;
+	padding: 10px;
+	font-size: 1rem;
+}
+
+.btn-add-cart-detail {
+	flex: 1;
+	background: #1a1a1a;
+	color: #fff;
+	border: none;
+	font-weight: 700;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.btn-add-cart-detail:hover {
+	background: #d4af37;
+}
+
+.btn-disabled {
+	background: #ccc !important;
+	cursor: not-allowed;
+}
+
+@media ( max-width : 768px) {
+	.detail-wrapper {
+		flex-direction: column;
+	}
+}
+/* --- CSS CHO NÚT QUAY LẠI --- */
+.back-nav {
+    max-width: 1000px;
+    margin: 20px auto -40px; /* Căn giữa và đẩy lên gần header */
+    padding: 0 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #666;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-back i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-back:hover {
+    color: #d4af37; /* Đổi màu vàng gold khi di chuột vào */
+}
+
+.btn-back:hover i {
+    transform: translateX(-5px); /* Mũi tên dịch sang trái khi hover */
+}
+
+/* Đảm bảo trên điện thoại nút vẫn hiển thị tốt */
+@media (max-width: 768px) {
+    .back-nav {
+        margin: 20px auto 0;
+    }
+}
