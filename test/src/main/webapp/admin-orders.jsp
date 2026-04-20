@@ -6,7 +6,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quản Lý Đơn Hàng | Admin</title>
+<title>Quan Ly Don Hang | Admin</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,10 +24,9 @@
             <h1 class="page-title">Quản Lý Đơn Hàng</h1>
         </div>
 
-        <%-- Hiển thị thông báo nếu có tham số msg trên URL --%>
         <% if (request.getParameter("msg") != null) { %>
         <div class="alert alert-success">
-            <i class="fa-solid fa-check-circle"></i> 
+            <i class="fa-solid fa-check-circle"></i>
             <span>Thao tác thành công!</span>
         </div>
         <% } %>
@@ -36,20 +35,30 @@
             String filterParam = (String) request.getAttribute("filter");
             String filterName = null;
             String filterColor = "#4e73df";
-            if ("processing".equals(filterParam)) { filterName = "Đang xử lý"; filterColor = "#f6c23e"; }
-            else if ("shipping".equals(filterParam)) { filterName = "Đang giao hàng"; filterColor = "#36b9cc"; }
-            else if ("cancel".equals(filterParam)) { filterName = "Đã hủy"; filterColor = "#e74a3b"; }
-            else if ("success".equals(filterParam)) { filterName = "Giao thành công"; filterColor = "#1cc88a"; }
+
+            if ("processing".equals(filterParam)) {
+                filterName = "Dang xu ly";
+                filterColor = "#f6c23e";
+            } else if ("shipping".equals(filterParam)) {
+                filterName = "Dang giao hang";
+                filterColor = "#36b9cc";
+            } else if ("cancel".equals(filterParam)) {
+                filterName = "Da huy / That bai";
+                filterColor = "#e74a3b";
+            } else if ("success".equals(filterParam)) {
+                filterName = "Giao thanh cong";
+                filterColor = "#1cc88a";
+            }
         %>
         <% if (filterName != null) { %>
         <div class="filter-bar">
             <span class="filter-tag" style="border-color: <%=filterColor%>; color: <%=filterColor%>;">
                 <i class="fa-solid fa-filter"></i>
-                Lọc: <strong><%=filterName%></strong>
-                &nbsp;·&nbsp; <%=((java.util.List)request.getAttribute("listOrders")).size()%> đơn
+                Loc: <strong><%=filterName%></strong>
+                &nbsp;|&nbsp; <%=((java.util.List)request.getAttribute("listOrders")).size()%> don
             </span>
             <a href="admin-orders" class="btn-clear-filter">
-                <i class="fa-solid fa-xmark"></i> Xem tất cả
+                <i class="fa-solid fa-xmark"></i> Xem tat ca
             </a>
         </div>
         <% } %>
@@ -58,91 +67,86 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Mã Đơn</th>
-                        <th>Khách Hàng</th>
-                        <th>Ngày Đặt</th>
-                        <th>Địa Chỉ</th>
-                        <th>Tổng Tiền</th>
-                        <th>Trạng Thái</th>
-                        <th>Hành Động</th>
+						<th>Mã Đơn</th>
+						<th>Khách Hàng</th>
+						<th>Ngày Đặt</th>
+						<th>Địa Chỉ</th>
+						<th>Tổng Tiền</th>
+						<th>Trạng Thái</th>
+						<th>Hành Động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
-                    // Lấy danh sách đơn hàng từ Controller truyền sang
                     List<Order> list = (List<Order>) request.getAttribute("listOrders");
-                    DecimalFormat df = new DecimalFormat("#,### VNĐ");
+                    DecimalFormat df = new DecimalFormat("#,### VND");
 
                     if (list != null && !list.isEmpty()) {
-                        for (Order o : list) {
-                            // Xử lý màu badge trạng thái
-                            String st = o.getStatus();
-                            String badgeClass = "bg-process"; // Mặc định là chờ xử lý
-                            if (st.contains("giao")) badgeClass = "bg-shipping";
-                            if (st.contains("thành công")) { badgeClass = "bg-success"; }
-                            if (st.contains("hủy") || st.contains("huy")) badgeClass = "bg-cancel";
+                        for (Order order : list) {
                     %>
                     <tr>
-                        <td><strong>#<%=o.getId()%></strong></td>
-                        
+                        <td><strong>#<%=order.getId()%></strong></td>
+
                         <td>
-                            <div style="font-weight: 500;"><%=o.getUserName()%></div>
+                            <div style="font-weight: 500;"><%=order.getUserName()%></div>
+                            <small style="color: #888;"><%=order.getPhoneNumber()%></small>
                         </td>
-                        
-                        <td><%=o.getCreatedAt()%></td>
-                        
-                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<%=o.getAddress()%>">
-                            <%=o.getAddress()%>
+
+                        <td><%=order.getCreatedAt()%></td>
+
+                        <td style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<%=order.getAddress()%>">
+                            <%=order.getAddress()%>
                         </td>
-                        
-                        <td class="money"><%=df.format(o.getTotalMoney())%></td>
-                        
-                        <td><span class="badge <%=badgeClass%>"><%=st%></span></td>
+
+                        <td class="money"><%=df.format(order.getTotalMoney())%></td>
+                        <td><%=order.getPaymentMethod()%></td>
+                        <td><span class="badge <%=order.getAdminBadgeClass()%>"><%=order.getDisplayStatus()%></span></td>
 
                         <td>
                             <div class="action-group">
-                                <a href="order-detail.jsp?id=<%=o.getId()%>" class="btn-action btn-view" title="Xem chi tiết">
+                                <a href="order-detail?id=<%=order.getId()%>" class="btn-action btn-view" title="Xem chi tiet">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
 
-                                <%-- Nút xử lý: Chỉ hiện khi Đang xử lý --%>
-                                <% if (st.contains("xử lý") || st.equals("Đang xử lý")) { %>
-                                    <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>">
-                                        <input type="hidden" name="action" value="ship">
-                                        <button type="submit" class="btn-action btn-ship" title="Xác nhận giao hàng">
-                                            <i class="fa-solid fa-truck"></i>
-                                        </button>
-                                    </form>
-
-                                    <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>">
-                                        <input type="hidden" name="action" value="cancel">
-                                        <button type="submit" class="btn-action btn-cancel" title="Hủy đơn hàng" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </form>
+                                <% if (order.isShippableStatus()) { %>
+                                <form action="update-order" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id" value="<%=order.getId()%>">
+                                    <input type="hidden" name="action" value="ship">
+                                    <button type="submit" class="btn-action btn-ship" title="Chuyen sang dang giao hang">
+                                        <i class="fa-solid fa-truck"></i>
+                                    </button>
+                                </form>
                                 <% } %>
 
-                                <%-- Nút xử lý: Chỉ hiện khi Đang giao hàng --%>
-                                <% if (st.contains("giao") && !st.contains("thành công")) { %>
-                                    <form action="update-order" method="post" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<%=o.getId()%>"> 
-                                        <input type="hidden" name="action" value="success">
-                                        <button type="submit" class="btn-action btn-success" title="Xác nhận giao thành công">
-                                            <i class="fa-solid fa-check"></i>
-                                        </button>
-                                    </form>
+                                <% if (order.isAdminCancelableStatus()) { %>
+                                <form action="update-order" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id" value="<%=order.getId()%>">
+                                    <input type="hidden" name="action" value="cancel">
+                                    <button type="submit" class="btn-action btn-cancel" title="Huy don hang"
+                                            onclick="return confirm('Ban co chac chan muon huy don hang nay?')">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </form>
+                                <% } %>
+
+                                <% if (order.isShippingStatus()) { %>
+                                <form action="update-order" method="post" style="margin: 0;">
+                                    <input type="hidden" name="id" value="<%=order.getId()%>">
+                                    <input type="hidden" name="action" value="success">
+                                    <button type="submit" class="btn-action btn-success" title="Xac nhan giao thanh cong">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                </form>
                                 <% } %>
                             </div>
                         </td>
                     </tr>
-                    <% 
-                        } 
-                    } else { 
+                    <%
+                        }
+                    } else {
                     %>
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px; color: #888;">
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #888;">
                             <i class="fa-solid fa-box-open" style="font-size: 40px; margin-bottom: 10px; display: block;"></i>
                             Chưa có đơn hàng nào trong hệ thống.
                         </td>

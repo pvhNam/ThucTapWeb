@@ -3,13 +3,14 @@ package controller.admin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import dao.OrderDAO;
-import model.Order;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Order;
 
 @WebServlet("/admin-orders")
 public class AdminOrderController extends HttpServlet {
@@ -22,23 +23,33 @@ public class AdminOrderController extends HttpServlet {
         List<Order> allOrders = orderDao.getAllOrders();
 
         String filter = request.getParameter("filter");
-        List<Order> listOrders;
+        List<Order> listOrders = allOrders;
 
         if (filter != null && !filter.isEmpty()) {
             listOrders = new ArrayList<>();
-            for (Order o : allOrders) {
-                String s = (o.getStatus() != null) ? o.getStatus().toLowerCase() : "";
+            for (Order order : allOrders) {
                 boolean match = false;
                 switch (filter) {
-                    case "processing": match = s.contains("xử lý"); break;
-                    case "shipping":   match = s.contains("giao") && !s.contains("thành công"); break;
-                    case "cancel":     match = s.contains("hủy") || s.contains("huy"); break;
-                    case "success":    match = s.contains("thành công"); break;
+                case "processing":
+                    match = order.isProcessingStatus();
+                    break;
+                case "shipping":
+                    match = order.isShippingStatus();
+                    break;
+                case "cancel":
+                    match = order.isCancelledStatus();
+                    break;
+                case "success":
+                    match = order.isSuccessStatus();
+                    break;
+                default:
+                    break;
                 }
-                if (match) listOrders.add(o);
+
+                if (match) {
+                    listOrders.add(order);
+                }
             }
-        } else {
-            listOrders = allOrders;
         }
 
         request.setAttribute("filter", filter);

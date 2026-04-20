@@ -14,24 +14,19 @@
     <link rel="stylesheet" href="CSS/user/order-detail.css">
 </head>
 <%
-    // 1. Khai báo link mặc định
     String backLink = "order-history";
-
-    // 2. Lấy user từ session
     model.User currentUser = (model.User) session.getAttribute("user");
 
-    // 3. Logic kiểm tra
-    boolean isAdmin = false;
-    String currentUsername = "";
-    String currentFullname = "";
-
     if (currentUser != null) {
-        currentUsername = currentUser.getUsername();
-        try { currentFullname = currentUser.getFullname(); } catch (Exception e) { currentFullname = "Chưa lấy được (Check tên hàm)"; }
+        String currentFullname = "";
+        try {
+            currentFullname = currentUser.getFullname();
+        } catch (Exception e) {
+            currentFullname = "";
+        }
 
         if (currentFullname != null && currentFullname.equalsIgnoreCase("Administrator")) {
             backLink = "admin";
-            isAdmin = true;
         }
     }
 %>
@@ -62,6 +57,7 @@
         <div class="customer-info">
             <div class="info-row"><strong><fmt:message key="order.receiver" />:</strong> <%=order.getUserName()%></div>
             <div class="info-row"><strong><fmt:message key="order.date" />:</strong> <%=order.getCreatedAt()%></div>
+            <div class="info-row"><strong>Thanh toan:</strong> <%=order.getPaymentMethod()%></div>
             <div class="info-row" style="grid-column: span 2;"><strong><fmt:message key="order.address" />:</strong> <%=order.getAddress()%></div>
         </div>
 
@@ -75,7 +71,9 @@
                 </tr>
             </thead>
             <tbody>
-                <% for (OrderDetail item : details) { double subTotal = item.getPrice() * item.getQuantity(); %>
+                <% for (OrderDetail item : details) {
+                    double subTotal = item.getPrice() * item.getQuantity();
+                %>
                 <tr>
                     <td style="display: flex; align-items: center;">
                         <img src="<%=item.getProduct().getImage()%>" class="img-thumb">
@@ -99,7 +97,9 @@
                 <i class="fa-solid fa-arrow-left"></i> <fmt:message key="order.back" />
             </a>
 
-            <% if (order.getStatus() != null && order.getStatus().equals("Đang xử lý")) { %>
+            <% if (order.getStatus() != null
+                    && (Order.STATUS_PROCESSING.equals(order.getStatus())
+                        || Order.STATUS_PENDING_MOMO.equals(order.getStatus()))) { %>
                 <form action="order-detail" method="post" onsubmit="return confirm('<fmt:message key="order.cancel_confirm" />');" style="margin: 0;">
                     <input type="hidden" name="id" value="<%= order.getId() %>">
                     <input type="hidden" name="action" value="cancel">
