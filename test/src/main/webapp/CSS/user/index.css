@@ -289,35 +289,41 @@
     color: var(--black);
     font-size: 1.1rem;
 }
-
-.btn-add-cart {
+/* nút mua ngay và thêm vào giỏ */
+.btn-add-cart,
+.btn-buy-now {
     width: 100%;
-    margin-top: 15px;
+    margin-top: 10px;
     padding: 10px;
-    background-color: var(--black);
-    color: var(--white);
+
     border: none;
-    font-size: 0.8rem;
-    font-weight: 600;
     cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+
     opacity: 0;
     transform: translateY(10px);
+    transition: all 0.3s ease;
 }
-
-.product-card:hover .btn-add-cart {
+.product-card:hover .btn-add-cart,
+.product-card:hover .btn-buy-now {
     opacity: 1;
     transform: translateY(0);
 }
+.btn-add-cart {
+    background-color: var(--black);
+    color: var(--white);
+}
 
-.btn-add-cart:hover { background-color: var(--gold); }
+.btn-add-cart:hover {
+    background-color: var(--gold);
+}
+.btn-buy-now {
 
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white; 
+}
+.btn-buy-now:hover {
+    background: linear-gradient(135deg, #c49b2c, #e0b90f);
+}
 /* --- NÚT XEM THÊM (MỚI) --- */
 .btn-see-more {
     display: inline-block;
