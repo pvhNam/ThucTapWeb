@@ -6,7 +6,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quan Ly Don Hang | Admin</title>
+<title>Quản Lý Đơn Hàng | Admin</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,16 +37,16 @@
             String filterColor = "#4e73df";
 
             if ("processing".equals(filterParam)) {
-                filterName = "Dang xu ly";
+                filterName = "Đang xử lý";
                 filterColor = "#f6c23e";
             } else if ("shipping".equals(filterParam)) {
-                filterName = "Dang giao hang";
+                filterName = "Đang giao hàng";
                 filterColor = "#36b9cc";
             } else if ("cancel".equals(filterParam)) {
-                filterName = "Da huy / That bai";
+                filterName = "Đã hủy / thất bại";
                 filterColor = "#e74a3b";
             } else if ("success".equals(filterParam)) {
-                filterName = "Giao thanh cong";
+                filterName = "Giao thành công";
                 filterColor = "#1cc88a";
             }
         %>
@@ -54,11 +54,11 @@
         <div class="filter-bar">
             <span class="filter-tag" style="border-color: <%=filterColor%>; color: <%=filterColor%>;">
                 <i class="fa-solid fa-filter"></i>
-                Loc: <strong><%=filterName%></strong>
+                Lọc: <strong><%=filterName%></strong>
                 &nbsp;|&nbsp; <%=((java.util.List)request.getAttribute("listOrders")).size()%> don
             </span>
             <a href="admin-orders" class="btn-clear-filter">
-                <i class="fa-solid fa-xmark"></i> Xem tat ca
+                <i class="fa-solid fa-xmark"></i> Xem tất cả
             </a>
         </div>
         <% } %>
