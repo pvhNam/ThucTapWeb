@@ -3,7 +3,6 @@
 <%@ page import="java.text.DecimalFormat"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 
@@ -56,10 +55,13 @@
                 <%
                 for (Order o : list) {
                     String statusClass = "status-processing";
-                    if (o.getStatus().contains("hủy") || o.getStatus().contains("Hủy") || o.getStatus().toLowerCase().contains("cancel"))
+                    String status = o.getStatus() == null ? "" : o.getStatus().toLowerCase();
+                    if (status.contains("hủy") || status.contains("cancel") || status.contains("thất bại")) {
                         statusClass = "status-cancelled";
-                    else if (o.getStatus().contains("Giao") || o.getStatus().contains("Thành công") || o.getStatus().toLowerCase().contains("success"))
+                    } else if (status.contains("giao") || status.contains("success")
+                            || status.contains("Thành công") || status.contains("thanh toán")) {
                         statusClass = "status-shipped";
+                    }
                 %>
                 <tr>
                     <td>#<%=o.getId()%></td>

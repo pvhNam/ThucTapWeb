@@ -46,5 +46,10 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okio-jvm-3.0.0-alpha.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/kotlin-stdlib-1.6.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okio-fakefilesystem-jvm-3.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/okhttp-4.10.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ASUS/Downloads/json-20231013.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -3,6 +3,14 @@ package model;
 import java.sql.Date;
 
 public class Order {
+	public static final String STATUS_PROCESSING = "Dang xu ly";
+	public static final String STATUS_PENDING_MOMO = "Cho thanh toan MoMo";
+	public static final String STATUS_PAID_PROCESSING = "Da thanh toan - Dang xu ly";
+	public static final String STATUS_SHIPPING = "Dang giao hang";
+	public static final String STATUS_SUCCESS = "Giao thanh cong";
+	public static final String STATUS_MOMO_FAILED = "Thanh toan MoMo that bai";
+	public static final String STATUS_CANCELLED = "Da huy";
+
 	private int id;
 	private int userId;
 	private double totalMoney;
@@ -11,6 +19,7 @@ public class Order {
 	private Date createdAt;
 	private String userName;
 	private String phoneNumber;
+	private String paymentMethod;
 
 	public Order() {
 	}
@@ -38,6 +47,14 @@ public class Order {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 	// --- Các Getter/Setter cũ (Giữ nguyên) ---
@@ -79,6 +96,101 @@ public class Order {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getNormalizedStatus() {
+		String rawStatus = status == null ? "" : status.trim();
+		String lowerStatus = rawStatus.toLowerCase();
+
+		if (lowerStatus.contains("momo") && lowerStatus.contains("that bai")) {
+			return STATUS_MOMO_FAILED;
+		}
+		if (lowerStatus.contains("cho thanh toan momo")) {
+			return STATUS_PENDING_MOMO;
+		}
+		if (lowerStatus.contains("da thanh toan") && lowerStatus.contains("xu ly")) {
+			return STATUS_PAID_PROCESSING;
+		}
+		if (lowerStatus.contains("giao thanh cong") || lowerStatus.contains("success")
+				|| lowerStatus.contains("thanh cong")) {
+			return STATUS_SUCCESS;
+		}
+		if (lowerStatus.contains("dang giao hang")
+				|| (lowerStatus.contains("giao") && !lowerStatus.contains("thanh cong"))) {
+			return STATUS_SHIPPING;
+		}
+		if (lowerStatus.contains("da huy") || lowerStatus.contains("cancel") || lowerStatus.contains("huy")) {
+			return STATUS_CANCELLED;
+		}
+		if (lowerStatus.contains("dang xu ly") || lowerStatus.contains("processing") || lowerStatus.contains("xu ly")) {
+			return STATUS_PROCESSING;
+		}
+		return rawStatus;
+	}
+
+	public String getDisplayStatus() {
+		switch (getNormalizedStatus()) {
+		case STATUS_PROCESSING:
+			return "Đang xử lý";
+		case STATUS_PENDING_MOMO:
+			return "Chờ thanh toán";
+		case STATUS_PAID_PROCESSING:
+			return "Đã thanh toán - đang xử lý";
+		case STATUS_SHIPPING:
+			return "Đang giao hàng";
+		case STATUS_SUCCESS:
+			return "Giao thành công";
+		case STATUS_MOMO_FAILED:
+			return "Thanh toán MoMo thất bại";
+		case STATUS_CANCELLED:
+			return "Đã hủy";
+		default:
+			return status == null || status.isBlank() ? "Không xác định" : status;
+		}
+	}
+
+	public boolean isProcessingStatus() {
+		String normalizedStatus = getNormalizedStatus();
+		return STATUS_PROCESSING.equals(normalizedStatus)
+				|| STATUS_PENDING_MOMO.equals(normalizedStatus)
+				|| STATUS_PAID_PROCESSING.equals(normalizedStatus);
+	}
+
+	public boolean isShippableStatus() {
+		String normalizedStatus = getNormalizedStatus();
+		return STATUS_PROCESSING.equals(normalizedStatus) || STATUS_PAID_PROCESSING.equals(normalizedStatus);
+	}
+
+	public boolean isShippingStatus() {
+		return STATUS_SHIPPING.equals(getNormalizedStatus());
+	}
+
+	public boolean isSuccessStatus() {
+		return STATUS_SUCCESS.equals(getNormalizedStatus());
+	}
+
+	public boolean isCancelledStatus() {
+		return STATUS_CANCELLED.equals(getNormalizedStatus()) || STATUS_MOMO_FAILED.equals(getNormalizedStatus());
+	}
+
+	public boolean isAdminCancelableStatus() {
+		String normalizedStatus = getNormalizedStatus();
+		return STATUS_PROCESSING.equals(normalizedStatus)
+				|| STATUS_PENDING_MOMO.equals(normalizedStatus)
+				|| STATUS_PAID_PROCESSING.equals(normalizedStatus);
+	}
+
+	public String getAdminBadgeClass() {
+		if (isSuccessStatus()) {
+			return "bg-success";
+		}
+		if (isShippingStatus()) {
+			return "bg-shipping";
+		}
+		if (isCancelledStatus()) {
+			return "bg-cancel";
+		}
+		return "bg-process";
 	}
 
 	public Date getCreatedAt() {

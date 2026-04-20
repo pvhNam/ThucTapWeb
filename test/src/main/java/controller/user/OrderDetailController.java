@@ -35,8 +35,8 @@ public class OrderDetailController extends HttpServlet {
                 OrderDAO dao = new OrderDAO();
                 Order order = dao.getOrderById(orderId);
 
-                if (order != null && "Dang xu ly".equals(order.getStatus())) {
-                    dao.updateOrderStatus(orderId, "Da huy");
+                if (order != null && canCancel(order.getStatus())) {
+                    dao.updateOrderStatus(orderId, Order.STATUS_CANCELLED);
                 }
             }
 
@@ -46,5 +46,9 @@ public class OrderDetailController extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect("order-history");
         }
+    }
+
+    private boolean canCancel(String status) {
+        return Order.STATUS_PROCESSING.equals(status) || Order.STATUS_PENDING_MOMO.equals(status);
     }
 }
