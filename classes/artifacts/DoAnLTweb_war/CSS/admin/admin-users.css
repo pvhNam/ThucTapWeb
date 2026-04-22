@@ -1,0 +1,20 @@
+/* admin-users.css — user management specific styles only
+   (shared styles in Admin.css) */
+
+.search-box {
+    display: flex; align-items: center;
+    background: white; border: 1px solid #ddd;
+    border-radius: 8px; padding: 5px 15px;
+    width: 300px; box-shadow: var(--shadow);
+}
+.search-box input { border: none; outline: none; width: 100%; font-size: 14px; color: #555; }
+.search-box button { background: none; border: none; cursor: pointer; color: #888; transition: 0.2s; }
+.search-box button:hover { color: var(--primary); }
+
+.user-info-cell { display: flex; align-items: center; gap: 12px; }
+.user-avatar-small { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; }
+.user-name a { text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+.user-name a:hover { color: var(--primary); }
+.icon-link { font-size: 10px; color: #aaa; }
+.user-name a:hover .icon-link { color: var(--primary); }
+.user-username { font-size: 12px; color: #888; margin-top: 2px; }

@@ -1,0 +1,26 @@
+/* admin-add-staff.css */
+
+.form-container {
+    max-width: 620px;
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
+.form-control {
+    width: 100%; padding: 12px; border: 1px solid #ccc;
+    border-radius: 6px; font-size: 14px; box-sizing: border-box;
+}
+.form-control:focus { border-color: var(--primary); outline: none; }
+
+.btn-submit {
+    background: var(--primary); color: white;
+    border: none; padding: 12px 20px; border-radius: 6px;
+    font-weight: 700; cursor: pointer; width: 100%;
+    font-size: 15px; margin-top: 10px; transition: background 0.2s;
+}
+.btn-submit:hover { background: #2e59d9; }
