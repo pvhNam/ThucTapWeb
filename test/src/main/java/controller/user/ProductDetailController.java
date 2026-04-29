@@ -17,6 +17,10 @@ public class ProductDetailController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Đảm bảo encoding để hỗ trợ UTF-8
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+
         String pidParam = request.getParameter("pid");
         if (pidParam == null || pidParam.isEmpty()) {
             response.sendRedirect("home");
@@ -30,11 +34,14 @@ public class ProductDetailController extends HttpServlet {
             Product p = pDao.getProductById(pid);
 
             if (p == null) {
+                // Nếu không tìm thấy sản phẩm, quay về home
                 response.sendRedirect("home");
-            } else {
-                request.setAttribute("p", p);
-                request.getRequestDispatcher("/product-detail.jsp").forward(request, response);
+                return;
             }
+
+            // Chuyển dữ liệu sang view (JSP) — JSP chỉ hiển thị, không xử lý logic
+            request.setAttribute("p", p);
+            request.getRequestDispatcher("/product-detail.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
             response.sendRedirect("home");

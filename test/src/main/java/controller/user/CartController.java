@@ -185,7 +185,24 @@ public class CartController extends HttpServlet {
                     return;
                 }
                 dao.addToCart(uid, pid, quantity);
-
+            } else if ("buyNow".equals(action)) {
+                // Hành động mua ngay: thêm vào giỏ (nếu có thể) rồi chuyển đến trang thanh toán
+                String qParam = request.getParameter("quantity");
+                int quantity = 1;
+                if (qParam != null && !qParam.isEmpty()) {
+                    quantity = Integer.parseInt(qParam);
+                }
+                Product p = productDAO.getProductById(pid);
+                if (p != null && quantity > p.getStockquantyti()) {
+                    session.setAttribute("voucherMsg", "Khong the them! Kho chi con " + p.getStockquantyti() + " san pham.");
+                    session.setAttribute("msgType", "error");
+                    response.sendRedirect("cart");
+                    return;
+                }
+                dao.addToCart(uid, pid, quantity);
+                // Chuyển thẳng tới checkout
+                response.sendRedirect("checkout");
+                return;
             } else if ("update_quantity".equals(action)) {
                 int currentQty = 1;
                 try { currentQty = Integer.parseInt(request.getParameter("quantity")); } catch (Exception e) {}

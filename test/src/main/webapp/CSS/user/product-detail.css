@@ -93,6 +93,7 @@
 .action-box {
 	display: flex;
 	gap: 15px;
+	align-items: center;
 	margin-top: 20px;
 }
 
@@ -104,25 +105,56 @@
 	padding: 10px;
 	font-size: 1rem;
 }
+.action-box button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	padding: 12px 18px;
+	min-height: 48px;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.95rem;
+	border-radius: 6px;
+}
 
+.btn-buy-now {
+	flex: 1;
+	border: none;
+	cursor: pointer;
+	color: #fff;
+	background: linear-gradient(135deg, #2ecc71, #27ae60);
+	transition: background 0.25s ease, transform 0.15s ease;
+}
+.btn-buy-now:hover {
+	background: #d4af37; /* same hover color as add-to-cart */
+	color: #1a1a1a;
+	transform: translateY(-1px);
+}
 .btn-add-cart-detail {
 	flex: 1;
 	background: #1a1a1a;
 	color: #fff;
 	border: none;
-	font-weight: 700;
-	text-transform: uppercase;
 	cursor: pointer;
-	transition: 0.3s;
+	transition: background 0.25s ease, color 0.2s ease, transform 0.12s ease;
 }
 
 .btn-add-cart-detail:hover {
 	background: #d4af37;
+	color: #1a1a1a;
+	transform: translateY(-1px);
 }
 
 .btn-disabled {
 	background: #ccc !important;
 	cursor: not-allowed;
+}
+
+/* Ensure qty input aligns with buttons */
+.qty-input {
+	height: 48px;
+	padding: 0 10px;
 }
 
 @media ( max-width : 768px) {
