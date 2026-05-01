@@ -19,7 +19,7 @@
 	<nav class="menu">
 		<a href="home"><fmt:message key="menu.home" /></a> <a
 			href="collection"><fmt:message key="menu.collection" /></a> <a
-			href="about.jsp"><fmt:message key="menu.products" /></a> <a
+			href="about"><fmt:message key="menu.products" /></a> <a
 			href="news.jsp"><fmt:message key="menu.news" /></a>
 	</nav>
 
