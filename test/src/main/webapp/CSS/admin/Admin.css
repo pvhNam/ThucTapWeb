@@ -1,8 +1,3 @@
-/* ============================================================
-   ADMIN SHARED CSS — nguồn duy nhất cho tất cả trang admin
-   ============================================================ */
-
-/* --- VARIABLES --- */
 :root {
     --sidebar-width: 250px;
     --primary:   #4e73df;
@@ -151,19 +146,19 @@ body {
     filter: brightness(92%);
 }
 
-/* Button color variants — gradient upgrade */
-.btn-view    { background: linear-gradient(135deg, #5a5c69, #3a3b45); }
-.btn-edit    { background: linear-gradient(135deg, #f6c23e, #d4a017); color: #fff; }
+/* Button color variants — FLAT DESIGN (Đã bỏ Gradient) */
+.btn-view    { background: var(--dark); color: #fff; }
+.btn-edit    { background: var(--warning); color: #fff; }
 .btn-del,
 .btn-delete,
-.btn-cancel  { background: linear-gradient(135deg, #e74a3b, #c0392b); }
-.btn-ship    { background: linear-gradient(135deg, #36b9cc, #1a9eac); }
-.btn-success { background: linear-gradient(135deg, #1cc88a, #13855c); }
-.btn-primary { background: linear-gradient(135deg, #4e73df, #224abe); }
+.btn-cancel  { background: var(--danger); color: #fff; }
+.btn-ship    { background: #36b9cc; color: #fff; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-primary { background: var(--primary); color: #fff; }
 
 /* --- ADD NEW BUTTON --- */
 .btn-add-new {
-    background: linear-gradient(135deg, #1cc88a, #13855c);
+    background: var(--success); /* Đã đổi sang màu đơn sắc */
     color: white;
     padding: 9px 20px;
     text-decoration: none;
@@ -326,3 +321,26 @@ body {
     justify-content: center;
     font-size: 22px;
 }
+
+/* =========================================================
+   LOẠI BỎ HIỆU ỨNG HOLOGRAM CÒN SÓT LẠI TRÊN HỆ THỐNG
+   ========================================================= */
+
+/* 1. Nút Đăng bài (Tin tức) và Nút Xác nhận (Thêm SP) */
+.btn-publish,
+.btn-submit-product {
+    background: var(--primary) !important; /* Ép về màu xanh dương đơn sắc */
+    box-shadow: none !important;           /* Bỏ hiệu ứng bóng đổ lòe loẹt */
+}
+
+.btn-publish:hover,
+.btn-submit-product:hover {
+    background: #2e59d9 !important;        /* Xanh đậm hơn một chút khi di chuột */
+    transform: translateY(-2px);
+}
+
+/* 2. Các chấm màu trạng thái ở trang Dashboard (Dashboard Admin) */
+.donut-legend .legend-item:nth-child(1) .legend-dot { background: #1cc88a !important; } /* Xanh lá */
+.donut-legend .legend-item:nth-child(2) .legend-dot { background: #36b9cc !important; } /* Xanh ngọc */
+.donut-legend .legend-item:nth-child(3) .legend-dot { background: #e74a3b !important; } /* Đỏ */
+.donut-legend .legend-item:nth-child(4) .legend-dot { background: #f6c23e !important; } /* Vàng */

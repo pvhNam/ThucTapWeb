@@ -8,19 +8,38 @@ import java.util.List;
 
 import model.Category;
 import model.Product;
+import model.ProductVariant;
 
 public class ProductDAO {
+
+    // LẤY DANH SÁCH BIẾN THỂ (VARIANT) THEO SẢN PHẨM
+    public List<ProductVariant> getVariantsByProductId(int pid) {
+        List<ProductVariant> list = new ArrayList<>();
+        String sql = "SELECT * FROM product_variants WHERE product_id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new ProductVariant(rs.getInt("id"), rs.getInt("product_id"),
+                        rs.getString("color"), rs.getString("size"), rs.getInt("stock_quantity")));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
 
     // Lấy tất cả sản phẩm
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM product";
         try (Connection conn = DBConnect.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"), rs.getInt("cateID"),
-                        rs.getString("color"), rs.getString("size"), rs.getInt("amount"), rs.getString("img")));
+                Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"), rs.getInt("cateID"),
+                        rs.getString("color"), rs.getString("size"), rs.getInt("amount"), rs.getString("img"));
+                p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+                list.add(p);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,9 +56,11 @@ public class ProductDAO {
             ps.setString(1, "%" + keyword + "%"); // Tìm gần đúng
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                    Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                             rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
-                            rs.getString("img")));
+                            rs.getString("img"));
+                    p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+                    list.add(p);
                 }
             }
         } catch (Exception e) {
@@ -55,9 +76,11 @@ public class ProductDAO {
             ps.setInt(1, pid);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
+                    Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                             rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
                             rs.getString("img"));
+                    p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+                    return p;
                 }
             }
         } catch (Exception e) {
@@ -114,19 +137,64 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // Nhập hàng 
-    public boolean importStock(int pid, int quantityToAdd) {
-        String sql = "UPDATE product SET amount = amount + ? WHERE pid = ?";
+    // Nhập hàng theo biến thể
+    public boolean importStockVariant(int pid, String color, String size, int quantityToAdd) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
-            Connection conn = DBConnect.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, quantityToAdd);
-            ps.setInt(2, pid);
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) { e.printStackTrace(); }
+            conn = DBConnect.getConnection();
+            conn.setAutoCommit(false); // Bắt đầu Transaction
+
+            // 1. Kiểm tra xem biến thể Màu/Size này đã có trong kho chưa
+            String checkSql = "SELECT id FROM product_variants WHERE product_id = ? AND color = ? AND size = ?";
+            ps = conn.prepareStatement(checkSql);
+            ps.setInt(1, pid);
+            ps.setString(2, color);
+            ps.setString(3, size);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                // Nếu đã có -> Cộng dồn số lượng
+                String updateVar = "UPDATE product_variants SET stock_quantity = stock_quantity + ? WHERE id = ?";
+                PreparedStatement psUp = conn.prepareStatement(updateVar);
+                psUp.setInt(1, quantityToAdd);
+                psUp.setInt(2, rs.getInt("id"));
+                psUp.executeUpdate();
+                psUp.close();
+            } else {
+                // Nếu chưa có -> Thêm dòng mới
+                String insertVar = "INSERT INTO product_variants (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
+                PreparedStatement psIn = conn.prepareStatement(insertVar);
+                psIn.setInt(1, pid);
+                psIn.setString(2, color);
+                psIn.setString(3, size);
+                psIn.setInt(4, quantityToAdd);
+                psIn.executeUpdate();
+                psIn.close();
+            }
+
+            // 2. Đồng bộ tổng số lượng vào bảng product chính
+            String updateTotal = "UPDATE product SET amount = amount + ? WHERE pid = ?";
+            PreparedStatement psTotal = conn.prepareStatement(updateTotal);
+            psTotal.setInt(1, quantityToAdd);
+            psTotal.setInt(2, pid);
+            psTotal.executeUpdate();
+            psTotal.close();
+
+            conn.commit(); // Hoàn tất Transaction
+            return true;
+        } catch (Exception e) {
+            try { if (conn != null) conn.rollback(); } catch (Exception ex) { ex.printStackTrace(); }
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (Exception e) {}
+        }
         return false;
     }
-    
+
     // Trừ kho khi bán
     public void decreaseStock(int pid, int quantity) {
         String sql = "UPDATE product SET amount = amount - ? WHERE pid = ? AND amount >= ?";
@@ -140,13 +208,10 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-	
-
     public List<Product> getProductsByCategory(String categoryName) {
         List<Product> list = new ArrayList<>();
-
         String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
-                     "FROM Product p JOIN category c ON p.cateID = c.id ";
+                "FROM product p JOIN category c ON p.cateID = c.id ";
 
         if (categoryName != null && !categoryName.equals("all")) {
             sql += "WHERE c.name = ?";
@@ -161,24 +226,22 @@ public class ProductDAO {
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-
                 Product p = new Product(
-                    rs.getInt("pid"),              // id
-                    rs.getString("name"),          // -> pdescription
-                    rs.getDouble("price"),			// 
-                    rs.getInt("cateID"),          // -> cid
-                    rs.getString("color"),
-                    rs.getString("size"),
-                    rs.getInt("amount"),          // -> stockquantyti
-                    rs.getString("img")           // -> image
+                        rs.getInt("pid"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("cateID"),
+                        rs.getString("color"),
+                        rs.getString("size"),
+                        rs.getInt("amount"),
+                        rs.getString("img")
                 );
 
-                // category object
                 Category c = new Category();
                 c.setId(rs.getInt("cid2"));
                 c.setName(rs.getString("cname"));
-
                 p.setCategory(c);
+                p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
 
                 list.add(p);
             }
@@ -186,8 +249,6 @@ public class ProductDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
-
 }
