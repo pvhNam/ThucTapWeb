@@ -55,4 +55,24 @@ public class AdminVariantController extends HttpServlet {
             response.sendRedirect("admin-products?msg=error");
         }
     }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        int pid = Integer.parseInt(request.getParameter("pid"));
+        ProductDAO dao = new ProductDAO();
+
+        try {
+            if ("update-qty".equals(action)) {
+                int vid = Integer.parseInt(request.getParameter("vid"));
+                int newQty = Integer.parseInt(request.getParameter("newQty"));
+                dao.updateVariantQuantity(vid, newQty);
+            } else if ("delete-variant".equals(action)) {
+                int vid = Integer.parseInt(request.getParameter("vid"));
+                dao.deleteVariant(vid);
+            }
+            // Sau khi xử lý xong, quay lại đúng trang chi tiết của sản phẩm đó
+            response.sendRedirect("admin-variants?pid=" + pid + "&msg=success");
+        } catch (Exception e) {
+            response.sendRedirect("admin-variants?pid=" + pid + "&msg=error");
+        }
+    }
 }

@@ -251,4 +251,66 @@ public class ProductDAO {
         }
         return list;
     }
+    public boolean updateVariantQuantity(int variantId, int newQty) {
+        String sqlUpdateVar = "UPDATE product_variants SET stock_quantity = ? WHERE id = ?";
+        String sqlSyncTotal = "UPDATE product p SET amount = (SELECT SUM(stock_quantity) FROM product_variants WHERE product_id = p.pid) " +
+                "WHERE pid = (SELECT product_id FROM product_variants WHERE id = ?)";
+        try (Connection conn = DBConnect.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps1 = conn.prepareStatement(sqlUpdateVar);
+                 PreparedStatement ps2 = conn.prepareStatement(sqlSyncTotal)) {
+
+                ps1.setInt(1, newQty);
+                ps1.setInt(2, variantId);
+                ps1.executeUpdate();
+
+                ps2.setInt(1, variantId);
+                ps2.executeUpdate();
+
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                conn.rollback();
+                e.printStackTrace();
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    // Xóa một biến thể (màu/size) khỏi kho
+    public boolean deleteVariant(int variantId) {
+        String sqlGetPid = "SELECT product_id FROM product_variants WHERE id = ?";
+        String sqlDelete = "DELETE FROM product_variants WHERE id = ?";
+        String sqlSyncTotal = "UPDATE product SET amount = (SELECT COALESCE(SUM(stock_quantity), 0) FROM product_variants WHERE product_id = ?) WHERE pid = ?";
+
+        try (Connection conn = DBConnect.getConnection()) {
+            conn.setAutoCommit(false);
+            int pid = -1;
+            try (PreparedStatement psPid = conn.prepareStatement(sqlGetPid)) {
+                psPid.setInt(1, variantId);
+                ResultSet rs = psPid.executeQuery();
+                if (rs.next()) pid = rs.getInt("product_id");
+            }
+
+            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete);
+                 PreparedStatement psSync = conn.prepareStatement(sqlSyncTotal)) {
+
+                psDel.setInt(1, variantId);
+                psDel.executeUpdate();
+
+                if (pid != -1) {
+                    psSync.setInt(1, pid);
+                    psSync.setInt(2, pid);
+                    psSync.executeUpdate();
+                }
+
+                conn.commit();
+                return true;
+            } catch (Exception e) {
+                conn.rollback();
+                e.printStackTrace();
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
 }
