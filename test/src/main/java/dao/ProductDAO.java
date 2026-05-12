@@ -28,6 +28,21 @@ public class ProductDAO {
         return list;
     }
 
+    // LẤY DANH SÁCH ẢNH PHỤ CỦA SẢN PHẨM
+    public List<String> getExtraImages(int pid) {
+        List<String> images = new ArrayList<>();
+        String sql = "SELECT image_url FROM product_images WHERE product_id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                images.add(rs.getString("image_url"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return images;
+    }
+
     // Lấy tất cả sản phẩm
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
@@ -79,7 +94,10 @@ public class ProductDAO {
                     Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
                             rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
                             rs.getString("img"));
-                    p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+
+                    p.setVariants(getVariantsByProductId(p.getPid()));
+                    p.setExtraImages(getExtraImages(p.getPid())); // Lấy ảnh phụ
+
                     return p;
                 }
             }
@@ -107,6 +125,31 @@ public class ProductDAO {
         return false;
     }
 
+    public int addProductReturnId(Product p) {
+        String sql = "INSERT INTO product (name, price, cateID, color, size, amount, img) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setString(1, p.getPdescription());
+            ps.setDouble(2, p.getPrice());
+            ps.setInt(3, p.getCid());
+            ps.setString(4, p.getColor());
+            ps.setString(5, p.getSize());
+            ps.setInt(6, p.getStockquantyti());
+            ps.setString(7, p.getImage());
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // Trả về ID vừa sinh ra
+                    }
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return -1;
+    }
+
     // Cập nhật sản phẩm
     public boolean updateProduct(Product p) {
         String sql = "UPDATE product SET name=?, price=?, cateID=?, color=?, size=?, amount=?, img=? WHERE pid=?";
@@ -124,6 +167,32 @@ public class ProductDAO {
             return ps.executeUpdate() > 0;
         } catch (Exception e) { e.printStackTrace(); }
         return false;
+    }
+
+    // Cập nhật bộ ảnh phụ (Xóa ảnh cũ, thêm ảnh mới)
+    public void updateExtraImages(int pid, String[] imageUrls) {
+        try (Connection conn = DBConnect.getConnection()) {
+            // 1. Xóa toàn bộ ảnh phụ cũ của SP này
+            String sqlDelete = "DELETE FROM product_images WHERE product_id = ?";
+            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
+                psDel.setInt(1, pid);
+                psDel.executeUpdate();
+            }
+
+            // 2. Thêm danh sách ảnh mới vào
+            if (imageUrls != null && imageUrls.length > 0) {
+                String sqlInsert = "INSERT INTO product_images (product_id, image_url) VALUES (?, ?)";
+                try (PreparedStatement psIn = conn.prepareStatement(sqlInsert)) {
+                    for (String url : imageUrls) {
+                        if (url != null && !url.trim().isEmpty()) {
+                            psIn.setInt(1, pid);
+                            psIn.setString(2, url.trim());
+                            psIn.executeUpdate();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 
     // Xóa sản phẩm
@@ -155,7 +224,7 @@ public class ProductDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Nếu đã có -> Cộng dồn số lượng
+                // Cộng dồn số lượng
                 String updateVar = "UPDATE product_variants SET stock_quantity = stock_quantity + ? WHERE id = ?";
                 PreparedStatement psUp = conn.prepareStatement(updateVar);
                 psUp.setInt(1, quantityToAdd);
@@ -163,7 +232,6 @@ public class ProductDAO {
                 psUp.executeUpdate();
                 psUp.close();
             } else {
-                // Nếu chưa có -> Thêm dòng mới
                 String insertVar = "INSERT INTO product_variants (product_id, color, size, stock_quantity) VALUES (?, ?, ?, ?)";
                 PreparedStatement psIn = conn.prepareStatement(insertVar);
                 psIn.setInt(1, pid);
@@ -195,62 +263,7 @@ public class ProductDAO {
         return false;
     }
 
-    // Trừ kho khi bán
-    public void decreaseStock(int pid, int quantity) {
-        String sql = "UPDATE product SET amount = amount - ? WHERE pid = ? AND amount >= ?";
-        try {
-            Connection conn = DBConnect.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, quantity);
-            ps.setInt(2, pid);
-            ps.setInt(3, quantity);
-            ps.executeUpdate();
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    public List<Product> getProductsByCategory(String categoryName) {
-        List<Product> list = new ArrayList<>();
-        String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
-                "FROM product p JOIN category c ON p.cateID = c.id ";
-
-        if (categoryName != null && !categoryName.equals("all")) {
-            sql += "WHERE c.name = ?";
-        }
-
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            if (categoryName != null && !categoryName.equals("all")) {
-                ps.setString(1, categoryName);
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Product p = new Product(
-                        rs.getInt("pid"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("cateID"),
-                        rs.getString("color"),
-                        rs.getString("size"),
-                        rs.getInt("amount"),
-                        rs.getString("img")
-                );
-
-                Category c = new Category();
-                c.setId(rs.getInt("cid2"));
-                c.setName(rs.getString("cname"));
-                p.setCategory(c);
-                p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
-
-                list.add(p);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
+    // Cập nhật số lượng của 1 biến thể cụ thể
     public boolean updateVariantQuantity(int variantId, int newQty) {
         String sqlUpdateVar = "UPDATE product_variants SET stock_quantity = ? WHERE id = ?";
         String sqlSyncTotal = "UPDATE product p SET amount = (SELECT SUM(stock_quantity) FROM product_variants WHERE product_id = p.pid) " +
@@ -313,44 +326,62 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
-    // Lấy danh sách ảnh phụ của 1 sản phẩm
-    public List<String> getExtraImages(int pid) {
-        List<String> images = new ArrayList<>();
-        String sql = "SELECT image_url FROM product_images WHERE product_id = ?";
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, pid);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                images.add(rs.getString("image_url"));
-            }
+
+    // Trừ kho khi bán
+    public void decreaseStock(int pid, int quantity) {
+        String sql = "UPDATE product SET amount = amount - ? WHERE pid = ? AND amount >= ?";
+        try {
+            Connection conn = DBConnect.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, quantity);
+            ps.setInt(2, pid);
+            ps.setInt(3, quantity);
+            ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
-        return images;
     }
 
-    // Cập nhật bộ ảnh phụ (Xóa ảnh cũ, thêm ảnh mới)
-    public void updateExtraImages(int pid, String[] imageUrls) {
-        try (Connection conn = DBConnect.getConnection()) {
-            // 1. Xóa toàn bộ ảnh phụ cũ của SP này
-            String sqlDelete = "DELETE FROM product_images WHERE product_id = ?";
-            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
-                psDel.setInt(1, pid);
-                psDel.executeUpdate();
+    // Lấy sản phẩm theo danh mục
+    public List<Product> getProductsByCategory(String categoryName) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
+                "FROM product p JOIN category c ON p.cateID = c.id ";
+
+        if (categoryName != null && !categoryName.equals("all")) {
+            sql += "WHERE c.name = ?";
+        }
+
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            if (categoryName != null && !categoryName.equals("all")) {
+                ps.setString(1, categoryName);
             }
 
-            // 2. Thêm danh sách ảnh mới vào
-            if (imageUrls != null && imageUrls.length > 0) {
-                String sqlInsert = "INSERT INTO product_images (product_id, image_url) VALUES (?, ?)";
-                try (PreparedStatement psIn = conn.prepareStatement(sqlInsert)) {
-                    for (String url : imageUrls) {
-                        if (url != null && !url.trim().isEmpty()) {
-                            psIn.setInt(1, pid);
-                            psIn.setString(2, url.trim());
-                            psIn.executeUpdate();
-                        }
-                    }
-                }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product(
+                        rs.getInt("pid"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("cateID"),
+                        rs.getString("color"),
+                        rs.getString("size"),
+                        rs.getInt("amount"),
+                        rs.getString("img")
+                );
+
+                Category c = new Category();
+                c.setId(rs.getInt("cid2"));
+                c.setName(rs.getString("cname"));
+                p.setCategory(c);
+                p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+
+                list.add(p);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
