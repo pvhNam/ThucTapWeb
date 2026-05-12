@@ -13,8 +13,6 @@ public class Product {
     public String image;
     private Category category;
     private List<String> extraImages = new ArrayList<>();
-
-    // Thêm danh sách biến thể
     private List<ProductVariant> variants;
 
     public Product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti, String image) {
@@ -28,27 +26,72 @@ public class Product {
         this.image = image;
     }
 
-    public Category getCategory() { return category; }
-    public void setCategory(Category category) { this.category = category; }
-    public int getPid() { return pid; }
-    public void setPid(int pid) { this.pid = pid; }
-    public String getImage() { return image; }
-    public void setImage(String image) { this.image = image; }
-    public String getPdescription() { return pdescription; }
-    public void setPdescription(String pdescription) { this.pdescription = pdescription; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public int getCid() { return cid; }
-    public void setCid(int cid) { this.cid = cid; }
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
-    public String getSize() { return size; }
-    public void setSize(String size) { this.size = size; }
-    public int getStockquantyti() { return stockquantyti; }
-    public void setStockquantyti(int stockquantyti) { this.stockquantyti = stockquantyti; }
-    public List<String> getExtraImages() { return extraImages; }
-    public void setExtraImages(List<String> extraImages) { this.extraImages = extraImages; }
-    // Getter / Setter cho variants
-    public List<ProductVariant> getVariants() { return variants; }
-    public void setVariants(List<ProductVariant> variants) { this.variants = variants; }
+    public Category getCategory() {
+        return category;
+    }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+    public int getPid() {
+        return pid;
+    }
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+    public String getImage() {
+        return image;
+    }
+    public void setImage(String image) {
+        this.image = image;
+    }
+    public String getPdescription() {
+        return pdescription;
+    }
+    public void setPdescription(String pdescription) {
+        this.pdescription = pdescription;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
+    }
+    public int getCid() {
+        return cid;
+    }
+    public void setCid(int cid) {
+        this.cid = cid;
+    }
+    public String getColor() {
+        return color;
+    }
+    public void setColor(String color) {
+        this.color = color;
+    }
+    public String getSize() {
+        return size;
+    }
+    public void setSize(String size) {
+        this.size = size;
+    }
+    public int getStockquantyti() {
+        return stockquantyti;
+    }
+    public void setStockquantyti(int stockquantyti) {
+        this.stockquantyti = stockquantyti;
+    }
+    public List<String> getExtraImages() {
+        return extraImages;
+    }
+    public void setExtraImages(List<String> extraImages) {
+        this.extraImages = extraImages;
+    }
+
+    public List<ProductVariant> getVariants() {
+        return variants;
+    }
+    public void setVariants(List<ProductVariant> variants) {
+        this.variants = variants;
+    }
+
 }
