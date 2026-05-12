@@ -70,13 +70,49 @@
                     <input type="number" name="stock" required value="<%= isEdit ? p.getStockquantyti() : "0" %>">
                 </div>
             </div>
+
             <div class="form-group">
-                <label>Link Hình ảnh</label>
-                <input type="text" name="image" value="<%= isEdit ? p.getImage() : "" %>" placeholder="Ví dụ: img/sanpham.jpg">
+                <label>Link Hình ảnh (Ảnh đại diện chính) *</label>
+                <input type="text" name="image" required value="<%= isEdit ? p.getImage() : "" %>" placeholder="Ví dụ: img/sanpham.jpg">
             </div>
+
+            <div class="form-group" style="background: #f8f9fc; padding: 15px; border-radius: 6px; border: 1px solid #e3e6f0;">
+                <label style="color: var(--primary);"><i class="fa-solid fa-images"></i> Hình ảnh phụ (Gallery)</label>
+                <div id="extra-images-container">
+                    <%
+                        if (isEdit && p.getExtraImages() != null && !p.getExtraImages().isEmpty()) {
+                            for (String imgUrl : p.getExtraImages()) {
+                    %>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" name="extraImages" value="<%=imgUrl%>" placeholder="Nhập link ảnh phụ..." style="flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px;">
+                        <button type="button" onclick="this.parentElement.remove()" style="background: var(--danger); color: white; border: none; border-radius: 6px; padding: 0 15px; cursor: pointer;" title="Xóa ô này"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <%      }
+                    }
+                    %>
+                </div>
+                <button type="button" onclick="addExtraImageField()" style="background: #fff; color: var(--primary); border: 2px dashed var(--primary); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 5px; transition: 0.2s;">
+                    <i class="fa-solid fa-plus"></i> Thêm link ảnh phụ
+                </button>
+            </div>
+
             <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Lưu Dữ Liệu Sản Phẩm</button>
         </form>
     </div>
 </main>
+
+<script>
+    function addExtraImageField() {
+        const container = document.getElementById('extra-images-container');
+        const div = document.createElement('div');
+        div.style.cssText = "display: flex; gap: 10px; margin-bottom: 10px;";
+        div.innerHTML = `
+            <input type="text" name="extraImages" placeholder="Nhập link ảnh phụ..." style="flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px;">
+            <button type="button" onclick="this.parentElement.remove()" style="background: var(--danger); color: white; border: none; border-radius: 6px; padding: 0 15px; cursor: pointer;" title="Xóa ô này"><i class="fa-solid fa-trash"></i></button>
+        `;
+        container.appendChild(div);
+    }
+</script>
+
 </body>
 </html>

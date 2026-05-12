@@ -135,14 +135,21 @@ public class AdminProductController extends HttpServlet {
             int stock = 0;
             try { stock = Integer.parseInt(request.getParameter("stock")); } catch (Exception e) {}
 
+            String[] extraImages = request.getParameterValues("extraImages");
+
             if ("add".equals(action)) {
                 Product p = new Product(0, name, price, cateId, color, size, stock, image);
-                if (dao.addProduct(p)) response.sendRedirect("admin-products?msg=added");
-                else response.sendRedirect("admin-products?msg=error_add");
+                if (dao.addProduct(p)) {
+                    response.sendRedirect("admin-products?msg=added");
+                } else {
+                    response.sendRedirect("admin-products?msg=error_add");
+                }
             } else if ("update".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 Product p = new Product(pid, name, price, cateId, color, size, stock, image);
                 dao.updateProduct(p);
+                dao.updateExtraImages(pid, extraImages);
+
                 response.sendRedirect("admin-products?msg=updated");
             }
         } catch (Exception e) {

@@ -313,4 +313,44 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
+    // Lấy danh sách ảnh phụ của 1 sản phẩm
+    public List<String> getExtraImages(int pid) {
+        List<String> images = new ArrayList<>();
+        String sql = "SELECT image_url FROM product_images WHERE product_id = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, pid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                images.add(rs.getString("image_url"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return images;
+    }
+
+    // Cập nhật bộ ảnh phụ (Xóa ảnh cũ, thêm ảnh mới)
+    public void updateExtraImages(int pid, String[] imageUrls) {
+        try (Connection conn = DBConnect.getConnection()) {
+            // 1. Xóa toàn bộ ảnh phụ cũ của SP này
+            String sqlDelete = "DELETE FROM product_images WHERE product_id = ?";
+            try (PreparedStatement psDel = conn.prepareStatement(sqlDelete)) {
+                psDel.setInt(1, pid);
+                psDel.executeUpdate();
+            }
+
+            // 2. Thêm danh sách ảnh mới vào
+            if (imageUrls != null && imageUrls.length > 0) {
+                String sqlInsert = "INSERT INTO product_images (product_id, image_url) VALUES (?, ?)";
+                try (PreparedStatement psIn = conn.prepareStatement(sqlInsert)) {
+                    for (String url : imageUrls) {
+                        if (url != null && !url.trim().isEmpty()) {
+                            psIn.setInt(1, pid);
+                            psIn.setString(2, url.trim());
+                            psIn.executeUpdate();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 }
