@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+import java.util.ArrayList;
 public class Product {
     public int pid;
     public String pdescription;
@@ -10,6 +12,10 @@ public class Product {
     public int stockquantyti;
     public String image;
     private Category category;
+    private List<String> extraImages = new ArrayList<>();
+
+    // Thêm danh sách biến thể
+    private List<ProductVariant> variants;
 
     public Product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti, String image) {
         this.pid = pid;
@@ -40,4 +46,9 @@ public class Product {
     public void setSize(String size) { this.size = size; }
     public int getStockquantyti() { return stockquantyti; }
     public void setStockquantyti(int stockquantyti) { this.stockquantyti = stockquantyti; }
+    public List<String> getExtraImages() { return extraImages; }
+    public void setExtraImages(List<String> extraImages) { this.extraImages = extraImages; }
+    // Getter / Setter cho variants
+    public List<ProductVariant> getVariants() { return variants; }
+    public void setVariants(List<ProductVariant> variants) { this.variants = variants; }
 }

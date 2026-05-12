@@ -1,21 +1,22 @@
 /* ============================================================
-   ADMIN SHARED CSS — nguồn duy nhất cho tất cả trang admin
+   ADMIN SHARED CSS — FLAT DESIGN (ĐƠN SẮC, KHÔNG HOLOGRAM)
    ============================================================ */
 
 /* --- VARIABLES --- */
 :root {
     --sidebar-width: 250px;
-    --primary:   #4e73df;
-    --success:   #1cc88a;
-    --warning:   #f6c23e;
-    --danger:    #e74a3b;
-    --dark:      #5a5c69;
-    --light:     #f8f9fc;
-    --bg:        #f3f4f6;
-    --text:      #444;
-    --shadow:    0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
-    --radius:    10px;
+    --primary:   #4e73df; /* Xanh dương chủ đạo */
+    --success:   #1cc88a; /* Xanh lá */
+    --warning:   #f6c23e; /* Vàng */
+    --danger:    #e74a3b; /* Đỏ */
+    --dark:      #5a5c69; /* Xám đậm */
+    --light:     #f8f9fc; /* Xám nhạt */
+    --bg:        #f3f4f6; /* Màu nền */
+    --text:      #444;    /* Màu chữ */
+    /* Giảm nhẹ shadow để phù hợp với phong cách Flat */
+    --shadow:    0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.08);
+    --radius:    8px;
 }
 
 /* --- BASE --- */
@@ -138,51 +139,53 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.15s, filter 0.15s;
+    transition: transform 0.15s, background-color 0.15s;
     text-decoration: none;
     font-size: 14px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn-action:hover,
 .btn-icon:hover {
-    transform: scale(1.1) translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    filter: brightness(92%);
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: var(--shadow-hover);
 }
 
-/* Button color variants — gradient upgrade */
-.btn-view    { background: linear-gradient(135deg, #5a5c69, #3a3b45); }
-.btn-edit    { background: linear-gradient(135deg, #f6c23e, #d4a017); color: #fff; }
+/* MÀU ĐƠN SẮC CHO CÁC NÚT BẤM (FLAT DESIGN) */
+.btn-view    { background-color: var(--dark); }
+.btn-edit    { background-color: var(--warning); color: #fff; }
 .btn-del,
 .btn-delete,
-.btn-cancel  { background: linear-gradient(135deg, #e74a3b, #c0392b); }
-.btn-ship    { background: linear-gradient(135deg, #36b9cc, #1a9eac); }
-.btn-success { background: linear-gradient(135deg, #1cc88a, #13855c); }
-.btn-primary { background: linear-gradient(135deg, #4e73df, #224abe); }
+.btn-cancel  { background-color: var(--danger); }
+.btn-ship    { background-color: #36b9cc; }
+.btn-success { background-color: var(--success); }
+.btn-primary { background-color: var(--primary); }
+
+.btn-view:hover    { background-color: #4a4c57; }
+.btn-edit:hover    { background-color: #e5b33b; }
+.btn-delete:hover  { background-color: #d33c2e; }
+.btn-success:hover { background-color: #16a370; }
 
 /* --- ADD NEW BUTTON --- */
 .btn-add-new {
-    background: linear-gradient(135deg, #1cc88a, #13855c);
+    background-color: var(--success);
     color: white;
     padding: 9px 20px;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 14px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, background-color 0.2s;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(28, 200, 138, 0.35);
-    letter-spacing: 0.3px;
 }
 
 .btn-add-new:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(28, 200, 138, 0.45);
+    background-color: #16a370; /* Đậm hơn 1 tone khi hover */
+    box-shadow: var(--shadow-hover);
 }
 
 /* --- MONEY / PRICE --- */
@@ -204,7 +207,7 @@ body {
 
 /* --- STOCK BADGE --- */
 .stock-badge {
-    background: #e3f2fd;
+    background-color: #e3f2fd;
     color: #0d47a1;
     padding: 4px 10px;
     border-radius: 15px;
@@ -261,15 +264,8 @@ body {
     box-shadow: var(--shadow-hover);
 }
 
-/* --- STAT LINK WRAPPER --- */
-.stat-link {
-    text-decoration: none;
-    display: block;
-}
-.stat-link .card-stat {
-    position: relative;
-    overflow: hidden;
-}
+.stat-link { text-decoration: none; display: block; }
+.stat-link .card-stat { position: relative; overflow: hidden; }
 .stat-link .card-stat::after {
     content: '\f0a9';
     font-family: 'Font Awesome 6 Free';
@@ -283,10 +279,7 @@ body {
     transform: translateX(-4px);
     transition: opacity 0.2s, transform 0.2s;
 }
-.stat-link:hover .card-stat::after {
-    opacity: 1;
-    transform: translateX(0);
-}
+.stat-link:hover .card-stat::after { opacity: 1; transform: translateX(0); }
 
 .card-stat.blue   { border-left-color: var(--primary); }
 .card-stat.blue .stat-icon   { color: var(--primary);  background: #e8f0fe; }
@@ -298,31 +291,41 @@ body {
 .card-stat.red .stat-icon    { color: var(--danger);   background: #fce8e6; }
 .card-stat.teal   { border-left-color: #36b9cc; }
 .card-stat.teal .stat-icon   { color: #36b9cc;         background: #d8f4f8; }
-.card-stat.purple { border-left-color: #6f42c1; }
-.card-stat.purple .stat-icon { color: #6f42c1;         background: #ede7f6; }
 
-.stat-info h3 {
-    font-size: 28px;
-    font-weight: 800;
-    margin: 0;
-    color: #333;
+.stat-info h3 { font-size: 28px; font-weight: 800; margin: 0; color: #333; }
+.stat-info p { margin: 5px 0 0; color: #888; font-size: 12px; text-transform: uppercase; font-weight: 600; }
+.stat-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+
+/* =========================================================
+   LỆNH GHI ĐÈ (OVERRIDE): XÓA SẠCH HOLOGRAM TRÊN TOÀN ADMIN
+   ========================================================= */
+
+/* Ép tất cả các nút submit (Form Sản Phẩm, Tin Tức, Nhân Viên...) về đơn sắc Xanh Dương */
+.btn-submit,
+.btn-submit-product,
+.btn-publish {
+    background: var(--primary) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
 }
 
-.stat-info p {
-    margin: 5px 0 0;
-    color: #888;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
+.btn-submit:hover,
+.btn-submit-product:hover,
+.btn-publish:hover {
+    background: #2e59d9 !important; /* Xanh đậm hơn khi di chuột */
 }
 
-.stat-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-}
+/* Xóa hologram trên thẻ Voucher (admin-vouchers.css) */
+.voucher-card.accent-purple .vc-top { background: #6f42c1 !important; }
+.voucher-card.accent-green .vc-top  { background: var(--success) !important; }
+.voucher-card.accent-orange .vc-top { background: var(--warning) !important; }
+.voucher-card.accent-blue .vc-top   { background: var(--primary) !important; }
+.voucher-card.accent-gray .vc-top   { background: var(--dark) !important; }
+
+/* Xóa hologram trên các biểu đồ (Dashboard) */
+.donut-legend .legend-item:nth-child(1) .legend-dot { background: var(--success) !important; }
+.donut-legend .legend-item:nth-child(2) .legend-dot { background: #36b9cc !important; }
+.donut-legend .legend-item:nth-child(3) .legend-dot { background: var(--danger) !important; }
+.donut-legend .legend-item:nth-child(4) .legend-dot { background: var(--warning) !important; }

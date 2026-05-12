@@ -45,22 +45,51 @@ public class AdminProductController extends HttpServlet {
                 dao.deleteProduct(pid);
                 response.sendRedirect("admin-products?msg=deleted");
             } catch (Exception e) {
-                e.printStackTrace();
                 response.sendRedirect("admin-products?msg=error");
             }
-        } else {
-            List<Product> list;
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                list = dao.searchProduct(keyword.trim());
-                request.setAttribute("searchKeyword", keyword);
-            } else {
-                list = dao.getAllProducts();
-            }
-
-            request.setAttribute("listProducts", list);
-            request.setAttribute("listP", list);
-            request.getRequestDispatcher("/admin-products.jsp").forward(request, response);
+            return;
         }
+
+        if ("add".equals(type)) {
+            request.getRequestDispatcher("/admin-product-form.jsp").forward(request, response);
+            return;
+        }
+
+        if ("edit".equals(type)) {
+            try {
+                int pid = Integer.parseInt(request.getParameter("pid"));
+                Product p = dao.getProductById(pid);
+                request.setAttribute("product", p);
+                request.getRequestDispatcher("/admin-product-form.jsp").forward(request, response);
+            } catch (Exception e) {
+                response.sendRedirect("admin-products?msg=error");
+            }
+            return;
+        }
+
+        if ("import".equals(type)) {
+            try {
+                int pid = Integer.parseInt(request.getParameter("pid"));
+                Product p = dao.getProductById(pid);
+                request.setAttribute("product", p);
+                request.getRequestDispatcher("/admin-product-import.jsp").forward(request, response);
+            } catch (Exception e) {
+                response.sendRedirect("admin-products?msg=error");
+            }
+            return;
+        }
+
+        List<Product> list;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            list = dao.searchProduct(keyword.trim());
+            request.setAttribute("searchKeyword", keyword);
+        } else {
+            list = dao.getAllProducts();
+        }
+
+        request.setAttribute("listProducts", list);
+        request.setAttribute("listP", list);
+        request.getRequestDispatcher("/admin-products.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -85,7 +114,10 @@ public class AdminProductController extends HttpServlet {
             if ("import".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 int addQty = Integer.parseInt(request.getParameter("addQty"));
-                if (dao.importStock(pid, addQty)) {
+                String color = request.getParameter("color");
+                String size = request.getParameter("size");
+
+                if (dao.importStockVariant(pid, color, size, addQty)) {
                     response.sendRedirect("admin-products?msg=imported");
                 } else {
                     response.sendRedirect("admin-products?msg=error_import");
@@ -103,14 +135,28 @@ public class AdminProductController extends HttpServlet {
             int stock = 0;
             try { stock = Integer.parseInt(request.getParameter("stock")); } catch (Exception e) {}
 
+            String[] extraImages = request.getParameterValues("extraImages");
+
             if ("add".equals(action)) {
                 Product p = new Product(0, name, price, cateId, color, size, stock, image);
-                if (dao.addProduct(p)) response.sendRedirect("admin-products?msg=added");
-                else response.sendRedirect("admin-products?msg=error_add");
+
+                // ĐÃ SỬA: Dùng hàm trả về ID và cập nhật ảnh phụ
+                int newPid = dao.addProductReturnId(p);
+
+                if (newPid > 0) {
+                    dao.updateExtraImages(newPid, extraImages);
+                    response.sendRedirect("admin-products?msg=added");
+                } else {
+                    response.sendRedirect("admin-products?msg=error_add");
+                }
+
             } else if ("update".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
                 Product p = new Product(pid, name, price, cateId, color, size, stock, image);
+
                 dao.updateProduct(p);
+                dao.updateExtraImages(pid, extraImages);
+
                 response.sendRedirect("admin-products?msg=updated");
             }
         } catch (Exception e) {
