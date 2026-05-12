@@ -39,6 +39,12 @@ public class AddToCartController extends HttpServlet {
             return;
         }
 
+        // Lấy thêm màu sắc và kích cỡ từ request
+        String color = req.getParameter("color");
+        String size = req.getParameter("size");
+        if (color == null) color = "";
+        if (size == null) size = "";
+
         ProductDAO productDAO = new ProductDAO();
         Product p = productDAO.getProductById(pid);
         if (p != null && quantity > p.getStockquantyti()) {
@@ -48,7 +54,8 @@ public class AddToCartController extends HttpServlet {
             return;
         }
 
-        cartDAO.addToCart(acc.getUid(), pid, quantity);
+        // Gọi hàm addToCart với đầy đủ 5 tham số
+        cartDAO.addToCart(acc.getUid(), pid, color, size, quantity);
         resp.sendRedirect("cart");
     }
 

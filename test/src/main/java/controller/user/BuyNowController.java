@@ -22,6 +22,7 @@ public class BuyNowController extends HttpServlet {
         HttpSession session = req.getSession();
         User currentUser = (User) session.getAttribute("user");
 
+        // Yêu cầu đăng nhập nếu chưa có session
         if (currentUser == null) {
             resp.sendRedirect("login");
             return;
@@ -40,6 +41,12 @@ public class BuyNowController extends HttpServlet {
             return;
         }
 
+        // Lấy thêm tham số màu sắc và kích cỡ từ request
+        String color = req.getParameter("color");
+        String size = req.getParameter("size");
+        if (color == null) color = "";
+        if (size == null) size = "";
+
         ProductDAO productDAO = new ProductDAO();
         Product p = productDAO.getProductById(pid);
         if (p == null) {
@@ -47,13 +54,17 @@ public class BuyNowController extends HttpServlet {
             return;
         }
 
+        // Kiểm tra tồn kho
         if (quantity > p.getStockquantyti()) {
             quantity = p.getStockquantyti();
         }
 
         CartDAO cartDAO = new CartDAO();
-        cartDAO.addToCart(currentUser.getUid(), pid, quantity);
-        resp.sendRedirect("cart");
+        // Cập nhật hàm addToCart với đủ 5 tham số
+        cartDAO.addToCart(currentUser.getUid(), pid, color, size, quantity);
+
+        // Mua ngay nên chuyển hướng thẳng tới trang thanh toán
+        resp.sendRedirect("checkout");
     }
 
     @Override
