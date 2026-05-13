@@ -87,6 +87,14 @@
 						<a href="register.jsp"><fmt:message key="login.register_now" /></a>
 					</p>
 				</div>
+
+				<div class="divider">
+					<span>hoặc</span>
+				</div>
+
+				<a href="google-login" class="btn-google-login">
+					<i class="fab fa-google"></i> Đăng nhập bằng Google
+				</a>
 			</form>
 		</div>
 	</div>

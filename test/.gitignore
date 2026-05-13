@@ -1,2 +1,8 @@
 /build/
 /target/
+
+# Ignore IDE and build artifacts that may contain secrets or compiled files
+/classes/
+/classes/artifacts/
+*.iml
+/.idea/

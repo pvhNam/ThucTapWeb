@@ -54,7 +54,7 @@ public class LoginController extends HttpServlet {
                 response.sendRedirect("home");
             }
         } else {
-            request.setAttribute("error", "Sai tai khoan hoac mat khau!");
+            request.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }
