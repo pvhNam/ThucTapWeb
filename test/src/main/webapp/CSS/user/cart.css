@@ -481,3 +481,71 @@ body {
         flex: none;
     }
 }
+/*  Address*/
+/* Nút thay đổi địa chỉ nhỏ ở góc phải */
+.btn-change-address {
+    font-size: 13px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-change-address:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* Khối hiển thị địa chỉ tĩnh (khi đã có địa chỉ) */
+.address-display-box {
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    margin-top: 5px;
+}
+
+.address-display-box .address-text {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Khối click chọn địa chỉ (khi CHƯA có địa chỉ) */
+.address-select-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px dashed #b0b0b0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.address-select-box:hover {
+    border-color: #27ae60;
+    background-color: #f4fdf7;
+}
+
+.address-info .address-placeholder {
+    margin: 0;
+    color: #e74a3b;
+    font-style: italic;
+    font-size: 15px;
+}
+
+.address-action {
+    color: #888;
+}
+
+.address-select-box:hover .address-action i {
+    color: #27ae60;
+    transform: translateX(3px);
+    transition: transform 0.3s ease;
+}

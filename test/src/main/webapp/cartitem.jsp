@@ -145,8 +145,46 @@
                         </div>
 
                         <div class="form-group" style="margin-top: 25px;">
-                            <label><i class="fa-solid fa-location-dot"></i> <fmt:message key="cart.address" /></label>
-                            <textarea name="address" required placeholder="<fmt:message key='cart.address_placeholder'/>"></textarea>
+                            <%
+                                // Lấy địa chỉ đã chọn database của User
+                                Object selectedAddress = session.getAttribute("selectedAddress");
+                            %>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <label style="margin: 0;"><i class="fa-solid fa-location-dot"></i> <fmt:message key="cart.address" /></label>
+
+                                <%-- Nếu CÓ địa chỉ rồi, hiện thêm nút 'Thay đổi' nhỏ ở góc --%>
+                                <% if (selectedAddress != null) { %>
+                                <a href="address-list" class="btn-change-address">Thay đổi</a>
+                                <% } %>
+                            </div>
+
+                            <% if (selectedAddress != null) { %>
+                            <!-- Có địa chỉ r thì hiện thông tin địa chỉ -->
+                            <div class="address-display-box">
+                                <p class="address-text">
+                                    <i class="fa-solid fa-map-pin" style="color: #e74a3b; margin-right: 5px;"></i>
+                                    <%= selectedAddress.toString() %>
+                                </p>
+                            </div>
+                            <!-- Truyền địa chỉ ngầm vào form -->
+                            <input type="hidden" name="address" value="<%= selectedAddress.toString() %>" required>
+
+                            <% } else { %>
+                            <!-- Chưa có địa chỉ thì hiện box để nhảy qua trang chứa danh sách địa chỉ -->
+                            <a href="address-list" class="address-select-box">
+                                <div class="address-info">
+                                    <p class="address-placeholder">
+                                        <i class="fa-solid fa-plus-circle"></i> Vui lòng chọn địa chỉ giao hàng...
+                                    </p>
+                                </div>
+                                <div class="address-action">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </div>
+                            </a>
+                            <!-- Bắt lỗi required nếu cố tình bấm Thanh toán khi chưa có -->
+                            <input type="hidden" name="address" value="" required>
+                            <% } %>
                         </div>
 
                         <div class="form-group">
