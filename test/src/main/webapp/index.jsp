@@ -188,7 +188,7 @@
 
 		<div
 			style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
-			<a href="about.jsp" class="btn-see-more"> <fmt:message
+			<a href="about" class="btn-see-more"> <fmt:message
 					key="home.see_more" /> <i class="fa-solid fa-arrow-right"></i>
 			</a>
 		</div>
