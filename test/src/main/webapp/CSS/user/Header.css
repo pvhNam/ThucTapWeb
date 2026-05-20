@@ -7,7 +7,54 @@
     background: #111;
     color: #fff;
 }
+/* Toast thông báo */
+#toast{
 
+    position: fixed;
+
+    bottom: 30px;
+    right: 30px;
+
+    min-width: 280px;
+    max-width: 350px;
+
+    padding: 14px 20px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(30px);
+
+    transition: all 0.3s ease;
+
+    z-index: 99999;
+}
+
+#toast.show{
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: translateY(0);
+}
+
+#toast.success{
+    background: #28a745;
+}
+
+#toast.error{
+    background: #dc3545;
+}
 /* ===== MENU ===== */
 .menu a {
     margin: 0 10px;

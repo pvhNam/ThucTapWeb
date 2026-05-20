@@ -147,7 +147,7 @@
 								VNĐ
 							</span>
 
-							<form action="cart" method="post">
+							<form action="add-to-cart" method="post">
 								<input type="hidden" name="action" value="add"> <input
 									type="hidden" name="pid" value="${p.pid}"> <input
 									type="hidden" name="quantity" value="1">
