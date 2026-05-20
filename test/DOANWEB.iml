@@ -187,11 +187,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v10.1" level="application" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://F:/thuvienWEB/json-20231013.jar!/" />
+          <root url="jar://F:/TTWeb/thuvienWEB/json-20231013.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -200,7 +199,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://F:/thuvienWEB/kotlin-stdlib-1.6.21.jar!/" />
+          <root url="jar://F:/TTWeb/thuvienWEB/kotlin-stdlib-1.6.21.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -209,7 +208,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://F:/thuvienWEB/okhttp-4.10.0.jar!/" />
+          <root url="jar://F:/TTWeb/thuvienWEB/okhttp-4.10.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -218,7 +217,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://F:/thuvienWEB/okio-fakefilesystem-jvm-3.0.0.jar!/" />
+          <root url="jar://F:/TTWeb/thuvienWEB/okio-fakefilesystem-jvm-3.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -227,7 +226,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://F:/thuvienWEB/okio-jvm-3.0.0-alpha.10.jar!/" />
+          <root url="jar://F:/TTWeb/thuvienWEB/okio-jvm-3.0.0-alpha.10.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="DoAnWeb" />
+        <module name="ThucTapWeb" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="DoAnWeb" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
