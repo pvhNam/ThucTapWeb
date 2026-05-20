@@ -30,6 +30,27 @@ jobs:
           source: "target/ThucTapWeb-1.0-SNAPSHOT.war"
           target: "/home/ubuntu/"
 
+      - name: Upload migration files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "migrations/"
+          target: "/home/ubuntu/"
+
+      - name: Run DB Migrations
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            for f in $(ls /home/ubuntu/migrations/*.sql 2>/dev/null | sort); do
+              echo "Running migration: $f"
+              mysql -u admin -p${{ secrets.DB_PASSWORD }} ltweb < "$f"
+            done
+
       - name: Deploy on server
         uses: appleboy/ssh-action@master
         with:
