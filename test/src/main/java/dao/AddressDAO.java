@@ -15,7 +15,7 @@ public class AddressDAO {
     //Lấy danh sách địa chỉ của User
     public List<Address> getAddressesByUserId(int userId) {
         List<Address> list = new ArrayList<>();
-        String query = "SELECT * FROM Address WHERE user_id = ? ORDER BY is_default DESC, id DESC";
+        String query = "SELECT * FROM address WHERE user_id = ? ORDER BY is_default DESC, id DESC";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(query);
@@ -42,7 +42,7 @@ public class AddressDAO {
 
     //Lấy địa chỉ mặc định để tự động hiển thị ở giỏ hàng
     public Address getDefaultAddressByUserId(int userId) {
-        String query = "SELECT * FROM Address WHERE user_id = ? ORDER BY is_default DESC LIMIT 1";
+        String query = "SELECT * FROM address WHERE user_id = ? ORDER BY is_default DESC LIMIT 1";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(query);
@@ -69,7 +69,7 @@ public class AddressDAO {
 
     //Thêm địa chỉ mới
     public void insertAddress(Address addr) {
-        String query = "INSERT INTO Address (user_id, receiver_name, phone, specific_address, ward, district, city, is_default) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO address (user_id, receiver_name, phone, specific_address, ward, district, city, is_default) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             conn = new DBConnect().getConnection();
             ps = conn.prepareStatement(query);
