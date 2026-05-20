@@ -110,4 +110,72 @@
 		</a>
 
 	</div>
+	
+	<div id="toast"></div>
+	<%
+	String toastMessage = (String) session.getAttribute("toastMessage");
+
+	String toastType = (String) session.getAttribute("toastType");
+	%>
+
+	<%
+	if (toastMessage != null) {
+	%>
+<script>
+
+	function showToast(message, type){
+
+	    const toast =
+	        document.getElementById("toast");
+
+	    if(!toast) return;
+
+	    toast.innerText = message;
+
+	    toast.classList.remove(
+	        "success",
+	        "error",
+	        "show"
+	    );
+
+	    if(type === "success"){
+
+	        toast.classList.add("success");
+
+	    }else{
+
+	        toast.classList.add("error");
+	    }
+
+	    toast.classList.add("show");
+
+	    setTimeout(() => {
+
+	        toast.classList.remove("show");
+
+	    }, 2000);
+	}
+
+	</script>
+	<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    showToast(
+        "<%=toastMessage%>",
+        "<%=toastType%>"
+    );
+
+});
+
+</script>
+
+	<%
+	session.removeAttribute("toastMessage");
+	session.removeAttribute("toastType");
+	%>
+
+	<%
+	}
+	%>
 </header>
