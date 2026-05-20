@@ -39,8 +39,6 @@ public class GoogleCallbackController extends HttpServlet {
             return;
         }
 
-        // Prefer values placed into the ServletContext attributes (set by LoggingConfigListener),
-        // then web.xml init-params, then environment variables.
         String clientId = null;
         Object cidAttr = getServletContext().getAttribute("google.clientId");
         if (cidAttr instanceof String && !((String) cidAttr).isEmpty()) {
@@ -204,8 +202,7 @@ public class GoogleCallbackController extends HttpServlet {
         if (i >= json.length()) return null;
 
         if (json.charAt(i) == '"') {
-            // quoted value
-            i++; // skip opening quote
+            i++; 
             int start = i;
             StringBuilder sb = new StringBuilder();
             while (i < json.length()) {
