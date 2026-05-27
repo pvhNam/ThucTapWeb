@@ -1,0 +1,97 @@
+@charset "UTF-8";
+
+.form-wrapper {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group { margin-bottom: 20px; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.gallery-box {
+    background: #f8f9fc;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e3e6f0;
+}
+
+.gallery-box label {
+    color: var(--primary);
+}
+
+.extra-img-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.extra-img-row input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.btn-remove-img {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.btn-add-img {
+    background: #fff;
+    color: var(--primary);
+    border: 2px dashed var(--primary);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    margin-top: 5px;
+    transition: 0.2s;
+}
+
+.btn-submit {
+    background: var(--primary);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    font-size: 15px;
+}
+
+.btn-submit:hover { background: #2e59d9; }
