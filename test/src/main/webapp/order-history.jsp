@@ -13,14 +13,12 @@
     <title><fmt:message key="history.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
-    <%-- KHÔNG đặt oder-history.css ở đây nữa --%>
 </head>
 <body>
 <header>
     <jsp:include page="header.jsp"><jsp:param name="page" value="#" /></jsp:include>
 </header>
 
-<%-- Đặt SAU header.jsp để load sau Header.css, đảm bảo thắng --%>
 <link rel="stylesheet" href="CSS/user/oder-history.css" />
 
 <div class="history-container">
