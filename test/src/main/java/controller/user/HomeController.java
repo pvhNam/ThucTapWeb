@@ -15,7 +15,7 @@ import model.CartItem;
 import java.io.IOException;
 import java.util.*;
 
-@WebServlet("/home")
+@WebServlet(urlPatterns = {"", "/home", "/index"})
 public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,6 +52,7 @@ public class HomeController extends HttpServlet {
         request.setAttribute("products", products);
         request.setAttribute("vouchers", vouchers);
         request.setAttribute("mapCart", mapCart);
+        request.setAttribute("homePage", Boolean.TRUE);
 
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
