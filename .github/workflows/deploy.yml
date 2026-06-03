@@ -19,8 +19,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
-        working-directory: ThucTapWeb
-        run: mvn clean package -q
+        run: mvn clean package -q -f ThucTapWeb/pom.xml
 
       - name: Upload WAR to server
         uses: appleboy/scp-action@master
