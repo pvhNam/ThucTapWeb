@@ -13,7 +13,7 @@
 
 <header class="header">
 	<a href="home"> <img src="img/logover2_5.png" alt="Logo"
-		class="logo" width="60">
+                         class="logo" width="60">
 	</a>
 
 	<nav class="menu">
