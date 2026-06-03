@@ -21,6 +21,15 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -q
 
+      - name: Debug - show WAR location
+        run: |
+          echo "=== Root files ==="
+          ls -la
+          echo "=== Find WAR ==="
+          find . -name "*.war"
+          echo "=== target folder ==="
+          ls -la target/ || echo "No target folder"
+
       - name: Upload WAR to server
         uses: appleboy/scp-action@master
         with:
