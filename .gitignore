@@ -6,6 +6,8 @@
 *.class
 *.classpath
 *.iml
-*.jar
 *.project
 *.war
+
+
+!gradle/wrapper/gradle-wrapper.jar
