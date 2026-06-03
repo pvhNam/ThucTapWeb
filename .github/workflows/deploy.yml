@@ -29,6 +29,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "target/ThucTapWeb-1.0-SNAPSHOT.war"
           target: "/home/ubuntu/"
+          strip_components: 1
 
       - name: Upload migration files
         uses: appleboy/scp-action@master
@@ -61,5 +62,5 @@ jobs:
             sudo systemctl stop tomcat10
             sudo rm -rf /var/lib/tomcat10/webapps/ROOT
             sudo rm -f /var/lib/tomcat10/webapps/ROOT.war
-            sudo cp /home/ubuntu/target/ThucTapWeb-1.0-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
+            sudo cp /home/ubuntu/ThucTapWeb-1.0-SNAPSHOT.war /var/lib/tomcat10/webapps/ROOT.war
             sudo systemctl start tomcat10
