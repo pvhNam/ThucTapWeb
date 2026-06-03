@@ -19,6 +19,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
+        working-directory: ThucTapWeb
         run: mvn clean package -q
 
       - name: Upload WAR to server
@@ -27,9 +28,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "target/ThucTapWeb-1.0-SNAPSHOT.war"
+          source: "ThucTapWeb/target/ThucTapWeb-1.0-SNAPSHOT.war"
           target: "/home/ubuntu/"
-          strip_components: 1
+          strip_components: 3
 
       - name: Upload migration files
         uses: appleboy/scp-action@master
@@ -37,8 +38,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "migrations/"
+          source: "ThucTapWeb/migrations/"
           target: "/home/ubuntu/"
+          strip_components: 1
 
       - name: Run DB Migrations
         uses: appleboy/ssh-action@master
