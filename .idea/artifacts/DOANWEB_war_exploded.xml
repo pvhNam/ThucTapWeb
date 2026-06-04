@@ -5,7 +5,7 @@
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="DOANWEB" />
-          <element id="dir-copy" path="$PROJECT_DIR$/test/src/main/resources" />
+          <element id="dir-copy" path="$PROJECT_DIR$/src/main/resources" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="module" name="commons-collections4-4.4.jar" module-name="DOANWEB" />
@@ -21,11 +21,11 @@
           <element id="library" level="module" name="xmlbeans-5.1.1.jar" module-name="DOANWEB" />
           <element id="library" level="module" name="commons-compress-1.21.jar" module-name="DOANWEB" />
           <element id="library" level="module" name="SparseBitSet-1.2.jar" module-name="DOANWEB" />
-          <element id="file-copy" path="F:/thuvienWEB/json-20231013.jar" />
-          <element id="file-copy" path="F:/thuvienWEB/kotlin-stdlib-1.6.21.jar" />
-          <element id="file-copy" path="F:/thuvienWEB/okhttp-4.10.0.jar" />
-          <element id="file-copy" path="F:/thuvienWEB/okio-fakefilesystem-jvm-3.0.0.jar" />
-          <element id="file-copy" path="F:/thuvienWEB/okio-jvm-3.0.0-alpha.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/json-20231013.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/kotlin-stdlib-1.6.21.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/okhttp-4.10.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/okio-fakefilesystem-jvm-3.0.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/okio-jvm-3.0.0-alpha.10.jar" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="DOANWEB/web/Web" />

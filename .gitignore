@@ -1,0 +1,13 @@
+/target/
+/classes/
+/.idea/
+/.settings/
+
+*.class
+*.classpath
+*.iml
+*.project
+*.war
+
+
+!gradle/wrapper/gradle-wrapper.jar
