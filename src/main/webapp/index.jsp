@@ -156,32 +156,25 @@ if (request.getAttribute("homePage") == null) {
 							<div class="button-group">
 
 								<c:choose>
-
 									<c:when test="${canAdd && stock > 0}">
-										<form action="add-to-cart" method="post">
-											<input type="hidden" name="action" value="add"> <input
-												type="hidden" name="pid" value="${p.pid}"> <input
-												type="hidden" name="quantity" value="1">
-
-											<button type="submit" class="btn-add-cart">
-												<fmt:message key="home.product.add_cart" />
-											</button>
-										</form>
-										<button type="button" class="btn-buy-now"
-											onclick="openBuyNowModal(this)"
-											data-pid="${p.pid}"
+										<button type="button" class="btn-add-cart"
+											onclick="openBuyNowModal(this, 'cart')" data-pid="${p.pid}"
 											data-name="${p.pdescription}"
 											data-img="${p.image != null ? p.image : 'img/no-image.png'}"
-											data-price="${p.price}"
-											data-stock="${stock}"
-											data-sizes="${p.size}"
-											data-colors="${p.color}"
-											>MUA NGAY</button>
+											data-price="${p.price}" data-stock="${stock}"
+											data-sizes="${p.size}" data-colors="${p.color}">
+											<fmt:message key="home.product.add_cart" />
+										</button>
 
+										<button type="button" class="btn-buy-now"
+											onclick="openBuyNowModal(this, 'buy')" data-pid="${p.pid}"
+											data-name="${p.pdescription}"
+											data-img="${p.image != null ? p.image : 'img/no-image.png'}"
+											data-price="${p.price}" data-stock="${stock}"
+											data-sizes="${p.size}" data-colors="${p.color}">MUA
+											NGAY</button>
 									</c:when>
-
 									<c:otherwise>
-
 										<button type="button" class="btn-add-cart" disabled
 											style="background-color: #ccc; color: #666; cursor: not-allowed; border: 1px solid #ccc;">
 
@@ -225,14 +218,18 @@ if (request.getAttribute("homePage") == null) {
 	<div id="buyNowModal">
 		<div class="modal-backdrop" onclick="closeBuyNowModal()"></div>
 		<div class="modal-inner">
-			<button type="button" class="modal-close" onclick="closeBuyNowModal()">&times;</button>
+			<button type="button" class="modal-close"
+				onclick="closeBuyNowModal()">&times;</button>
 			<h3>Chọn kích thước và màu</h3>
 			<form id="buyNowForm" action="buy-now" method="post">
-				<input type="hidden" name="pid" id="modal-pid">
+				<input type="hidden" name="pid" id="modal-pid"> <input
+					type="hidden" name="action" id="modal-action" value="buy">
 				<div id="modal-options"></div>
 				<div class="modal-actions">
-					<button type="button" class="btn-cancel" onclick="closeBuyNowModal()">Hủy</button>
-					<button type="submit" class="modal-buy-btn">MUA NGAY</button>
+					<button type="button" class="btn-cancel"
+						onclick="closeBuyNowModal()">Hủy</button>
+					<button type="submit" class="modal-buy-btn" id="modal-submit-btn">MUA
+						NGAY</button>
 				</div>
 			</form>
 		</div>
@@ -240,7 +237,7 @@ if (request.getAttribute("homePage") == null) {
 
 	<!-- SCRIPT  -->
 	<script>
-	function openBuyNowModal(btn) {
+	function openBuyNowModal(btn,mode) {
 		try {
 			var name = btn.getAttribute('data-name') || '';
 			var img = btn.getAttribute('data-img') || 'img/no-image.png';
@@ -260,6 +257,10 @@ if (request.getAttribute("homePage") == null) {
 			var colors = parseList(colorsRaw);
 
 			var optionsContainer = document.getElementById('modal-options');
+			var isCart = (mode === 'cart');
+			document.getElementById('modal-action').value = isCart ? 'add' : 'buy';
+			document.getElementById('buyNowForm').action  = isCart ? 'add-to-cart' : 'buy-now';
+			document.getElementById('modal-submit-btn').textContent = isCart ? 'THÊM VÀO GIỎ' : 'MUA NGAY';
 			var html = '';
 			html += '<div style="display:flex; gap:12px; align-items:flex-start;">';
 			html += '<img class="product-mini" src="'+escapeHtml(img)+'" alt="'+escapeHtml(name)+'">';
