@@ -33,6 +33,8 @@ public class CartController extends HttpServlet {
             try { pid = Integer.parseInt(request.getParameter("pid")); } catch (Exception e) {}
             String color = request.getParameter("color");
             String size = request.getParameter("size");
+            if (color == null) color = "";
+            if (size == null) size = "";
 
             if (currentUser != null) {
                 CartDAO dao = new CartDAO();
@@ -43,10 +45,10 @@ public class CartController extends HttpServlet {
                     Iterator<CartItem> iterator = cart.iterator();
                     while (iterator.hasNext()) {
                         CartItem item = iterator.next();
-                        boolean matchColor = (color == null && item.getColor() == null) || (color != null && color.equals(item.getColor()));
-                        boolean matchSize = (size == null && item.getSize() == null) || (size != null && size.equals(item.getSize()));
+                        String itemColor = item.getColor() == null ? "" : item.getColor();
+                        String itemSize = item.getSize() == null ? "" : item.getSize();
 
-                        if (item.getProduct().getPid() == pid && matchColor && matchSize) {
+                        if (item.getProduct().getPid() == pid && itemColor.equals(color) && itemSize.equals(size)) {
                             iterator.remove();
                             break;
                         }
@@ -74,10 +76,15 @@ public class CartController extends HttpServlet {
         double subtotal = 0;
         for (CartItem item : cart) subtotal += item.getTotalPrice();
 
+        boolean cartHasError = false;
+        for (CartItem item : cart) {
+            int currentQty = item.getQuantity();
+            int maxStock = item.getProduct() != null ? item.getProduct().getStockquantyti() : 0;
+            if (currentQty > maxStock) { cartHasError = true; break; }
+        }
+
         double discountAmount = 0;
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
-
-        // ... (Giữ nguyên logic tính Voucher cũ của bạn) ...
         if (appliedVoucher != null) {
             if (cart.isEmpty()) {
                 session.removeAttribute("appliedVoucher");
@@ -94,6 +101,7 @@ public class CartController extends HttpServlet {
         if (discountAmount > subtotal) discountAmount = subtotal;
 
         request.setAttribute("cartList", cart);
+        request.setAttribute("cartHasError", cartHasError);
         request.setAttribute("subtotal", subtotal);
         request.setAttribute("discountAmount", discountAmount);
         request.setAttribute("finalTotal", subtotal - discountAmount);
@@ -180,7 +188,7 @@ public class CartController extends HttpServlet {
                 else dao.removeItem(uid, pid, color, size);
             }
         } else {
-            // Dành cho khách chưa Login (Lưu vào session)
+            // khách chưa log(Lưu session)
             List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
             if (cart == null) cart = new ArrayList<>();
 
