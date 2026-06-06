@@ -13,7 +13,7 @@
     </context-param>
     <context-param>
         <param-name>google.redirectUri</param-name>
-        <param-value>http://localhost:8081/DOANWEB/google-callback</param-value>
+        <param-value>http://localhost:8080/Gradle___com_thuctapweb___ThucTapWeb_1_0_SNAPSHOT_war/google-callback</param-value>
     </context-param>
 
 </web-app>
