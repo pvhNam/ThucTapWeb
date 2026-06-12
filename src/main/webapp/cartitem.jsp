@@ -35,6 +35,10 @@
                                 <div class="card-img"><img src="${item.product.image}" alt="Product Image"></div>
                                 <div class="card-details">
                                     <h3>${item.product.pdescription}</h3>
+                                    <p class="product-variant" style="font-size:0.9rem;color:#666;margin-top:4px;">
+                                        <c:if test="${not empty item.size}">Kích cỡ: ${item.size}</c:if>
+                                        <c:if test="${not empty item.color}"><c:if test="${not empty item.size}"> - </c:if>Màu sắc: ${item.color}</c:if>
+                                    </p>
                                     <p class="price-tag"><fmt:formatNumber value="${item.product.price}" pattern="#,### VNĐ"/></p>
                                     <div class="card-actions">
                                         <form action="cart" method="post" class="quantity-control">
