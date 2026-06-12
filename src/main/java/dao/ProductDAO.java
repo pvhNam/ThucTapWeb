@@ -340,43 +340,64 @@ public class ProductDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // Lấy sản phẩm theo danh mục
     public List<Product> getProductsByCategory(String categoryName) {
         List<Product> list = new ArrayList<>();
-        String sql = "SELECT p.*, c.id as cid2, c.name as cname " +
-                "FROM product p JOIN category c ON p.cateID = c.id ";
+        boolean useCategory = categoryName != null && !"all".equalsIgnoreCase(categoryName) && !categoryName.trim().isEmpty();
+        String lower = categoryName != null ? categoryName.toLowerCase() : null;
 
-        if (categoryName != null && !categoryName.equals("all")) {
-            sql += "WHERE c.name = ?";
-        }
-
-        try (Connection conn = DBConnect.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            if (categoryName != null && !categoryName.equals("all")) {
-                ps.setString(1, categoryName);
+        PreparedStatement ps = null;
+        try (Connection conn = DBConnect.getConnection()) {
+            String sql;
+            if (!useCategory || "bộ sưu tập 2026".equalsIgnoreCase(lower) || "bo suu tap 2026".equalsIgnoreCase(lower)) {
+                sql = "SELECT * FROM product";
+                ps = conn.prepareStatement(sql);
+            } else if ("áo nam".equalsIgnoreCase(lower) || "ao nam".equalsIgnoreCase(lower) || "áo".equalsIgnoreCase(lower) || "ao".equalsIgnoreCase(lower)) {
+                sql = "SELECT * FROM product WHERE (LOWER(name) LIKE ? ) " +
+                      "AND LOWER(name) NOT LIKE ?  AND LOWER(name) NOT LIKE ? AND LOWER(name) NOT LIKE ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%áo%");
+                ps.setString(2, "%nữ%");
+                ps.setString(3, "%ghim%");
+                ps.setString(4, "%vớ%");
+            } else if ("quần nam".equalsIgnoreCase(lower) || "quan nam".equalsIgnoreCase(lower)) {
+                sql = "SELECT * FROM product WHERE (LOWER(name) LIKE ? OR LOWER(name) LIKE ?) AND LOWER(name) LIKE ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%quần%");
+                ps.setString(2, "%quan%");
+                ps.setString(3, "%nam%");
+            } else if ("phụ kiện".equalsIgnoreCase(lower) || "phu kien".equalsIgnoreCase(lower)) {
+                sql = "SELECT * FROM product WHERE NOT ( (LOWER(name) LIKE ? OR LOWER(name) LIKE ?) AND LOWER(name) LIKE ? ) " +
+                      "AND NOT ( (LOWER(name) LIKE ? OR LOWER(name) LIKE ?) AND LOWER(name) LIKE ? )";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%áo%");
+                ps.setString(2, "%ao%");
+                ps.setString(3, "%nam%");
+                ps.setString(4, "%quần%");
+                ps.setString(5, "%quan%");
+                ps.setString(6, "%nam%");
+            } else {
+                sql = "SELECT * FROM product WHERE LOWER(name) LIKE ?";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, "%" + lower + "%");
             }
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Product p = new Product(
-                        rs.getInt("pid"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("cateID"),
-                        rs.getString("color"),
-                        rs.getString("size"),
-                        rs.getInt("amount"),
-                        rs.getString("img")
-                );
-
-                Category c = new Category();
-                c.setId(rs.getInt("cid2"));
-                c.setName(rs.getString("cname"));
-                p.setCategory(c);
-                p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
-
-                list.add(p);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product(
+                            rs.getInt("pid"),
+                            rs.getString("name"),
+                            rs.getDouble("price"),
+                            rs.getInt("cateID"),
+                            rs.getString("color"),
+                            rs.getString("size"),
+                            rs.getInt("amount"),
+                            rs.getString("img")
+                    );
+                    p.setVariants(getVariantsByProductId(p.getPid())); // Gán danh sách biến thể
+                    list.add(p);
+                }
+            } finally {
+                try { if (ps != null) ps.close(); } catch (Exception ex) {}
             }
 
         } catch (Exception e) {

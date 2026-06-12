@@ -23,6 +23,7 @@ public class AboutController extends HttpServlet {
 			throws ServletException, IOException {
 
 		String txtSearch = request.getParameter("txt");
+		String category = request.getParameter("category");
 		String priceFilter = request.getParameter("price");
 		String sortType = request.getParameter("sort");
 		int pageCurrent = 1;
@@ -34,10 +35,12 @@ public class AboutController extends HttpServlet {
 		ProductDAO pdao = new ProductDAO();
 		List<Product> allProducts = new ArrayList<>();
 
-		// ưu tiên listP nếu controller khác đã set, nếu không thì search hoặc lấy tất cả
+		// ưu tiên listP nếu controller khác đã set, nếu không thì lấy theo danh mục, tìm kiếm hoặc lấy tất cả
 		Object attrList = request.getAttribute("listP");
 		if (attrList != null && attrList instanceof List) {
 			allProducts = (List<Product>) attrList;
+		} else if (category != null && !"all".equals(category) && !category.trim().isEmpty()) {
+			allProducts = pdao.getProductsByCategory(category);
 		} else if (txtSearch != null && !txtSearch.trim().isEmpty()) {
 			allProducts = pdao.searchProduct(txtSearch);
 		} else {
@@ -94,6 +97,7 @@ public class AboutController extends HttpServlet {
 		String pageParams = baseParams;
 		if (priceFilter != null) pageParams += "&price=" + priceFilter;
 		if (sortType != null) pageParams += "&sort=" + sortType;
+		if (category != null) pageParams += "&category=" + URLEncoder.encode(category, "UTF-8");
 
 		// Set attributes cho JSP
 		request.setAttribute("pageProducts", pageProducts);
@@ -107,6 +111,7 @@ public class AboutController extends HttpServlet {
 		request.setAttribute("baseParams", baseParams);
 		request.setAttribute("pageParams", pageParams);
 		request.setAttribute("txtSearch", txtSearch);
+		request.setAttribute("categoryFilter", category);
 
 		request.getRequestDispatcher("/about.jsp").forward(request, response);
 	}
