@@ -74,10 +74,10 @@
 					<fmt:message key="shop.category" />
 				</h3>
 				<ul class="filter-list">
-					<li><a href="#"><fmt:message key="shop.cat_shirt" /></a></li>
-					<li><a href="#"><fmt:message key="shop.cat_pants" /></a></li>
-					<li><a href="#"><fmt:message key="shop.cat_accessories" /></a></li>
-					<li><a href="#"><fmt:message key="shop.cat_collection" /></a></li>
+					<li><a href="about?category=áo nam${baseParams}" class="${categoryFilter == null || categoryFilter == 'all' ? '' : (categoryFilter == 'áo nam' ? 'active' : '')}">Áo nam</a></li>
+					<li><a href="about?category=quần nam${baseParams}" class="${categoryFilter == 'quần nam' ? 'active' : ''}">Quần nam</a></li>
+					<li><a href="about?category=phụ kiện${baseParams}" class="${categoryFilter == 'phụ kiện' ? 'active' : ''}">Phụ kiện</a></li>
+					<li><a href="about?category=bộ sưu tập 2026${baseParams}" class="${categoryFilter == 'bộ sưu tập 2026' ? 'active' : ''}">Bộ sưu tập 2026</a></li>
 				</ul>
 			</div>
 		</aside>
