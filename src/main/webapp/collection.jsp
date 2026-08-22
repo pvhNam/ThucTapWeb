@@ -11,6 +11,7 @@
 <html lang="${sessionScope.lang}">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title><fmt:message key="collection.page_title" /> | Fashion
 	Store</title>
 <link rel="stylesheet"

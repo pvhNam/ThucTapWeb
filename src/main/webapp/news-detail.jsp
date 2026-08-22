@@ -8,6 +8,7 @@
 <html lang="${sessionScope.lang}">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <% News n = (News) request.getAttribute("newsObj");
    if (n == null) { response.sendRedirect("news.jsp"); return; } %>
 <title><%=n.getTitle()%> | Fashion Store</title>

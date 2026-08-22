@@ -1,181 +1,187 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<head>
-<link rel="stylesheet" href="CSS/user/Header.css">
-</head>
-
-<fmt:setLocale
-	value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
+<fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 
-<header class="header">
-	<a href="home"> <img src="img/logover2_5.png" alt="Logo"
-                         class="logo" width="60">
-	</a>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/modern-shell.css">
 
-	<nav class="menu">
-		<a href="home"><fmt:message key="menu.home" /></a> <a
-			href="collection"><fmt:message key="menu.collection" /></a> <a
-			href="about"><fmt:message key="menu.products" /></a> <a
-			href="news.jsp"><fmt:message key="menu.news" /></a>
-	</nav>
-
-	<div class="actions">
-
-		<!-- Language -->
-		<div class="lang-switch">
-
-			<a href="change-lang?lang=vi">VN</a> | <a href="change-lang?lang=en">EN</a>
-
-			<c:if test="${sessionScope.user != null}">
-				<div>👋 Xin chào, ${sessionScope.user.fullname}</div>
-
-			</c:if>
-
-		</div>
-
-		<!-- Search -->
-		<form action="${pageContext.request.contextPath}/search" method="get"
-			class="search-box">
-			<button type="submit">
-				<i class="fa-solid fa-magnifying-glass"></i>
-			</button>
-			<input type="text" name="txt" placeholder="Tìm kiếm..."
-				value="${param.txt}" />
-		</form>
-
-
-		<!-- Account -->
-		<div class="account">
-			<div class="user-menu">
-
-				<!-- Trigger -->
-				<div class="user-trigger">
-
-					<!-- Avatar -->
-					<c:choose>
-						<c:when
-							test="${sessionScope.user != null && not empty sessionScope.user.avatar}">
-							<img src="img/avatars/${sessionScope.user.avatar}"
-								class="user-avatar" />
-						</c:when>
-						<c:otherwise>
-							<i class="fa-solid fa-user"></i>
-						</c:otherwise>
-					</c:choose>
-
-					<!-- Arrow -->
-					<i class="fa-solid fa-caret-down arrow-down"></i>
-				</div>
-
-				<!-- Dropdown -->
-				<div class="user-dropdown">
-
-					<c:choose>
-
-						<%-- CHƯA LOGIN --%>
-						<c:when test="${sessionScope.user == null}">
-							<a href="login">🔑 Đăng nhập</a>
-							<a href="register">📝 Đăng ký</a>
-						</c:when>
-
-						<%-- ĐÃ LOGIN --%>
-						<c:otherwise>
-							<div>👋 Xin chào, ${sessionScope.user.fullname}</div>
-
-							<a href="profile.jsp">👤 Thông tin</a>
-							<a href="order-history">📦 Lịch sử mua</a>
-							<a href="settings.jsp">⚙️ Cài đặt</a>
-
-							<c:if test="${sessionScope.isAdmin}">
-								<a href="admin">🛠 Admin</a>
-							</c:if>
-
-							<a href="${pageContext.request.contextPath}/logout">🚪 Đăng
-								xuất</a>
-						</c:otherwise>
-
-					</c:choose>
-
-				</div>
-			</div>
-		</div>
-
-		<!-- Cart -->
-		<a href="cart" class="cart-icon"> <i
-			class="fa-solid fa-cart-shopping"></i>
+<header class="ym-header" id="ym-site-header">
+	<div class="ym-header-inner">
+		<a href="${pageContext.request.contextPath}/home" class="ym-logo" aria-label="Nam Thành Fashion - Trang chủ">
+			<img class="ym-logo-mark" src="${pageContext.request.contextPath}/img/logover2_5.png" alt="Nam Thành Fashion">
+			<span class="ym-logo-copy" aria-hidden="true">
+				<strong>NAM THÀNH</strong>
+				<small>FASHION MAN</small>
+			</span>
 		</a>
 
+		<nav class="ym-nav" id="ym-main-navigation" aria-label="Điều hướng chính">
+			<a href="${pageContext.request.contextPath}/home" class="${param.page == 'index' ? 'active' : ''}"><fmt:message key="menu.home" /></a>
+			<a href="${pageContext.request.contextPath}/collection" class="${param.page == 'collection' ? 'active' : ''}"><fmt:message key="menu.collection" /></a>
+			<a href="${pageContext.request.contextPath}/about" class="${param.page == 'about' ? 'active' : ''}"><fmt:message key="menu.products" /></a>
+			<a href="${pageContext.request.contextPath}/news" class="${param.page == 'news' ? 'active' : ''}"><fmt:message key="menu.news" /></a>
+
+			<div class="ym-mobile-tools">
+				<form action="${pageContext.request.contextPath}/search" method="get" class="ym-search" role="search">
+					<input type="search" name="txt" placeholder="Tìm kiếm sản phẩm..." value="<c:out value='${param.txt}' />" aria-label="Tìm kiếm sản phẩm">
+					<button type="submit" aria-label="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+				</form>
+				<div class="ym-mobile-languages" aria-label="Chọn ngôn ngữ">
+					<a href="${pageContext.request.contextPath}/change-lang?lang=vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}">Tiếng Việt</a>
+					<a href="${pageContext.request.contextPath}/change-lang?lang=en" class="${sessionScope.lang == 'en' ? 'active' : ''}">English</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="ym-actions">
+			<form action="${pageContext.request.contextPath}/search" method="get" class="ym-search" role="search">
+				<input type="search" name="txt" placeholder="Tìm kiếm..." value="<c:out value='${param.txt}' />" aria-label="Tìm kiếm sản phẩm">
+				<button type="submit" aria-label="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+			</form>
+
+			<div class="ym-lang" aria-label="Chọn ngôn ngữ">
+				<a href="${pageContext.request.contextPath}/change-lang?lang=vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}">VN</a>
+				<a href="${pageContext.request.contextPath}/change-lang?lang=en" class="${sessionScope.lang == 'en' ? 'active' : ''}">EN</a>
+			</div>
+
+			<div class="ym-user-menu">
+				<button class="ym-user-trigger" type="button" aria-label="Mở menu tài khoản" aria-haspopup="true" aria-expanded="false">
+					<c:choose>
+						<c:when test="${sessionScope.user != null && not empty sessionScope.user.avatar}">
+							<img src="${pageContext.request.contextPath}/img/avatars/${sessionScope.user.avatar}" alt="Ảnh đại diện">
+						</c:when>
+						<c:otherwise>
+							<i class="fa-regular fa-user"></i>
+						</c:otherwise>
+					</c:choose>
+				</button>
+
+				<div class="ym-dropdown" role="menu">
+					<c:choose>
+						<c:when test="${sessionScope.user == null}">
+							<a href="${pageContext.request.contextPath}/login" role="menuitem"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập</a>
+							<a href="${pageContext.request.contextPath}/register" role="menuitem"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+						</c:when>
+						<c:otherwise>
+							<div class="user-greet"><i class="fa-regular fa-face-smile"></i> Xin chào, <c:out value="${sessionScope.user.fullname}" />!</div>
+							<a href="${pageContext.request.contextPath}/profile.jsp" role="menuitem"><i class="fa-regular fa-id-card"></i> Thông tin cá nhân</a>
+							<a href="${pageContext.request.contextPath}/order-history" role="menuitem"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn hàng</a>
+							<c:if test="${sessionScope.isAdmin}">
+								<a href="${pageContext.request.contextPath}/admin" class="ym-admin-link" role="menuitem"><i class="fa-solid fa-chart-line"></i> Quản trị Admin</a>
+							</c:if>
+							<a href="${pageContext.request.contextPath}/logout" role="menuitem"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a>
+						</c:otherwise>
+					</c:choose>
+				</div>
+			</div>
+
+			<a href="${pageContext.request.contextPath}/cart" class="ym-cart" aria-label="Giỏ hàng">
+				<i class="fa-solid fa-bag-shopping"></i>
+			</a>
+
+			<button class="ym-menu-toggle" type="button" aria-controls="ym-main-navigation" aria-expanded="false" aria-label="Mở menu">
+				<span></span>
+			</button>
+		</div>
 	</div>
-	
-	<div id="toast"></div>
-	<%
-	String toastMessage = (String) session.getAttribute("toastMessage");
 
-	String toastType = (String) session.getAttribute("toastType");
-	%>
+	<div id="ym-toast" role="status" aria-live="polite"
+		 data-message="<c:out value='${sessionScope.toastMessage}' />"
+		 data-type="<c:out value='${sessionScope.toastType}' />"></div>
+</header>
 
-	<%
-	if (toastMessage != null) {
-	%>
 <script>
+	(function () {
+		const header = document.getElementById('ym-site-header');
+		if (!header || header.dataset.ready === 'true') return;
+		header.dataset.ready = 'true';
 
-	function showToast(message, type){
+		const menuButton = header.querySelector('.ym-menu-toggle');
+		const navigation = header.querySelector('.ym-nav');
+		const userMenu = header.querySelector('.ym-user-menu');
+		const userButton = header.querySelector('.ym-user-trigger');
 
-	    const toast =
-	        document.getElementById("toast");
+		function setNav(open) {
+			header.classList.toggle('nav-open', open);
+			document.body.classList.toggle('ym-nav-open', open);
+			if (menuButton) {
+				menuButton.setAttribute('aria-expanded', String(open));
+				menuButton.setAttribute('aria-label', open ? 'Đóng menu' : 'Mở menu');
+			}
+		}
 
-	    if(!toast) return;
+		if (menuButton) {
+			menuButton.addEventListener('click', function () {
+				setNav(!header.classList.contains('nav-open'));
+			});
+		}
 
-	    toast.innerText = message;
+		if (navigation) {
+			navigation.addEventListener('click', function (event) {
+				if (event.target.closest('a')) setNav(false);
+			});
+		}
 
-	    toast.classList.remove(
-	        "success",
-	        "error",
-	        "show"
-	    );
+		if (userButton && userMenu) {
+			userButton.addEventListener('click', function (event) {
+				event.stopPropagation();
+				const open = !userMenu.classList.contains('is-open');
+				userMenu.classList.toggle('is-open', open);
+				userButton.setAttribute('aria-expanded', String(open));
+			});
+		}
 
-	    if(type === "success"){
+		document.addEventListener('click', function (event) {
+			if (userMenu && !userMenu.contains(event.target)) {
+				userMenu.classList.remove('is-open');
+				if (userButton) userButton.setAttribute('aria-expanded', 'false');
+			}
+		});
 
-	        toast.classList.add("success");
+		document.addEventListener('keydown', function (event) {
+			if (event.key !== 'Escape') return;
+			setNav(false);
+			if (userMenu) userMenu.classList.remove('is-open');
+			if (userButton) userButton.setAttribute('aria-expanded', 'false');
+		});
 
-	    }else{
+		window.addEventListener('resize', function () {
+			if (window.innerWidth > 920) setNav(false);
+		});
 
-	        toast.classList.add("error");
-	    }
+		function syncHeader() {
+			header.classList.toggle('is-scrolled', window.scrollY > 24);
+		}
+		syncHeader();
+		window.addEventListener('scroll', syncHeader, { passive: true });
 
-	    toast.classList.add("show");
+		window.showToast = function (message, type) {
+			const toast = document.getElementById('ym-toast');
+			if (!toast) return;
+			toast.replaceChildren();
+			const icon = document.createElement('i');
+			icon.className = type === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-exclamation';
+			icon.style.color = type === 'success' ? '#7ed99d' : '#ff8b8b';
+			const text = document.createElement('span');
+			text.textContent = message;
+			toast.append(icon, text);
+			toast.classList.remove('success', 'error', 'show');
+			toast.classList.add(type === 'success' ? 'success' : 'error');
+			requestAnimationFrame(function () { toast.classList.add('show'); });
+			window.clearTimeout(window.ymToastTimer);
+			window.ymToastTimer = window.setTimeout(function () { toast.classList.remove('show'); }, 3500);
+		};
 
-	    setTimeout(() => {
-
-	        toast.classList.remove("show");
-
-	    }, 2000);
-	}
-
-	</script>
-	<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    showToast(
-        "<%=toastMessage%>",
-        "<%=toastType%>"
-    );
-
-});
-
+		const toast = document.getElementById('ym-toast');
+		if (toast && toast.dataset.message) {
+			window.showToast(toast.dataset.message, toast.dataset.type || 'success');
+		}
+	})();
 </script>
 
-	<%
-	session.removeAttribute("toastMessage");
-	session.removeAttribute("toastType");
-	%>
-
-	<%
-	}
-	%>
-</header>
+<c:if test="${not empty sessionScope.toastMessage}">
+	<c:remove var="toastMessage" scope="session" />
+	<c:remove var="toastType" scope="session" />
+</c:if>

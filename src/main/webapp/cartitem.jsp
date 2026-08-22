@@ -9,6 +9,7 @@
 <html lang="${sessionScope.lang}">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title><fmt:message key="cart.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css">
@@ -196,8 +197,8 @@
                                     <label for="pay-momo" class="payment-card-label">
                                         <div class="payment-icon-box"><i class="fa-solid fa-wallet"></i></div>
                                         <div class="payment-info">
-                                            <span class="p-name">Vi MoMo</span>
-                                            <span class="p-desc">Thanh toan online qua cong thanh toan MoMo</span>
+                                            <span class="p-name">Ví MoMo</span>
+                                            <span class="p-desc">Thanh toán online qua cổng thanh toán MoMo</span>
                                         </div>
                                     </label>
                                 </div>
