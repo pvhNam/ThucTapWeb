@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import dao.CartDAO;
 import dao.OrderDAO;
-import dao.ProductDAO;
 import dao.VoucherDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Order;
-import model.OrderDetail;
 import service.MomoService;
 
 @WebServlet("/momo-callback")
@@ -110,15 +108,11 @@ public class MomoCallbackController extends HttpServlet {
 
             String resultCode = payload.optString("resultCode", "");
             if ("0".equals(resultCode)) {
-                boolean locked = orderDao.updateOrderStatusIfCurrent(orderId, Order.STATUS_PENDING_MOMO,
-                        Order.STATUS_PAID_PROCESSING);
-                if (locked) {
-                    finalizeSuccessfulPayment(order, extraData);
+                boolean completed = orderDao.finalizeMomoPayment(orderId);
+                if (completed) {
+                    cleanupSuccessfulPayment(order, extraData);
                 }
-
-                Order refreshedOrder = orderDao.getOrderById(orderId);
-                result.success = refreshedOrder != null
-                        && Order.STATUS_PAID_PROCESSING.equals(refreshedOrder.getStatus());
+                result.success = completed;
                 return result;
             }
 
@@ -177,15 +171,9 @@ public class MomoCallbackController extends HttpServlet {
         return 0;
     }
 
-    private void finalizeSuccessfulPayment(Order order, JSONObject extraData) {
-        OrderDAO orderDao = new OrderDAO();
-        ProductDAO productDao = new ProductDAO();
+    private void cleanupSuccessfulPayment(Order order, JSONObject extraData) {
         CartDAO cartDao = new CartDAO();
         VoucherDAO voucherDao = new VoucherDAO();
-
-        for (OrderDetail item : orderDao.getDetails(order.getId())) {
-            productDao.decreaseStock(item.getProduct().getPid(), item.getQuantity());
-        }
 
         cartDao.clearCart(order.getUserId());
 

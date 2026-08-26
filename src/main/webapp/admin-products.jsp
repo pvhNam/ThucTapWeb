@@ -29,6 +29,9 @@
                        placeholder="Tìm tên hoặc mã sản phẩm..." aria-label="Tìm sản phẩm" data-admin-live-search>
                 <button type="submit" title="Tìm kiếm"><i class="fa-solid fa-arrow-right"></i></button>
             </form>
+            <a href="admin-stock-import" class="btn-add-new" style="text-decoration: none; background: #12805c; color: white; padding: 10px 15px; border-radius: 5px; font-weight: 600;">
+                <i class="fa-solid fa-truck-ramp-box" style="margin-right: 8px;"></i> Đặt hàng nhập kho
+            </a>
             <a href="admin-products?type=add" class="btn-add-new" style="text-decoration: none; background: #28a745; color: white; padding: 10px 15px; border-radius: 5px; font-weight: 600;">
                 <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm sản phẩm mới
             </a>
@@ -90,7 +93,7 @@
                 <td>
                     <div class="action-group">
                         <!-- NÚT CHUYỂN SANG TRANG NHẬP KHO -->
-                        <a href="admin-products?type=import&pid=<%=p.getPid()%>" class="btn-icon btn-import" style="background:#1cc88a; color:white; padding:6px 10px; border-radius:4px;" title="Nhập thêm hàng">
+                        <a href="admin-stock-import?pid=<%=p.getPid()%>" class="btn-icon btn-import" style="background:#1cc88a; color:white; padding:6px 10px; border-radius:4px;" title="Nhập thêm hàng">
                             <i class="fa-solid fa-box-open"></i>
                         </a>
 

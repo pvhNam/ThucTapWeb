@@ -70,6 +70,5 @@
 
     <div class="ym-footer-bottom">
         <span>&copy; 2026 Nam Thành Fashion. All rights reserved.</span>
-        <span class="ym-footer-status">Online store is active</span>
     </div>
 </footer>

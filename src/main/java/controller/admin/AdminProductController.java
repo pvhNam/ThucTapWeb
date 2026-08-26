@@ -70,9 +70,7 @@ public class AdminProductController extends HttpServlet {
         if ("import".equals(type)) {
             try {
                 int pid = Integer.parseInt(request.getParameter("pid"));
-                Product p = dao.getProductById(pid);
-                request.setAttribute("product", p);
-                request.getRequestDispatcher("/admin-product-import.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/admin-stock-import?pid=" + pid);
             } catch (Exception e) {
                 response.sendRedirect("admin-products?msg=error");
             }
@@ -113,15 +111,8 @@ public class AdminProductController extends HttpServlet {
         try {
             if ("import".equals(action)) {
                 int pid = Integer.parseInt(request.getParameter("pid"));
-                int addQty = Integer.parseInt(request.getParameter("addQty"));
-                String color = request.getParameter("color");
-                String size = request.getParameter("size");
-
-                if (dao.importStockVariant(pid, color, size, addQty)) {
-                    response.sendRedirect("admin-products?msg=imported");
-                } else {
-                    response.sendRedirect("admin-products?msg=error_import");
-                }
+                response.sendRedirect(request.getContextPath()
+                        + "/admin-stock-import?pid=" + pid + "&msg=invalid");
                 return;
             }
 

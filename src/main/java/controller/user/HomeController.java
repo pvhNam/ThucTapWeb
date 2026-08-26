@@ -39,7 +39,7 @@ public class HomeController extends HttpServlet {
             if (cartList != null) {
                 cartCount = cartList.size();
                 for (CartItem item : cartList) {
-                    mapCart.put(item.getProduct().getPid(), item.getQuantity());
+                    mapCart.merge(item.getProduct().getPid(), item.getQuantity(), Integer::sum);
                 }
             }
         } else {
@@ -47,7 +47,7 @@ public class HomeController extends HttpServlet {
             if (cartList != null) {
                 cartCount = cartList.size();
                 for (CartItem item : cartList) {
-                    mapCart.put(item.getProduct().getPid(), item.getQuantity());
+                    mapCart.merge(item.getProduct().getPid(), item.getQuantity(), Integer::sum);
                 }
             }
         }

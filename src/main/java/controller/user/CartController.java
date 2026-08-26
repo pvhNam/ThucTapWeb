@@ -183,8 +183,8 @@ public class CartController extends HttpServlet {
 
         String color = request.getParameter("color");
         String size = request.getParameter("size");
-        if(color == null) color = "";
-        if(size == null) size = "";
+        color = color == null ? "" : color.trim();
+        size = size == null ? "" : size.trim();
 
         ProductDAO productDAO = new ProductDAO();
 
@@ -205,7 +205,29 @@ public class CartController extends HttpServlet {
 
             if ("add".equals(action) || "buyNow".equals(action)) {
                 String qParam = request.getParameter("quantity");
-                int quantity = (qParam != null && !qParam.isEmpty()) ? Integer.parseInt(qParam) : 1;
+                int quantity = parseInt(qParam, 1);
+                int currentQuantity = 0;
+                for (CartItem item : dao.getCartByUid(uid)) {
+                    String itemColor = item.getColor() == null ? "" : item.getColor();
+                    String itemSize = item.getSize() == null ? "" : item.getSize();
+                    if (item.getProduct().getPid() == pid && itemColor.equals(color) && itemSize.equals(size)) {
+                        currentQuantity = item.getQuantity();
+                        break;
+                    }
+                }
+                int availableStock = productDAO.getAvailableStock(pid, color, size);
+                if (quantity <= 0 || availableStock <= 0 || currentQuantity + quantity > availableStock) {
+                    if (ajax) {
+                        writeCartState(request, response, currentUser,
+                                "Phân loại đã hết hàng hoặc số lượng vượt quá tồn kho.", false);
+                    } else {
+                        session.setAttribute("toastMessage",
+                                "Phân loại đã hết hàng hoặc số lượng vượt quá tồn kho.");
+                        session.setAttribute("toastType", "error");
+                        response.sendRedirect("cart");
+                    }
+                    return;
+                }
 
                 // Lưu vào DB kèm theo Màu và Size
                 dao.addToCart(uid, pid, color, size, quantity);
@@ -222,9 +244,8 @@ public class CartController extends HttpServlet {
                 if ("increase".equals(mod)) newQty++;
                 else if ("decrease".equals(mod)) newQty--;
 
-                Product product = productDAO.getProductById(pid);
-                int maxStock = product != null ? product.getStockquantyti() : 0;
-                if (product == null || newQty > maxStock) {
+                int maxStock = productDAO.getAvailableStock(pid, color, size);
+                if (newQty > maxStock) {
                     if (ajax) {
                         writeCartState(request, response, currentUser,
                                 "Sản phẩm đã đạt giới hạn tồn kho.", false);
@@ -242,16 +263,42 @@ public class CartController extends HttpServlet {
             if (cart == null) cart = new ArrayList<>();
 
             if ("add".equals(action) || "buyNow".equals(action)) {
-                int quantity = Integer.parseInt(request.getParameter("quantity") != null ? request.getParameter("quantity") : "1");
+                int quantity = parseInt(request.getParameter("quantity"), 1);
                 Product p = productDAO.getProductById(pid);
                 boolean exists = false;
+                int currentQuantity = 0;
                 for (CartItem item : cart) {
                     if (item.getProduct().getPid() == pid && item.getColor().equals(color) && item.getSize().equals(size)) {
-                        item.setQuantity(item.getQuantity() + quantity);
-                        exists = true; break;
+                        currentQuantity = item.getQuantity();
+                        exists = true;
+                        break;
                     }
                 }
-                if (!exists) cart.add(new CartItem(p, quantity, color, size));
+                int maxStock = productDAO.getAvailableStock(pid, color, size);
+                if (p == null || quantity <= 0 || maxStock <= 0 || currentQuantity + quantity > maxStock) {
+                    if (ajax) {
+                        writeCartState(request, response, null,
+                                "Phân loại đã hết hàng hoặc số lượng vượt quá tồn kho.", false);
+                    } else {
+                        session.setAttribute("toastMessage",
+                                "Phân loại đã hết hàng hoặc số lượng vượt quá tồn kho.");
+                        session.setAttribute("toastType", "error");
+                        response.sendRedirect("cart");
+                    }
+                    return;
+                }
+                p.setStockquantyti(maxStock);
+                if (exists) {
+                    for (CartItem item : cart) {
+                        if (item.getProduct().getPid() == pid && item.getColor().equals(color) && item.getSize().equals(size)) {
+                            item.setQuantity(currentQuantity + quantity);
+                            item.getProduct().setStockquantyti(maxStock);
+                            break;
+                        }
+                    }
+                } else {
+                    cart.add(new CartItem(p, quantity, color, size));
+                }
                 session.setAttribute("cart", cart);
                 if ("buyNow".equals(action)) { response.sendRedirect("checkout"); return; }
             } else if ("update_quantity".equals(action)) {
@@ -265,7 +312,8 @@ public class CartController extends HttpServlet {
                         int newQty = item.getQuantity();
                         if ("increase".equals(mod)) newQty++;
                         else if ("decrease".equals(mod)) newQty--;
-                        int maxStock = item.getProduct().getStockquantyti();
+                        int maxStock = productDAO.getAvailableStock(pid, color, size);
+                        item.getProduct().setStockquantyti(maxStock);
                         if (newQty <= 0) iterator.remove();
                         else if (newQty <= maxStock) item.setQuantity(newQty);
                         break;

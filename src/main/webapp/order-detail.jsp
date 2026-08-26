@@ -80,7 +80,7 @@
                         <img src="<%=item.getProduct().getImage()%>" class="img-thumb">
                         <div>
                             <div style="font-weight: 600;"><%=item.getProduct().getPdescription()%></div>
-                            <small>Size: <%=item.getProduct().getSize()%> | Color: <%=item.getProduct().getColor()%></small>
+                            <small>Size: <%=item.getSize()%> | Color: <%=item.getColor()%></small>
                         </div>
                     </td>
                     <td style="text-align: center;"><%=df.format(item.getPrice())%></td>

@@ -70,15 +70,37 @@ CREATE TABLE IF NOT EXISTS `cart` (
     CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`pid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Bảng import_history
+-- Bảng stock_receipts (đầu phiếu nhập kho)
+CREATE TABLE IF NOT EXISTS `stock_receipts` (
+                                                   `id`           int NOT NULL AUTO_INCREMENT,
+                                                   `receipt_code` varchar(50) NOT NULL,
+    `import_date`  date NOT NULL,
+    `supplier`     varchar(150) DEFAULT NULL,
+    `note`         varchar(500) DEFAULT NULL,
+    `total_amount` double NOT NULL DEFAULT '0',
+    `created_at`   datetime DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_stock_receipt_code` (`receipt_code`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Bảng import_history (các dòng phân loại thuộc phiếu nhập)
 CREATE TABLE IF NOT EXISTS `import_history` (
                                                 `id`           int NOT NULL AUTO_INCREMENT,
+                                                `receipt_id`   int DEFAULT NULL,
                                                 `product_id`   int DEFAULT NULL,
                                                 `quantity`     int DEFAULT NULL,
                                                 `import_price` double DEFAULT NULL,
+                                                `variant_id`   int DEFAULT NULL,
+                                                `color`        varchar(50) NOT NULL DEFAULT '',
+                                                `size`         varchar(50) NOT NULL DEFAULT '',
+                                                `import_date`  date DEFAULT NULL,
+                                                `supplier`     varchar(150) DEFAULT NULL,
+                                                `note`         varchar(500) DEFAULT NULL,
                                                 `created_at`   datetime DEFAULT CURRENT_TIMESTAMP,
                                                 PRIMARY KEY (`id`),
+    KEY `idx_import_history_receipt` (`receipt_id`),
     KEY `product_id` (`product_id`),
+    CONSTRAINT `fk_import_history_receipt` FOREIGN KEY (`receipt_id`) REFERENCES `stock_receipts` (`id`) ON DELETE CASCADE,
     CONSTRAINT `import_history_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`pid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -114,6 +136,8 @@ CREATE TABLE IF NOT EXISTS `order_details` (
                                                `product_id` int DEFAULT NULL,
                                                `price`      double DEFAULT NULL,
                                                `quantity`   int DEFAULT NULL,
+                                               `color`      varchar(50) NOT NULL DEFAULT '',
+                                               `size`       varchar(50) NOT NULL DEFAULT '',
                                                PRIMARY KEY (`id`),
     KEY `order_id` (`order_id`),
     KEY `product_id` (`product_id`),

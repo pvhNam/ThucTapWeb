@@ -192,6 +192,14 @@
 										</c:choose>
 									</div>
 								</div>
+								<div id="catalog-variants-${p.pid}" hidden>
+									<c:forEach var="variant" items="${p.variants}">
+										<span class="catalog-variant" data-stock="${variant.stockQuantity}">
+											<span class="catalog-variant-size"><c:out value="${variant.size}" /></span>
+											<span class="catalog-variant-color"><c:out value="${variant.color}" /></span>
+										</span>
+									</c:forEach>
+								</div>
 							</div>
 						</c:forEach>
 					</c:otherwise>
@@ -249,6 +257,17 @@
 				var sizesRaw = btn.getAttribute('data-sizes') || '';
 				var colorsRaw = btn.getAttribute('data-colors') || '';
 				var pid = btn.getAttribute('data-pid');
+				var variants = [];
+				var variantRoot = document.getElementById('catalog-variants-' + pid);
+				if (variantRoot) {
+					variantRoot.querySelectorAll('.catalog-variant').forEach(function(node) {
+						variants.push({
+							size: (node.querySelector('.catalog-variant-size')?.textContent || '').trim(),
+							color: (node.querySelector('.catalog-variant-color')?.textContent || '').trim(),
+							stock: parseInt(node.getAttribute('data-stock') || '0', 10) || 0
+						});
+					});
+				}
 				function parseList(raw) {
 					raw = raw.trim();
 					if (!raw)
@@ -262,8 +281,13 @@
 					});
 				}
 
-				var sizes = parseList(sizesRaw);
-				var colors = parseList(colorsRaw);
+				var availableVariants = variants.filter(function(variant) { return variant.stock > 0; });
+				var sizes = variants.length > 0
+						? Array.from(new Set(availableVariants.map(function(variant) { return variant.size; })))
+						: parseList(sizesRaw);
+				var colors = variants.length > 0
+						? Array.from(new Set(availableVariants.map(function(variant) { return variant.color; })))
+						: parseList(colorsRaw);
 
 				var optionsContainer = document.getElementById('modal-options');
 				var isCart = (mode === 'cart');
@@ -367,6 +391,43 @@
 						updateTotal();
 					});
 				}
+				function markSelected(containerId, value) {
+					var wrap = document.getElementById(containerId);
+					if (!wrap) return;
+					wrap.querySelectorAll('.option-btn').forEach(function(button) {
+						button.classList.toggle('selected', button.getAttribute('data-value') === value);
+					});
+				}
+
+				function applyVariant(variant) {
+					if (!variant) return;
+					stock = variant.stock;
+					document.getElementById('modal-size').value = variant.size;
+					document.getElementById('modal-color').value = variant.color;
+					markSelected('modal-sizes', variant.size);
+					markSelected('modal-colors', variant.color);
+					var stockElement = document.getElementById('modal-stock');
+					if (stockElement) stockElement.textContent = stock;
+					updateTotal();
+				}
+
+				function selectAvailableVariant(changedField, value) {
+					if (availableVariants.length === 0) return;
+					var currentSize = document.getElementById('modal-size').value;
+					var currentColor = document.getElementById('modal-color').value;
+					if (changedField === 'size') currentSize = value;
+					else currentColor = value;
+					var match = availableVariants.find(function(variant) {
+						return variant.size === currentSize && variant.color === currentColor;
+					});
+					if (!match) {
+						match = availableVariants.find(function(variant) {
+							return changedField === 'size' ? variant.size === value : variant.color === value;
+						});
+					}
+					applyVariant(match);
+				}
+
 				function wireOptions(containerId, hiddenId) {
 					var wrap = document.getElementById(containerId);
 					if (!wrap)
@@ -374,16 +435,17 @@
 					var buttons = wrap.querySelectorAll('.option-btn');
 					buttons.forEach(function(b, idx) {
 						b.addEventListener('click', function() {
-							buttons.forEach(function(x) {
-								x.classList.remove('selected');
-							});
-							b.classList.add('selected');
 							var val = b.getAttribute('data-value');
-							var hid = document.getElementById(hiddenId);
-							if (hid)
-								hid.value = val;
+							if (availableVariants.length > 0) {
+								selectAvailableVariant(hiddenId === 'modal-size' ? 'size' : 'color', val);
+							} else {
+								buttons.forEach(function(x) { x.classList.remove('selected'); });
+								b.classList.add('selected');
+								var hid = document.getElementById(hiddenId);
+								if (hid) hid.value = val;
+							}
 						});
-						if (idx === 0) {
+						if (idx === 0 && availableVariants.length === 0) {
 							b.classList.add('selected');
 							document.getElementById(hiddenId).value = b
 									.getAttribute('data-value');
@@ -392,6 +454,7 @@
 				}
 				wireOptions('modal-sizes', 'modal-size');
 				wireOptions('modal-colors', 'modal-color');
+				if (availableVariants.length > 0) applyVariant(availableVariants[0]);
 
 				updateTotal();
 				var modal = document.getElementById('buyNowModal');

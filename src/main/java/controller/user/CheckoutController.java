@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import dao.CartDAO;
 import dao.OrderDAO;
-import dao.ProductDAO;
 import dao.VoucherDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,6 +48,16 @@ public class CheckoutController extends HttpServlet {
         if (cart == null || cart.isEmpty()) {
             response.sendRedirect("cart");
             return;
+        }
+        for (CartItem item : cart) {
+            int availableStock = item.getProduct() == null ? 0 : item.getProduct().getStockquantyti();
+            if (item.getQuantity() <= 0 || item.getQuantity() > availableStock) {
+                session.setAttribute("voucherMsg",
+                        "Một phân loại trong giỏ đã hết hàng hoặc không đủ số lượng. Vui lòng kiểm tra lại.");
+                session.setAttribute("msgType", "error");
+                response.sendRedirect("cart");
+                return;
+            }
         }
 
         double totalMoney = calculateTotal(cart, (Voucher) session.getAttribute("appliedVoucher"));
@@ -94,7 +103,8 @@ public class CheckoutController extends HttpServlet {
             List<CartItem> cart, double totalMoney, String address, String paymentMethod) throws IOException {
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         OrderDAO orderDao = new OrderDAO();
-        int newOrderId = orderDao.createOrder(currentUser.getUid(), totalMoney, address, paymentMethod, cart);
+        int newOrderId = orderDao.createOrderAndDecreaseStock(
+                currentUser.getUid(), totalMoney, address, paymentMethod, cart);
 
         if (newOrderId <= 0) {
             session.setAttribute("voucherMsg", "Dat hang that bai, vui long thu lai.");
@@ -103,12 +113,7 @@ public class CheckoutController extends HttpServlet {
             return;
         }
 
-        ProductDAO pDao = new ProductDAO();
         VoucherDAO vDao = new VoucherDAO();
-
-        for (CartItem item : cart) {
-            pDao.decreaseStock(item.getProduct().getPid(), item.getQuantity());
-        }
 
         if (appliedVoucher != null) {
             vDao.markVoucherUsed(currentUser.getUid(), appliedVoucher.getId());

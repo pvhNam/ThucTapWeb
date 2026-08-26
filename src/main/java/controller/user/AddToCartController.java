@@ -66,8 +66,8 @@ public class AddToCartController extends HttpServlet {
         String color = req.getParameter("color");
         String size = req.getParameter("size");
 
-        if (color == null) color = "";
-        if (size == null) size = "";
+        color = color == null ? "" : color.trim();
+        size = size == null ? "" : size.trim();
 
         ProductDAO productDAO = new ProductDAO();
         CartDAO cartDAO = new CartDAO();
@@ -95,11 +95,25 @@ public class AddToCartController extends HttpServlet {
             }
         }
 
-        if (currentQuantity + quantity > p.getStockquantyti()) {
+        int availableStock = productDAO.getAvailableStock(pid, color, size);
+        if (availableStock <= 0) {
+            String message = "Phân loại size/màu này đã hết hàng hoặc không tồn tại.";
+            if (ajax) {
+                writeJson(resp, HttpServletResponse.SC_BAD_REQUEST, false,
+                        message, currentCart.size(), false);
+                return;
+            }
+            session.setAttribute("toastMessage", message);
+            session.setAttribute("toastType", "error");
+            redirectBack(req, resp);
+            return;
+        }
+
+        if (currentQuantity + quantity > availableStock) {
 
             if (ajax) {
                 writeJson(resp, HttpServletResponse.SC_BAD_REQUEST, false,
-                        "Bạn chỉ có thể thêm tối đa " + Math.max(0, p.getStockquantyti() - currentQuantity)
+                        "Bạn chỉ có thể thêm tối đa " + Math.max(0, availableStock - currentQuantity)
                                 + " sản phẩm nữa.", currentCart.size(), false);
                 return;
             }
@@ -107,8 +121,8 @@ public class AddToCartController extends HttpServlet {
             session.setAttribute(
                     "toastMessage",
                     "Không thể thêm! Kho chỉ còn "
-                            + p.getStockquantyti()
-                            + " ssản phẩm."
+                            + availableStock
+                            + " sản phẩm cho phân loại đã chọn."
             );
 
             session.setAttribute(
@@ -116,9 +130,7 @@ public class AddToCartController extends HttpServlet {
                     "error"
             );
 
-            resp.sendRedirect(
-                    req.getHeader("referer")
-            );
+            redirectBack(req, resp);
 
             return;
         }
@@ -149,9 +161,7 @@ public class AddToCartController extends HttpServlet {
                 "success"
         );
 
-        resp.sendRedirect(
-                req.getHeader("referer")
-        );
+        redirectBack(req, resp);
     }
 
     @Override
@@ -167,6 +177,11 @@ public class AddToCartController extends HttpServlet {
         String accept = request.getHeader("Accept");
         return "XMLHttpRequest".equalsIgnoreCase(requestedWith)
                 || (accept != null && accept.contains("application/json"));
+    }
+
+    private void redirectBack(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String referer = request.getHeader("referer");
+        response.sendRedirect(referer == null || referer.isBlank() ? "home" : referer);
     }
 
     private void writeJson(HttpServletResponse response, int status, boolean success,

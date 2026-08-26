@@ -17,7 +17,12 @@ public class CartDAO {
 	// Lấy danh sách giỏ hàng (Đã thêm color, size)
 	public List<CartItem> getCartByUid(int uid) {
 		List<CartItem> list = new ArrayList<>();
-		String query = "SELECT c.quantity, c.color as cart_color, c.size as cart_size, p.* FROM cart c JOIN product p ON c.product_id = p.pid WHERE c.user_id = ?";
+		String query = "SELECT c.quantity, c.color AS cart_color, c.size AS cart_size, p.*, "
+				+ "CASE WHEN EXISTS (SELECT 1 FROM product_variants pv0 WHERE pv0.product_id = p.pid) "
+				+ "THEN COALESCE((SELECT SUM(pv.stock_quantity) FROM product_variants pv "
+				+ "WHERE pv.product_id = p.pid AND pv.color = c.color AND pv.size = c.size), 0) "
+				+ "ELSE GREATEST(COALESCE(p.amount, 0), 0) END AS available_stock "
+				+ "FROM cart c JOIN product p ON c.product_id = p.pid WHERE c.user_id = ?";
 		try {
 			conn = DBConnect.getConnection();
 			ps = conn.prepareStatement(query);
@@ -25,7 +30,7 @@ public class CartDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				Product p = new Product(rs.getInt("pid"), rs.getString("name"), rs.getDouble("price"),
-						rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("amount"),
+						rs.getInt("cateID"), rs.getString("color"), rs.getString("size"), rs.getInt("available_stock"),
 						rs.getString("img"));
 				int quantity = rs.getInt("quantity");
 				String cColor = rs.getString("cart_color");

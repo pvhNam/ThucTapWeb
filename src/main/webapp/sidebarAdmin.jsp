@@ -43,7 +43,18 @@ if (currUser != null) {
 		</a> <a href="admin-products"
 			class="menu-item <%=activePage.equals("products") ? "active" : ""%>">
 			<i class="fa-solid fa-shirt"></i> Quản lý Sản phẩm
-		</a> <a href="admin-users"
+		</a>
+		<%
+		if (role == 1) {
+		%>
+		<a href="admin-stock-import"
+			class="menu-item <%=activePage.equals("stock-import") ? "active" : ""%>">
+			<i class="fa-solid fa-truck-ramp-box"></i> Đặt hàng nhập kho
+		</a>
+		<%
+		}
+		%>
+		<a href="admin-users"
 			class="menu-item <%=activePage.equals("users") ? "active" : ""%>">
 			<i class="fa-solid fa-user-group"></i> Quản lý Khách hàng
 		</a>

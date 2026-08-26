@@ -34,16 +34,16 @@
 
     <!-- LEFT: Image Slider -->
     <div class="detail-left">
-        <div class="slider-container" id="sliderContainer">
+        <div class="slider-container" id="sliderContainer" tabindex="0" aria-label="Bộ ảnh sản phẩm">
             <div class="slider-track" id="sliderTrack"></div>
-            <button class="slider-btn prev" id="btnPrev" aria-label="Previous">
+            <button type="button" class="slider-btn prev" id="btnPrev" aria-label="Ảnh trước">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button class="slider-btn next" id="btnNext" aria-label="Next">
+            <button type="button" class="slider-btn next" id="btnNext" aria-label="Ảnh tiếp theo">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
             <div class="slider-dots" id="sliderDots"></div>
-            <div class="slide-counter" id="slideCounter">1 / 1</div>
+            <div class="slide-counter" id="slideCounter" aria-live="polite">1 / 1</div>
         </div>
         <div class="thumbnail-gallery" id="thumbGallery"></div>
         <div id="img-data" style="display:none" data-main="${not empty p.image ? p.image : 'img/no-image.png'}">
@@ -151,9 +151,12 @@
         const counter  = document.getElementById('slideCounter');
         const thumbGal = document.getElementById('thumbGallery');
         const images   = [];
-        const mainSrc  = imgData.dataset.main;
-        if (mainSrc) images.push(mainSrc);
-        imgData.querySelectorAll('.extra-img').forEach(el => { const s = el.textContent.trim(); if (s) images.push(s); });
+        function addImage(src) {
+            const normalized = (src || '').trim();
+            if (normalized) images.push(normalized);
+        }
+        addImage(imgData.dataset.main);
+        imgData.querySelectorAll('.extra-img').forEach(el => addImage(el.textContent));
         if (images.length === 0) return;
         let current = 0;
         images.forEach((src, i) => {
@@ -163,8 +166,9 @@
         });
         images.forEach((_, i) => {
             const dot = document.createElement('button');
+            dot.type = 'button';
             dot.className = 'dot' + (i === 0 ? ' active' : '');
-            dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+            dot.setAttribute('aria-label', 'Xem ảnh ' + (i + 1));
             dot.addEventListener('click', () => goTo(i)); dotsWrap.appendChild(dot);
         });
         images.forEach((src, i) => {
@@ -180,7 +184,8 @@
         }
         function goTo(idx) {
             current = (idx + images.length) % images.length;
-            track.style.transform = `translateX(-${current * 100}%)`;
+            // Dùng phép nối chuỗi để JSP không hiểu nhầm biểu thức JavaScript là JSP EL.
+            track.style.transform = 'translateX(-' + (current * 100) + '%)';
             dotsWrap.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
             thumbGal.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active-thumb', i === current));
             const activeThumb = thumbGal.querySelectorAll('.thumb')[current];
@@ -189,11 +194,29 @@
         }
         document.getElementById('btnPrev').addEventListener('click', () => goTo(current - 1));
         document.getElementById('btnNext').addEventListener('click', () => goTo(current + 1));
-        let touchStartX = 0;
         const container = document.getElementById('sliderContainer');
-        container.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
-        container.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - touchStartX; if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1); }, { passive: true });
-        document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') goTo(current - 1); if (e.key === 'ArrowRight') goTo(current + 1); });
+        let gestureStartX = null;
+        container.addEventListener('pointerdown', e => {
+            if (e.target.closest('button') || (e.pointerType === 'mouse' && e.button !== 0)) return;
+            gestureStartX = e.clientX;
+            container.classList.add('is-dragging');
+            container.setPointerCapture(e.pointerId);
+        });
+        container.addEventListener('pointerup', e => {
+            if (gestureStartX === null) return;
+            const dx = e.clientX - gestureStartX;
+            gestureStartX = null;
+            container.classList.remove('is-dragging');
+            if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+        });
+        container.addEventListener('pointercancel', () => {
+            gestureStartX = null;
+            container.classList.remove('is-dragging');
+        });
+        container.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+        });
         counter.textContent = '1 / ' + images.length;
     })();
 
@@ -201,48 +224,182 @@
     (function() {
         const items = document.querySelectorAll('.v-item');
         if (items.length === 0) return;
-        const sizes = new Set(), colors = new Set(), variants = [];
-        items.forEach(i => { if (i.dataset.s) sizes.add(i.dataset.s); if (i.dataset.c) colors.add(i.dataset.c); variants.push({ s: i.dataset.s, c: i.dataset.c, q: parseInt(i.dataset.q) }); });
-        const colorMap = { 'đen':'#1a1a1a','den':'#1a1a1a','black':'#1a1a1a','trắng':'#f0f0f0','trang':'#f0f0f0','white':'#f0f0f0','đỏ':'#e74c3c','do':'#e74c3c','red':'#e74c3c','xanh':'#2980b9','blue':'#2980b9','xanh lá':'#27ae60','green':'#27ae60','vàng':'#f1c40f','yellow':'#f1c40f','hồng':'#e91e8c','pink':'#e91e8c','xám':'#95a5a6','gray':'#95a5a6','grey':'#95a5a6','nâu':'#8B4513','brown':'#8B4513','cam':'#e67e22','orange':'#e67e22','tím':'#8e44ad','purple':'#8e44ad','be':'#f5f5dc','beige':'#f5f5dc' };
-        function getColor(name) { if (!name || name === 'null') return '#ccc'; return colorMap[name.toLowerCase().trim()] || '#bdc3c7'; }
-        const szBox = document.getElementById('size-options'); szBox.innerHTML = '';
-        sizes.forEach(s => {
-            const label = (s && s !== 'null') ? s : 'Mặc định'; const id = 'sz-' + s;
-            const inp = document.createElement('input'); inp.type = 'radio'; inp.id = id; inp.name = 'size'; inp.value = s; inp.className = 'var-radio'; inp.required = true;
-            const lbl = document.createElement('label'); lbl.htmlFor = id; lbl.className = 'size-label'; lbl.textContent = label;
-            szBox.appendChild(inp); szBox.appendChild(lbl);
-        });
-        const clBox = document.getElementById('color-options'); clBox.innerHTML = '';
-        colors.forEach(c => {
-            const label = (c && c !== 'null') ? c : 'Mặc định'; const id = 'cl-' + c;
-            const inp = document.createElement('input'); inp.type = 'radio'; inp.id = id; inp.name = 'color'; inp.value = c; inp.className = 'var-radio'; inp.required = true;
-            const wrap = document.createElement('label'); wrap.htmlFor = id; wrap.className = 'color-swatch-wrap';
-            const swatch = document.createElement('span'); swatch.className = 'color-swatch'; swatch.style.background = getColor(c);
-            if (getColor(c) === '#f0f0f0') swatch.style.border = '2px solid #ccc';
-            const nameEl = document.createElement('span'); nameEl.className = 'color-swatch-name'; nameEl.textContent = label;
-            wrap.appendChild(swatch); wrap.appendChild(nameEl); clBox.appendChild(inp); clBox.appendChild(wrap);
-        });
-        function updateStock() {
-            const selSz = document.querySelector('input[name="size"]:checked')?.value;
-            const selCl = document.querySelector('input[name="color"]:checked')?.value;
-            const btnA = document.getElementById('btn-add'); const btnB = document.getElementById('btn-buy');
-            const qty = document.getElementById('qty-input'); const st = document.getElementById('stock-display'); const dot = document.getElementById('stock-dot');
-            if (selSz && selCl) {
-                const match = variants.find(v => v.s === selSz && v.c === selCl);
-                if (match && match.q > 0) { st.textContent = 'Còn hàng (' + match.q + ')'; dot.className = 'stock-dot instock'; qty.max = match.q; qty.value = 1; qty.disabled = false; btnA.classList.remove('btn-disabled'); btnB.classList.remove('btn-disabled'); }
-                else { st.textContent = 'Hết hàng / Không có phân loại này'; dot.className = 'stock-dot outstock'; qty.value = 0; qty.disabled = true; btnA.classList.add('btn-disabled'); btnB.classList.add('btn-disabled'); }
-            } else { st.textContent = 'Vui lòng chọn Size & Màu'; dot.className = 'stock-dot pending'; }
+
+        const sizes = [];
+        const colors = [];
+        const variantMap = new Map();
+        function normalizeValue(value) {
+            const normalized = (value || '').trim();
+            return normalized.toLowerCase() === 'null' ? '' : normalized;
         }
-        document.querySelectorAll('.var-radio').forEach(r => {
-            r.addEventListener('change', () => {
-                if (r.name === 'size') document.getElementById('sz-display').textContent = (r.value && r.value !== 'null') ? r.value : 'Mặc định';
-                if (r.name === 'color') document.getElementById('cl-display').textContent = (r.value && r.value !== 'null') ? r.value : 'Mặc định';
+        function variantKey(size, color) {
+            return size + '\u001f' + color;
+        }
+        items.forEach(i => {
+            const size = normalizeValue(i.dataset.s);
+            const color = normalizeValue(i.dataset.c);
+            const quantity = Math.max(0, parseInt(i.dataset.q, 10) || 0);
+            const key = variantKey(size, color);
+            if (variantMap.has(key)) {
+                variantMap.get(key).q += quantity;
+            } else {
+                variantMap.set(key, { s: size, c: color, q: quantity });
+            }
+            if (!sizes.includes(size)) sizes.push(size);
+            if (!colors.includes(color)) colors.push(color);
+        });
+        const variants = Array.from(variantMap.values());
+        const hasAnyStock = variants.some(v => v.q > 0);
+        const colorMap = { 'đen':'#1a1a1a','den':'#1a1a1a','black':'#1a1a1a','trắng':'#f0f0f0','trang':'#f0f0f0','white':'#f0f0f0','đỏ':'#e74c3c','do':'#e74c3c','red':'#e74c3c','xanh':'#2980b9','blue':'#2980b9','xanh lá':'#27ae60','green':'#27ae60','vàng':'#f1c40f','yellow':'#f1c40f','hồng':'#e91e8c','pink':'#e91e8c','xám':'#95a5a6','gray':'#95a5a6','grey':'#95a5a6','nâu':'#8B4513','brown':'#8B4513','cam':'#e67e22','orange':'#e67e22','tím':'#8e44ad','purple':'#8e44ad','be':'#f5f5dc','beige':'#f5f5dc' };
+
+        function displayValue(value) {
+            return value ? value : 'Mặc định';
+        }
+        function getColor(name) {
+            return name ? (colorMap[name.toLowerCase()] || '#bdc3c7') : '#ccc';
+        }
+        function getSelected(name) {
+            const selected = document.querySelector('input[name="' + name + '"]:checked');
+            return selected ? selected.value : null;
+        }
+        function getVariant(size, color) {
+            return variantMap.get(variantKey(size, color));
+        }
+        function hasStock(size, color) {
+            const variant = getVariant(size, color);
+            return Boolean(variant && variant.q > 0);
+        }
+        const sizeInputs = [];
+        const szBox = document.getElementById('size-options');
+        szBox.innerHTML = '';
+        sizes.forEach((size, index) => {
+            const id = 'sz-option-' + index;
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.id = id;
+            input.name = 'size';
+            input.value = size;
+            input.className = 'var-radio';
+            input.required = true;
+
+            const label = document.createElement('label');
+            label.htmlFor = id;
+            label.className = 'size-label';
+            label.textContent = displayValue(size);
+            sizeInputs.push(input);
+            szBox.appendChild(input);
+            szBox.appendChild(label);
+        });
+
+        const colorInputs = [];
+        const clBox = document.getElementById('color-options');
+        clBox.innerHTML = '';
+        colors.forEach((color, index) => {
+            const id = 'cl-option-' + index;
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.id = id;
+            input.name = 'color';
+            input.value = color;
+            input.className = 'var-radio';
+            input.required = true;
+
+            const wrap = document.createElement('label');
+            wrap.htmlFor = id;
+            wrap.className = 'color-swatch-wrap';
+            const swatch = document.createElement('span');
+            swatch.className = 'color-swatch';
+            swatch.style.background = getColor(color);
+            if (getColor(color) === '#f0f0f0') swatch.classList.add('light-color');
+            const name = document.createElement('span');
+            name.className = 'color-swatch-name';
+            name.textContent = displayValue(color);
+            wrap.appendChild(swatch);
+            wrap.appendChild(name);
+            colorInputs.push(input);
+            clBox.appendChild(input);
+            clBox.appendChild(wrap);
+        });
+
+        const form = document.getElementById('productForm');
+        const qty = document.getElementById('qty-input');
+        const btnAdd = document.getElementById('btn-add');
+        const btnBuy = document.getElementById('btn-buy');
+        const stockText = document.getElementById('stock-display');
+        const stockDot = document.getElementById('stock-dot');
+
+        function setActionsEnabled(enabled, availableStock) {
+            qty.disabled = !enabled;
+            qty.min = 1;
+            qty.max = enabled ? availableStock : 1;
+            qty.value = enabled ? Math.min(Math.max(parseInt(qty.value, 10) || 1, 1), availableStock) : (hasAnyStock ? 1 : 0);
+            [btnAdd, btnBuy].forEach(button => {
+                button.disabled = !enabled;
+                button.classList.toggle('btn-disabled', !enabled);
+            });
+        }
+
+        function updateStock() {
+            const selectedSize = getSelected('size');
+            const selectedColor = getSelected('color');
+            document.getElementById('sz-display').textContent = selectedSize === null ? 'Chưa chọn' : displayValue(selectedSize);
+            document.getElementById('cl-display').textContent = selectedColor === null ? 'Chưa chọn' : displayValue(selectedColor);
+
+            if (!hasAnyStock) {
+                stockText.textContent = 'Hết hàng';
+                stockDot.className = 'stock-dot outstock';
+                setActionsEnabled(false, 0);
+                return;
+            }
+            if (selectedSize === null || selectedColor === null) {
+                stockText.textContent = 'Vui lòng chọn Size và Màu';
+                stockDot.className = 'stock-dot pending';
+                setActionsEnabled(false, 0);
+                return;
+            }
+
+            const match = getVariant(selectedSize, selectedColor);
+            if (match && match.q > 0) {
+                stockText.textContent = 'Còn hàng (' + match.q + ')';
+                stockDot.className = 'stock-dot instock';
+                setActionsEnabled(true, match.q);
+            } else {
+                stockText.textContent = 'Hết hàng';
+                stockDot.className = 'stock-dot outstock';
+                setActionsEnabled(false, 0);
+            }
+        }
+
+        [...sizeInputs, ...colorInputs].forEach(input => {
+            input.addEventListener('change', () => {
                 updateStock();
             });
         });
-        const dot = document.getElementById('stock-dot'); const st = document.getElementById('stock-display');
-        if (st.textContent.includes('Còn hàng')) dot.className = 'stock-dot instock';
-        else if (st.textContent.includes('Hết hàng')) dot.className = 'stock-dot outstock';
+
+        qty.addEventListener('change', () => {
+            const max = parseInt(qty.max, 10) || 1;
+            qty.value = Math.min(Math.max(parseInt(qty.value, 10) || 1, 1), max);
+        });
+        form.addEventListener('submit', event => {
+            const selectedSize = getSelected('size');
+            const selectedColor = getSelected('color');
+            if (selectedSize === null || selectedColor === null || !hasStock(selectedSize, selectedColor)) {
+                event.preventDefault();
+                stockText.textContent = selectedSize === null || selectedColor === null
+                    ? 'Vui lòng chọn Size và Màu'
+                    : 'Hết hàng';
+                stockDot.className = selectedSize === null || selectedColor === null ? 'stock-dot pending' : 'stock-dot outstock';
+            }
+        });
+
+        const firstAvailable = variants.find(variant => variant.q > 0);
+        if (firstAvailable) {
+            const firstSize = sizeInputs.find(input => input.value === firstAvailable.s);
+            const firstColor = colorInputs.find(input => input.value === firstAvailable.c);
+            if (firstSize) firstSize.checked = true;
+            if (firstColor) firstColor.checked = true;
+        }
+        updateStock();
     })();
 </script>
 

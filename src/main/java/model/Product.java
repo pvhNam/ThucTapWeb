@@ -11,6 +11,7 @@ public class Product {
     public String size;
     public int stockquantyti;
     public String image;
+    private double costPrice;
     private Category category;
     private List<String> extraImages = new ArrayList<>();
     private List<ProductVariant> variants;
@@ -79,6 +80,12 @@ public class Product {
     }
     public void setStockquantyti(int stockquantyti) {
         this.stockquantyti = stockquantyti;
+    }
+    public double getCostPrice() {
+        return costPrice;
+    }
+    public void setCostPrice(double costPrice) {
+        this.costPrice = costPrice;
     }
     public List<String> getExtraImages() {
         return extraImages;
