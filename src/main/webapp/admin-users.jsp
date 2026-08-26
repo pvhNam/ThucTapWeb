@@ -20,8 +20,9 @@
     <main class="main-content">
         <div class="content-header" style="justify-content: space-between;">
             <h1 class="page-title">Quản Lý Khách Hàng</h1>
-            <form action="admin-users" method="get" class="search-box">
-                <input type="text" name="search" placeholder="Tìm tên, email, sđt..." value="${param.search}">
+            <form action="admin-users" method="get" class="search-box" data-admin-ajax>
+                <input type="search" name="search" placeholder="Tìm tên, email, sđt..." value="${param.search}"
+                       aria-label="Tìm khách hàng" data-admin-live-search>
                 <button type="submit" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>

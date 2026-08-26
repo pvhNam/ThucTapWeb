@@ -14,13 +14,12 @@
     <title><fmt:message key="history.page_title" /> | Fashion Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="CSS/style.css" />
+    <link rel="stylesheet" href="CSS/user/oder-history.css" />
 </head>
-<body>
+<body class="ym-user-page ym-orders-page">
 <header>
     <jsp:include page="header.jsp"><jsp:param name="page" value="#" /></jsp:include>
 </header>
-
-<link rel="stylesheet" href="CSS/user/oder-history.css" />
 
 <div class="history-container">
     <h1 class="page-title" style="text-align: left; font-size: 24px;">

@@ -27,6 +27,7 @@ public class AdminStaffController extends HttpServlet {
 
         UserDAO dao = new UserDAO();
         String type = request.getParameter("type");
+        String keyword = request.getParameter("search");
 
         if ("delete".equals(type)) {
             if (role != 1) {
@@ -48,7 +49,13 @@ public class AdminStaffController extends HttpServlet {
             return;
         }
 
-        List<User> list = dao.getAllUsers();
+        List<User> list;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            list = dao.searchUsers(keyword.trim());
+            request.setAttribute("searchKeyword", keyword.trim());
+        } else {
+            list = dao.getAllUsers();
+        }
         if (list != null) {
             list.removeIf(u -> u.getIsAdmin() != 2);
         }

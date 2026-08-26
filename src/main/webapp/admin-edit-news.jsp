@@ -6,6 +6,8 @@
 <head>
 <title>Sửa Tin Tức</title>
 <link rel="stylesheet" href="CSS/admin/admin-edit-news.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/shared/smooth-navigation.css?v=20260822.4">
+<script src="${pageContext.request.contextPath}/JS/smooth-navigation.js?v=20260822.5" defer></script>
 </head>
 <body>
 	<%

@@ -19,6 +19,8 @@
   <meta charset="UTF-8">
   <title>Chọn địa chỉ giao hàng</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/shared/smooth-navigation.css?v=20260822.4">
+  <script src="${pageContext.request.contextPath}/JS/smooth-navigation.js?v=20260822.5" defer></script>
   <style>
     .address-container { max-width: 760px; margin: 50px auto; font-family: sans-serif; }
     .address-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px; display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
@@ -49,7 +51,8 @@
     }
   </style>
 </head>
-<body>
+<body class="ym-user-page ym-address-page">
+<jsp:include page="header.jsp" />
 <div class="address-container">
   <h2><i class="fa-solid fa-location-dot"></i> Chọn địa chỉ giao hàng</h2>
 
@@ -97,5 +100,6 @@
   <a href="add-address" class="btn-add-new"><i class="fa-solid fa-plus"></i> Thêm địa chỉ mới</a>
   <a href="cart" class="btn-back">Quay lại giỏ hàng</a>
 </div>
+<jsp:include page="footer.jsp" />
 </body>
 </html>

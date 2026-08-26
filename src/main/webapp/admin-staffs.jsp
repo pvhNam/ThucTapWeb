@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.User"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -20,7 +21,12 @@
     <main class="main-content">
         <div class="content-header" style="justify-content: space-between;">
             <h1 class="page-title">Quản Lý Nhân Viên</h1>
-            <div style="display:flex; gap: 10px; align-items: center;">
+            <div class="admin-header-tools">
+                <form action="admin-staffs" method="get" class="search-box" data-admin-ajax>
+                    <input type="search" name="search" value="<c:out value='${searchKeyword}' />"
+                           placeholder="Tìm tên, tài khoản, email..." aria-label="Tìm nhân viên" data-admin-live-search>
+                    <button type="submit" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
                 <a href="admin-add-staff" class="btn-add-new">
                     <i class="fa-solid fa-user-plus"></i> Thêm Nhân Viên
                 </a>

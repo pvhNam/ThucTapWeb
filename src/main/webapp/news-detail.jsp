@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/user/news-detail.css">
 </head>
-<body>
+<body class="ym-user-page ym-article-page">
     <jsp:include page="header.jsp"><jsp:param name="page" value="news" /></jsp:include>
     <div class="article-container">
         <div class="article-header">

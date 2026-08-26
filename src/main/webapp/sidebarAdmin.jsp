@@ -19,6 +19,8 @@ if (currUser != null) {
 %>
 
 <link rel="stylesheet" href="CSS/admin/sidebar.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/shared/smooth-navigation.css?v=20260822.4">
+<script src="${pageContext.request.contextPath}/JS/smooth-navigation.js?v=20260822.5" defer></script>
 
 <div class="sidebar">
 	<div class="sidebar-brand">
@@ -30,7 +32,12 @@ if (currUser != null) {
 		<a href="admin"
 			class="menu-item <%=activePage.equals("dashboard") ? "active" : ""%>">
 			<i class="fa-solid fa-chart-pie"></i> Tổng quan
-		</a> <a href="admin-orders"
+		</a>
+		<a href="admin-revenue-report"
+			class="menu-item <%=activePage.equals("revenue-report") ? "active" : ""%>">
+			<i class="fa-solid fa-chart-column"></i> Báo cáo doanh thu
+		</a>
+		<a href="admin-orders"
 			class="menu-item <%=activePage.equals("orders") ? "active" : ""%>">
 			<i class="fa-solid fa-box"></i> Quản lý Đơn hàng
 		</a> <a href="admin-products"

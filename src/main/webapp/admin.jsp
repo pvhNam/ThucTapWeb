@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.Order"%>
 <%@ page import="java.text.DecimalFormat"%>
-<%@ page import="java.time.LocalDate"%>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -43,8 +42,6 @@
 
             // Format tiền tệ & Thời gian
             DecimalFormat df = new DecimalFormat("#,### VNĐ");
-            int currentYear = LocalDate.now().getYear();
-            int currentMonth = LocalDate.now().getMonthValue();
         %>
 
         <div class="stats-cards">
@@ -58,7 +55,7 @@
                 </div>
             </a>
 
-            <a href="admin-orders?filter=success" class="stat-link">
+            <a href="admin-revenue-report" class="stat-link">
                 <div class="card-stat green">
                     <div class="stat-info">
                         <h3 style="color: var(--success);"><%= df.format(totalRevenue) %></h3>
@@ -161,39 +158,17 @@
         </div>
         <% } %>
 
-        <div class="export-container">
-            <h3 class="section-title">
-                <i class="fa-solid fa-file-export" style="color: var(--primary);"></i>
-                Xuất Báo Cáo Doanh Thu
-            </h3>
-
-            <div class="export-tools">
-                <form action="admin-export-report" method="get" class="export-form">
-                    <input type="hidden" name="type" value="daily">
-                    <span class="export-label">📅 Theo ngày:</span>
-                    <input type="date" name="date" required class="custom-input">
-                    <button type="submit" class="btn-export btn-green">
-                        <i class="fa-solid fa-download"></i> Tải về
-                    </button>
-                </form>
-
-                <form action="admin-export-report" method="get" class="export-form">
-                    <input type="hidden" name="type" value="monthly">
-                    <span class="export-label">📊 Theo tháng:</span>
-
-                    <select name="month" class="custom-input">
-                        <% for(int i=1; i<=12; i++) { %>
-                            <option value="<%=i%>" <%= i == currentMonth ? "selected" : "" %>>Tháng <%=i%></option>
-                        <% } %>
-                    </select>
-
-                    <input type="number" name="year" value="<%= currentYear %>" class="custom-input" style="width: 80px;">
-
-                    <button type="submit" class="btn-export btn-blue">
-                        <i class="fa-solid fa-download"></i> Tải về
-                    </button>
-                </form>
+        <div class="export-container report-launch-card">
+            <div>
+                <span class="report-launch-icon"><i class="fa-solid fa-chart-column"></i></span>
+                <div>
+                    <h3 class="section-title">Báo cáo doanh thu &amp; tồn kho</h3>
+                    <p>Xem chi tiết mặt hàng đã bán, chưa bán, tồn kho và xuất Excel theo tháng, 6 tháng hoặc năm.</p>
+                </div>
             </div>
+            <a href="admin-revenue-report" class="report-launch-button">
+                Mở trang báo cáo <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
 
         <div class="table-container">

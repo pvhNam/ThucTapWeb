@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/user/news.css">
 </head>
-<body>
+<body class="ym-user-page ym-news-page">
     <jsp:include page="header.jsp"><jsp:param name="page" value="news" /></jsp:include>
     <div class="news-container">
-        <h1 style="text-align: center; margin-bottom: 40px; font-size: 2rem; letter-spacing: 1px;"><fmt:message key="news.heading" /></h1>    
+        <div class="ym-page-heading"><span class="ym-page-eyebrow">Journal &amp; Stories</span><h1><fmt:message key="news.heading" /></h1></div>
         <div class="news-grid">
             <% NewsDAO dao = new NewsDAO();
                List<News> list = dao.getAllNews();

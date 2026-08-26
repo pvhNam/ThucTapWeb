@@ -18,16 +18,16 @@
 <link rel="stylesheet" href="CSS/style.css">
 <link rel="stylesheet" href="CSS/user/index.css">
 </head>
-<body>
+<body class="ym-user-page ym-catalog-page">
 	<jsp:include page="header.jsp"><jsp:param name="page"
 			value="about" /></jsp:include>
 
-	<div
-		style="background-color: #f5f5f5; padding: 40px 0; text-align: center; margin-bottom: 20px;">
-		<h1 style="font-size: 2rem; margin-bottom: 10px; letter-spacing: 2px;">
+	<section class="ym-page-hero">
+		<span class="ym-page-eyebrow">Nam Thành Selection</span>
+		<h1>
 			<fmt:message key="shop.title" />
 		</h1>
-		<p style="color: #666;">
+		<p>
 			<fmt:message key="shop.breadcrumb" />
 		</p>
 
@@ -37,7 +37,7 @@
 				"${txtSearch}"
 			</p>
 		</c:if>
-	</div>
+	</section>
 
 	<div class="page-container">
 

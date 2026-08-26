@@ -899,7 +899,8 @@
 		}
 
 		document.addEventListener('keydown', function (event) {
-			if (event.key === 'Escape' && document.getElementById('buyNowModal').classList.contains('is-open')) {
+			var modal = document.getElementById('buyNowModal');
+			if (event.key === 'Escape' && modal && modal.classList.contains('is-open')) {
 				closeBuyNowModal();
 			}
 		});

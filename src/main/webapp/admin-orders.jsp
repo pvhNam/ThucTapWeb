@@ -20,8 +20,24 @@
     </jsp:include>
 
     <main class="main-content">
+        <%
+            String filterParam = (String) request.getAttribute("filter");
+        %>
         <div class="content-header">
             <h1 class="page-title">Quản Lý Đơn Hàng</h1>
+            <form action="admin-orders" method="get" class="admin-filter-select" data-admin-ajax>
+                <label>
+                    <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                    <span>Trạng thái</span>
+                    <select name="filter" data-admin-auto-submit>
+                        <option value="" <%= filterParam == null || filterParam.isEmpty() ? "selected" : "" %>>Tất cả đơn hàng</option>
+                        <option value="processing" <%= "processing".equals(filterParam) ? "selected" : "" %>>Đang xử lý</option>
+                        <option value="shipping" <%= "shipping".equals(filterParam) ? "selected" : "" %>>Đang giao hàng</option>
+                        <option value="success" <%= "success".equals(filterParam) ? "selected" : "" %>>Giao thành công</option>
+                        <option value="cancel" <%= "cancel".equals(filterParam) ? "selected" : "" %>>Đã hủy / thất bại</option>
+                    </select>
+                </label>
+            </form>
         </div>
 
         <% if (request.getParameter("msg") != null) { %>
@@ -32,7 +48,6 @@
         <% } %>
 
         <%
-            String filterParam = (String) request.getAttribute("filter");
             String filterName = null;
             String filterColor = "#4e73df";
 
@@ -57,7 +72,7 @@
                 Lọc: <strong><%=filterName%></strong>
                 &nbsp;|&nbsp; <%=((java.util.List)request.getAttribute("listOrders")).size()%> don
             </span>
-            <a href="admin-orders" class="btn-clear-filter">
+            <a href="admin-orders" class="btn-clear-filter" data-admin-ajax-link>
                 <i class="fa-solid fa-xmark"></i> Xem tất cả
             </a>
         </div>

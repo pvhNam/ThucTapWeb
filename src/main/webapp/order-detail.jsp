@@ -32,7 +32,7 @@
     }
 %>
 
-<body>
+<body class="ym-user-page ym-order-detail-page">
     <jsp:include page="header.jsp" />
 
     <div class="detail-container">

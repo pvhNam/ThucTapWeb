@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/user/login.css" />
 </head>
-<body>
+<body class="ym-user-page ym-auth-page">
     <header>
         <jsp:include page="header.jsp" />
     </header>

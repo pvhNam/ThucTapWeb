@@ -9,6 +9,7 @@
 <html lang="${sessionScope.lang}">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title><fmt:message key="login.page_title" /></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +21,7 @@
 <link rel="stylesheet" href="CSS/style.css" />
 <link rel="stylesheet" href="CSS/user/login.css" />
 </head>
-<body>
+<body class="ym-user-page ym-auth-page">
 	<jsp:include page="header.jsp" />
 
 

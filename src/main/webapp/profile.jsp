@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="CSS/user/login.css" /> 
     <link rel="stylesheet" href="CSS/user/profile.css" /> 
 </head>
-<body>
+<body class="ym-user-page ym-profile-page">
     <header>
         <jsp:include page="header.jsp"><jsp:param name="page" value="#"/></jsp:include>
     </header>

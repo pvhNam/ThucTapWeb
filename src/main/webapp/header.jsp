@@ -6,10 +6,14 @@
 <fmt:setBundle basename="resources.messages" />
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/modern-shell.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/shared/smooth-navigation.css?v=20260822.4">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/user-pages.css">
+<script src="${pageContext.request.contextPath}/JS/smooth-navigation.js?v=20260822.5" defer></script>
 
-<header class="ym-header" id="ym-site-header">
+<header class="ym-header" id="ym-site-header"
+		data-current-lang="${sessionScope.lang == 'en' ? 'en' : 'vi'}">
 	<div class="ym-header-inner">
-		<a href="${pageContext.request.contextPath}/home" class="ym-logo" aria-label="Nam Thành Fashion - Trang chủ">
+		<a href="${pageContext.request.contextPath}/home" class="ym-logo" aria-label="Nam Thành Fashion - Trang chủ" data-prefetch data-site-navigation data-page="index">
 			<img class="ym-logo-mark" src="${pageContext.request.contextPath}/img/logover2_5.png" alt="Nam Thành Fashion">
 			<span class="ym-logo-copy" aria-hidden="true">
 				<strong>NAM THÀNH</strong>
@@ -17,33 +21,33 @@
 			</span>
 		</a>
 
-		<nav class="ym-nav" id="ym-main-navigation" aria-label="Điều hướng chính">
-			<a href="${pageContext.request.contextPath}/home" class="${param.page == 'index' ? 'active' : ''}"><fmt:message key="menu.home" /></a>
-			<a href="${pageContext.request.contextPath}/collection" class="${param.page == 'collection' ? 'active' : ''}"><fmt:message key="menu.collection" /></a>
-			<a href="${pageContext.request.contextPath}/about" class="${param.page == 'about' ? 'active' : ''}"><fmt:message key="menu.products" /></a>
-			<a href="${pageContext.request.contextPath}/news" class="${param.page == 'news' ? 'active' : ''}"><fmt:message key="menu.news" /></a>
+		<nav class="ym-nav" id="ym-main-navigation" data-current-page="${param.page}" aria-label="Điều hướng chính">
+			<a href="${pageContext.request.contextPath}/home" class="${param.page == 'index' ? 'active' : ''}" data-prefetch data-site-navigation data-page="index"><fmt:message key="menu.home" /></a>
+			<a href="${pageContext.request.contextPath}/collection" class="${param.page == 'collection' ? 'active' : ''}" data-prefetch data-site-navigation data-page="collection"><fmt:message key="menu.collection" /></a>
+			<a href="${pageContext.request.contextPath}/about" class="${param.page == 'about' ? 'active' : ''}" data-prefetch data-site-navigation data-page="about"><fmt:message key="menu.products" /></a>
+			<a href="${pageContext.request.contextPath}/news" class="${param.page == 'news' ? 'active' : ''}" data-prefetch data-site-navigation data-page="news"><fmt:message key="menu.news" /></a>
 
 			<div class="ym-mobile-tools">
 				<form action="${pageContext.request.contextPath}/search" method="get" class="ym-search" role="search">
-					<input type="search" name="txt" placeholder="Tìm kiếm sản phẩm..." value="<c:out value='${param.txt}' />" aria-label="Tìm kiếm sản phẩm">
-					<button type="submit" aria-label="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+					<input type="search" name="txt" placeholder="<fmt:message key='header.search_placeholder' />" value="<c:out value='${param.txt}' />" aria-label="<fmt:message key='header.search_placeholder' />">
+					<button type="submit" aria-label="<fmt:message key='header.search_placeholder' />"><i class="fa-solid fa-magnifying-glass"></i></button>
 				</form>
-				<div class="ym-mobile-languages" aria-label="Chọn ngôn ngữ">
-					<a href="${pageContext.request.contextPath}/change-lang?lang=vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}">Tiếng Việt</a>
-					<a href="${pageContext.request.contextPath}/change-lang?lang=en" class="${sessionScope.lang == 'en' ? 'active' : ''}">English</a>
+				<div class="ym-mobile-languages" data-language-switcher data-active-lang="${sessionScope.lang == 'en' ? 'en' : 'vi'}" aria-label="Chọn ngôn ngữ">
+					<a href="${pageContext.request.contextPath}/change-lang?lang=vi" data-lang="vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}" aria-pressed="${sessionScope.lang == null || sessionScope.lang == 'vi'}">Tiếng Việt</a>
+					<a href="${pageContext.request.contextPath}/change-lang?lang=en" data-lang="en" class="${sessionScope.lang == 'en' ? 'active' : ''}" aria-pressed="${sessionScope.lang == 'en'}">English</a>
 				</div>
 			</div>
 		</nav>
 
 		<div class="ym-actions">
 			<form action="${pageContext.request.contextPath}/search" method="get" class="ym-search" role="search">
-				<input type="search" name="txt" placeholder="Tìm kiếm..." value="<c:out value='${param.txt}' />" aria-label="Tìm kiếm sản phẩm">
-				<button type="submit" aria-label="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+				<input type="search" name="txt" placeholder="<fmt:message key='header.search_placeholder' />" value="<c:out value='${param.txt}' />" aria-label="<fmt:message key='header.search_placeholder' />">
+				<button type="submit" aria-label="<fmt:message key='header.search_placeholder' />"><i class="fa-solid fa-magnifying-glass"></i></button>
 			</form>
 
-			<div class="ym-lang" aria-label="Chọn ngôn ngữ">
-				<a href="${pageContext.request.contextPath}/change-lang?lang=vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}">VN</a>
-				<a href="${pageContext.request.contextPath}/change-lang?lang=en" class="${sessionScope.lang == 'en' ? 'active' : ''}">EN</a>
+			<div class="ym-lang" data-language-switcher data-active-lang="${sessionScope.lang == 'en' ? 'en' : 'vi'}" aria-label="Chọn ngôn ngữ">
+				<a href="${pageContext.request.contextPath}/change-lang?lang=vi" data-lang="vi" class="${sessionScope.lang == null || sessionScope.lang == 'vi' ? 'active' : ''}" aria-pressed="${sessionScope.lang == null || sessionScope.lang == 'vi'}">VN</a>
+				<a href="${pageContext.request.contextPath}/change-lang?lang=en" data-lang="en" class="${sessionScope.lang == 'en' ? 'active' : ''}" aria-pressed="${sessionScope.lang == 'en'}">EN</a>
 			</div>
 
 			<div class="ym-user-menu">
@@ -61,17 +65,17 @@
 				<div class="ym-dropdown" role="menu">
 					<c:choose>
 						<c:when test="${sessionScope.user == null}">
-							<a href="${pageContext.request.contextPath}/login" role="menuitem"><i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng nhập</a>
-							<a href="${pageContext.request.contextPath}/register" role="menuitem"><i class="fa-solid fa-user-plus"></i> Đăng ký</a>
+							<a href="${pageContext.request.contextPath}/login" role="menuitem"><i class="fa-solid fa-arrow-right-to-bracket"></i> <fmt:message key="header.login" /></a>
+							<a href="${pageContext.request.contextPath}/register" role="menuitem"><i class="fa-solid fa-user-plus"></i> <fmt:message key="header.register" /></a>
 						</c:when>
 						<c:otherwise>
-							<div class="user-greet"><i class="fa-regular fa-face-smile"></i> Xin chào, <c:out value="${sessionScope.user.fullname}" />!</div>
-							<a href="${pageContext.request.contextPath}/profile.jsp" role="menuitem"><i class="fa-regular fa-id-card"></i> Thông tin cá nhân</a>
-							<a href="${pageContext.request.contextPath}/order-history" role="menuitem"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử đơn hàng</a>
+							<div class="user-greet"><i class="fa-regular fa-face-smile"></i> <fmt:message key="header.greeting" /> <c:out value="${sessionScope.user.fullname}" />!</div>
+							<a href="${pageContext.request.contextPath}/profile.jsp" role="menuitem"><i class="fa-regular fa-id-card"></i> <fmt:message key="profile.info_title" /></a>
+							<a href="${pageContext.request.contextPath}/order-history" role="menuitem"><i class="fa-solid fa-clock-rotate-left"></i> <fmt:message key="header.history_title" /></a>
 							<c:if test="${sessionScope.isAdmin}">
 								<a href="${pageContext.request.contextPath}/admin" class="ym-admin-link" role="menuitem"><i class="fa-solid fa-chart-line"></i> Quản trị Admin</a>
 							</c:if>
-							<a href="${pageContext.request.contextPath}/logout" role="menuitem"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a>
+							<a href="${pageContext.request.contextPath}/logout" role="menuitem"><i class="fa-solid fa-arrow-right-from-bracket"></i> <fmt:message key="header.logout_title" /></a>
 						</c:otherwise>
 					</c:choose>
 				</div>
@@ -79,6 +83,7 @@
 
 			<a href="${pageContext.request.contextPath}/cart" class="ym-cart" aria-label="Giỏ hàng">
 				<i class="fa-solid fa-bag-shopping"></i>
+				<span class="ym-cart-count" aria-live="polite" data-count="${empty sessionScope.cartCount ? 0 : sessionScope.cartCount}">${empty sessionScope.cartCount ? 0 : sessionScope.cartCount}</span>
 			</a>
 
 			<button class="ym-menu-toggle" type="button" aria-controls="ym-main-navigation" aria-expanded="false" aria-label="Mở menu">

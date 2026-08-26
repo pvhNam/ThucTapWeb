@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="CSS/style.css">
 <link rel="stylesheet" href="CSS/user/collection.css">
 </head>
-<body>
+<body class="ym-user-page ym-collection-page">
 
 	<jsp:include page="header.jsp">
 		<jsp:param name="page" value="collection" />
@@ -27,6 +27,7 @@
 
 	<div class="collection-wrapper">
 		<div class="collection-header">
+			<span class="ym-page-eyebrow">Lookbook 2026</span>
 			<h1>
 				<fmt:message key="collection.lookbook" />
 			</h1>

@@ -32,10 +32,12 @@ public class HomeController extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
 
         Map<Integer, Integer> mapCart = new HashMap<>();
+        int cartCount = 0;
 
         if (currentUser != null) {
             List<CartItem> cartList = cdao.getCartByUid(currentUser.getUid());
             if (cartList != null) {
+                cartCount = cartList.size();
                 for (CartItem item : cartList) {
                     mapCart.put(item.getProduct().getPid(), item.getQuantity());
                 }
@@ -43,6 +45,7 @@ public class HomeController extends HttpServlet {
         } else {
             List<CartItem> cartList = (List<CartItem>) session.getAttribute("cart");
             if (cartList != null) {
+                cartCount = cartList.size();
                 for (CartItem item : cartList) {
                     mapCart.put(item.getProduct().getPid(), item.getQuantity());
                 }
@@ -53,6 +56,7 @@ public class HomeController extends HttpServlet {
         request.setAttribute("vouchers", vouchers);
         request.setAttribute("mapCart", mapCart);
         request.setAttribute("homePage", Boolean.TRUE);
+        session.setAttribute("cartCount", cartCount);
 
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }

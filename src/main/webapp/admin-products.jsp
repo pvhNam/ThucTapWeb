@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.Product"%>
 <%@ page import="java.text.DecimalFormat"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -21,9 +22,17 @@
 <main class="main-content">
     <div class="content-header">
         <h1 class="page-title">Quản Lý Sản Phẩm</h1>
-        <a href="admin-products?type=add" class="btn-add-new" style="text-decoration: none; background: #28a745; color: white; padding: 10px 15px; border-radius: 5px; font-weight: 600;">
-            <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm sản phẩm mới
-        </a>
+        <div class="admin-header-tools">
+            <form action="admin-products" method="get" class="admin-filter-search" data-admin-ajax>
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" name="search" value="<c:out value='${searchKeyword}' />"
+                       placeholder="Tìm tên hoặc mã sản phẩm..." aria-label="Tìm sản phẩm" data-admin-live-search>
+                <button type="submit" title="Tìm kiếm"><i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+            <a href="admin-products?type=add" class="btn-add-new" style="text-decoration: none; background: #28a745; color: white; padding: 10px 15px; border-radius: 5px; font-weight: 600;">
+                <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Thêm sản phẩm mới
+            </a>
+        </div>
     </div>
 
     <% if (request.getParameter("msg") != null) {

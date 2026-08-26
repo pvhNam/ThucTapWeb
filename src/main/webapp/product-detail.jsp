@@ -18,13 +18,10 @@
     <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/user/product-detail.css" />
 </head>
-<body>
+<body class="ym-user-page ym-product-page">
 <header>
     <jsp:include page="header.jsp"><jsp:param name="page" value="index"/></jsp:include>
 </header>
-
-<%-- CSS sau header để load sau Header.css --%>
-<link rel="stylesheet" href="CSS/user/product-detail.css" />
 
 <div class="back-nav">
     <a href="javascript:history.back()" class="btn-back">

@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="CSS/user/cart.css">
     <link rel="stylesheet" href="CSS/user/cartitem.css">
 </head>
-<body>
+<body class="ym-user-page ym-cart-page">
     <jsp:include page="header.jsp" />
 
     <div class="cart-wrapper">
@@ -32,7 +32,7 @@
                             <c:set var="isMaxed" value="${currentQty ge maxStock}" />
                             <c:set var="isOverStock" value="${currentQty gt maxStock}" />
 
-                            <div class="cart-card" style="${isOverStock ? 'border: 1px solid #e74a3b; background: #fffdfd;' : ''}">
+                            <div class="cart-card" data-cart-item style="${isOverStock ? 'border: 1px solid #e74a3b; background: #fffdfd;' : ''}">
                                 <div class="card-img"><img src="${item.product.image}" alt="Product Image"></div>
                                 <div class="card-details">
                                     <h3>${item.product.pdescription}</h3>
@@ -42,7 +42,7 @@
                                     </p>
                                     <p class="price-tag"><fmt:formatNumber value="${item.product.price}" pattern="#,### VNĐ"/></p>
                                     <div class="card-actions">
-                                        <form action="cart" method="post" class="quantity-control">
+                                        <form action="cart" method="post" class="quantity-control" data-cart-ajax>
                                             <input type="hidden" name="action" value="update_quantity" />
                                             <input type="hidden" name="pid" value="${item.product.pid}" />
                                             <input type="hidden" name="color" value="${item.color}" />
@@ -105,7 +105,7 @@
                                             <strong class="v-code">${v.code}</strong>
                                             <p class="v-condition">Min: <fmt:formatNumber value="${v.minOrder}" pattern="#,### VNĐ"/></p>
                                         </div>
-                                        <form action="cart" method="post" style="margin:0;">
+                                        <form action="cart" method="post" style="margin:0;" data-cart-ajax>
                                             <input type="hidden" name="action" value="apply_voucher" />
                                             <input type="hidden" name="voucherCode" value="${v.code}" />
                                             <button type="submit" class="btn-use-now"><fmt:message key="cart.use" /></button>
@@ -127,19 +127,17 @@
                     <form action="checkout" method="post">
                         <div class="summary-row">
                             <span><fmt:message key="cart.subtotal" /></span>
-                            <span><fmt:formatNumber value="${subtotal}" pattern="#,### VNĐ"/></span>
+                            <span id="cart-subtotal"><fmt:formatNumber value="${subtotal}" pattern="#,### VNĐ"/></span>
                         </div>
 
-                        <c:if test="${discountAmount > 0}">
-                            <div class="summary-row" style="color: #27ae60;">
-                                <span><fmt:message key="cart.discount" /></span>
-                                <span>- <fmt:formatNumber value="${discountAmount}" pattern="#,### VNĐ"/></span>
-                            </div>
-                        </c:if>
+                        <div class="summary-row" id="cart-discount-row" style="color: #27ae60;" ${discountAmount le 0 ? 'hidden' : ''}>
+                            <span><fmt:message key="cart.discount" /></span>
+                            <span id="cart-discount">- <fmt:formatNumber value="${discountAmount}" pattern="#,### VNĐ"/></span>
+                        </div>
 
                         <div class="summary-row total-final">
                             <span><fmt:message key="cart.total" /></span>
-                            <span style="color: var(--gold);"><fmt:formatNumber value="${finalTotal}" pattern="#,### VNĐ"/></span>
+                            <span id="cart-final-total" style="color: var(--gold);"><fmt:formatNumber value="${finalTotal}" pattern="#,### VNĐ"/></span>
                         </div>
 
                         <div class="form-group" style="margin-top: 25px;">
