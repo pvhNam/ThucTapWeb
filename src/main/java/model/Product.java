@@ -15,6 +15,8 @@ public class Product {
     private Category category;
     private List<String> extraImages = new ArrayList<>();
     private List<ProductVariant> variants;
+    private double averageRating;
+    private int reviewCount;
 
     public Product(int pid, String pdescription, double price, int cid, String color, String size, int stockquantyti, String image) {
         this.pid = pid;
@@ -99,6 +101,22 @@ public class Product {
     }
     public void setVariants(List<ProductVariant> variants) {
         this.variants = variants;
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
     }
 
 }

@@ -851,6 +851,49 @@ body.ym-home-page::selection {
     font-size: clamp(16px, 1.5vw, 22px);
 }
 
+.ym-product-rating {
+    width: max-content;
+    max-width: 100%;
+    min-height: 21px;
+    margin: 0 0 8px;
+    padding: 4px 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 9px;
+    line-height: 1;
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.ym-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    color: var(--home-gold-light);
+    font-size: 10px;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.28));
+}
+
+.ym-rating-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 650;
+}
+
+.ym-item.featured .ym-product-rating {
+    font-size: 10px;
+}
+
+.ym-item.featured .ym-rating-stars {
+    font-size: 11px;
+}
+
 .ym-p-price {
     color: var(--home-gold-light);
     font-size: 11px;

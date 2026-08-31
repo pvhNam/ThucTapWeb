@@ -18,6 +18,7 @@ Website thương mại điện tử bán quần áo thời trang, xây dựng th
 - **Trang chủ, trang giới thiệu (About)**, xem **bộ sưu tập (Collection)** sản phẩm
 - **Tìm kiếm sản phẩm**, **lọc theo danh mục**
 - **Xem chi tiết sản phẩm** với các biến thể (màu sắc, kích cỡ)
+- **Đánh giá sản phẩm**: chấm 1–5 sao, viết nhận xét và cập nhật đánh giá đã gửi
 - **Giỏ hàng**: thêm / sửa số lượng / xóa sản phẩm (hiển thị màu sắc, kích cỡ từng món)
 - **Mua ngay (Buy Now)** hoặc **thanh toán (Checkout)** từ giỏ hàng
 - **Thanh toán online qua ví MoMo** (hoặc thanh toán khi nhận hàng - COD)
@@ -63,7 +64,8 @@ ThucTapWeb/
 ├── settings.gradle
 ├── migrations/                   # Script khởi tạo database
 │   ├── 001_init.sql              # Schema chính (users, product, orders, ...)
-│   └── 002_address.sql           # Bảng địa chỉ giao hàng
+│   ├── 002_address.sql           # Bảng địa chỉ giao hàng
+│   └── 003_product_reviews.sql   # Bảng đánh giá sản phẩm
 └── src/main/
     ├── java/
     │   ├── controller/
@@ -127,6 +129,7 @@ Database tên **`ltweb`**, gồm các bảng chính:
 | `users` | Tài khoản người dùng / admin (`is_admin`: 0-User, 1-Admin) |
 | `category` | Danh mục sản phẩm |
 | `product` | Sản phẩm (tên, giá, giá vốn, màu, size, tồn kho, ảnh) |
+| `product_reviews` | Điểm sao và nhận xét; mỗi tài khoản một đánh giá cho mỗi sản phẩm |
 | `cart` | Giỏ hàng của người dùng |
 | `orders` | Đơn hàng (trạng thái, phương thức thanh toán) |
 | `order_details` | Chi tiết từng sản phẩm trong đơn |
@@ -156,6 +159,7 @@ CREATE DATABASE ltweb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE ltweb;
 SOURCE migrations/001_init.sql;
 SOURCE migrations/002_address.sql;
+SOURCE migrations/003_product_reviews.sql;
 ```
 
 ### Bước 3 — Cấu hình kết nối database

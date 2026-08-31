@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
@@ -15,13 +16,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="CSS/style.css" />
-    <link rel="stylesheet" href="CSS/user/product-detail.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css?v=20260831.1" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/product-detail.css?v=20260831.3" />
 </head>
 <body class="ym-user-page ym-product-page">
-<header>
-    <jsp:include page="header.jsp"><jsp:param name="page" value="index"/></jsp:include>
-</header>
+<jsp:include page="header.jsp"><jsp:param name="page" value="index"/></jsp:include>
 
 <div class="back-nav">
     <a href="javascript:history.back()" class="btn-back">
@@ -59,6 +58,24 @@
     <div class="detail-right">
         <span class="p-cat"><fmt:message key="product.code" />: #${p.pid}</span>
         <h1 class="p-title">${p.pdescription}</h1>
+        <a class="p-rating-summary" href="#reviews">
+            <span class="p-rating-stars" aria-hidden="true">
+                <c:forEach begin="1" end="5" var="star">
+                    <c:choose>
+                        <c:when test="${p.reviewCount > 0 && p.averageRating >= star}"><i class="fa-solid fa-star"></i></c:when>
+                        <c:when test="${p.reviewCount > 0 && p.averageRating >= star - 0.5}"><i class="fa-solid fa-star-half-stroke"></i></c:when>
+                        <c:otherwise><i class="fa-regular fa-star"></i></c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </span>
+            <c:choose>
+                <c:when test="${p.reviewCount > 0}">
+                    <strong><fmt:formatNumber value="${p.averageRating}" minFractionDigits="1" maxFractionDigits="1" /></strong>
+                    <span>${p.reviewCount} đánh giá</span>
+                </c:when>
+                <c:otherwise><span>Chưa có đánh giá</span></c:otherwise>
+            </c:choose>
+        </a>
         <div class="p-price"><fmt:formatNumber value="${p.price}" pattern="#,### 'VNĐ'"/></div>
 
         <form method="post" id="productForm">
@@ -135,6 +152,203 @@
         <p class="p-desc">${p.pdescription}. <fmt:message key="product.desc_default" /></p>
     </div>
 </div>
+
+<section class="reviews-section" id="reviews" aria-labelledby="reviews-title">
+    <div class="reviews-heading">
+        <div>
+            <span class="reviews-kicker">Khách hàng nói gì?</span>
+            <h2 id="reviews-title">Đánh giá sản phẩm</h2>
+            <p>Chia sẻ trải nghiệm thực tế để cộng đồng mua sắm dễ dàng hơn.</p>
+        </div>
+        <span class="reviews-total-pill"><i class="fa-regular fa-comment-dots"></i> ${p.reviewCount} đánh giá</span>
+    </div>
+
+    <c:if test="${not empty reviewSuccess}">
+        <div class="review-alert review-alert--success" role="status">
+            <i class="fa-solid fa-circle-check"></i> <c:out value="${reviewSuccess}" />
+        </div>
+    </c:if>
+    <c:if test="${not empty reviewError}">
+        <div class="review-alert review-alert--error" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i> <c:out value="${reviewError}" />
+        </div>
+    </c:if>
+
+    <div class="reviews-dashboard">
+        <aside class="review-overview-card" aria-label="Tổng quan đánh giá">
+            <div class="review-average-block">
+                <div class="review-average-number">
+                    <strong><fmt:formatNumber value="${p.averageRating}" minFractionDigits="1" maxFractionDigits="1" /></strong>
+                    <span>/ 5</span>
+                </div>
+                <div class="review-average-stars" aria-label="${p.averageRating} trên 5 sao">
+                    <c:forEach begin="1" end="5" var="star">
+                        <c:choose>
+                            <c:when test="${p.reviewCount > 0 && p.averageRating >= star}"><i class="fa-solid fa-star"></i></c:when>
+                            <c:when test="${p.reviewCount > 0 && p.averageRating >= star - 0.5}"><i class="fa-solid fa-star-half-stroke"></i></c:when>
+                            <c:otherwise><i class="fa-regular fa-star"></i></c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </div>
+                <p>Dựa trên ${p.reviewCount} lượt đánh giá</p>
+            </div>
+
+            <div class="review-distribution">
+                <c:forEach begin="1" end="5" var="position">
+                    <c:set var="starValue" value="${6 - position}" />
+                    <div class="review-distribution-row">
+                        <span>${starValue} <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                        <div class="review-progress" aria-hidden="true">
+                            <span style="--rating-percent: ${p.reviewCount > 0 ? ratingCounts[starValue] * 100 / p.reviewCount : 0}%;"></span>
+                        </div>
+                        <small>${ratingCounts[starValue]}</small>
+                    </div>
+                </c:forEach>
+            </div>
+        </aside>
+
+        <div class="review-compose-card">
+            <c:choose>
+                <c:when test="${not empty sessionScope.user}">
+                    <form action="product-review" method="post" class="review-form">
+                        <input type="hidden" name="pid" value="${p.pid}">
+                        <input type="hidden" name="csrfToken" value="${reviewCsrfToken}">
+
+                        <div class="review-form-heading">
+                            <span class="review-form-icon"><i class="fa-regular fa-pen-to-square"></i></span>
+                            <div>
+                                <h3>${empty currentReview ? 'Viết đánh giá của bạn' : 'Chỉnh sửa đánh giá'}</h3>
+                                <p>${empty currentReview ? 'Bạn cảm thấy sản phẩm này thế nào?' : 'Cập nhật lại trải nghiệm bất cứ lúc nào.'}</p>
+                            </div>
+                        </div>
+
+                        <fieldset class="review-rating-field">
+                            <legend>Mức độ hài lòng <span aria-hidden="true">*</span></legend>
+                            <div class="review-star-picker" aria-label="Chọn số sao đánh giá">
+                                <c:forEach begin="1" end="5" var="position">
+                                    <c:set var="starValue" value="${6 - position}" />
+                                    <c:choose>
+                                        <c:when test="${not empty currentReview && currentReview.rating == starValue}">
+                                            <input type="radio" id="review-star-${starValue}" name="rating" value="${starValue}" checked required>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="radio" id="review-star-${starValue}" name="rating" value="${starValue}" required>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <label for="review-star-${starValue}" title="${starValue} sao">
+                                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                        <span class="sr-only">${starValue} sao</span>
+                                    </label>
+                                </c:forEach>
+                            </div>
+                        </fieldset>
+
+                        <label class="review-comment-label" for="review-comment">Nhận xét <span>(không bắt buộc)</span></label>
+                        <div class="review-textarea-wrap">
+                            <textarea id="review-comment" name="comment" maxlength="1000" rows="4"
+                                      placeholder="Ví dụ: Chất liệu đẹp, form vừa vặn, giao hàng nhanh..."><c:out value="${currentReview.comment}" /></textarea>
+                            <i class="fa-regular fa-message" aria-hidden="true"></i>
+                        </div>
+                        <div class="review-form-footer">
+                            <small><i class="fa-solid fa-shield-halved"></i> Đánh giá được lưu theo tài khoản</small>
+                            <button type="submit">
+                                ${empty currentReview ? 'Gửi đánh giá' : 'Lưu thay đổi'}
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <div class="review-login-callout">
+                        <span class="review-login-icon"><i class="fa-regular fa-user"></i></span>
+                        <div>
+                            <span class="review-login-kicker">Tham gia cộng đồng</span>
+                            <h3>Đăng nhập để đánh giá</h3>
+                            <p>Chia sẻ cảm nhận của bạn và giúp mọi người lựa chọn dễ dàng hơn.</p>
+                        </div>
+                        <a href="login">Đăng nhập <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+
+    <div class="review-list-panel">
+        <c:choose>
+            <c:when test="${empty reviews}">
+                <div class="review-empty">
+                    <span><i class="fa-regular fa-comments"></i></span>
+                    <h3>Chưa có đánh giá nào</h3>
+                    <p>Hãy là người đầu tiên chia sẻ trải nghiệm về sản phẩm này.</p>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="review-list-toolbar">
+                    <div>
+                        <h3>Nhận xét từ khách hàng</h3>
+                        <p>Những chia sẻ mới nhất về sản phẩm</p>
+                    </div>
+                    <div class="review-filters" role="group" aria-label="Lọc đánh giá">
+                        <button type="button" class="review-filter is-active" data-review-filter="all">Tất cả <span>${p.reviewCount}</span></button>
+                        <c:forEach begin="1" end="5" var="position">
+                            <c:set var="starValue" value="${6 - position}" />
+                            <button type="button" class="review-filter" data-review-filter="${starValue}">${starValue} sao <span>${ratingCounts[starValue]}</span></button>
+                        </c:forEach>
+                        <button type="button" class="review-filter" data-review-filter="comment">Có nhận xét <span>${reviewsWithComment}</span></button>
+                    </div>
+                </div>
+
+                <div class="review-list" aria-live="polite">
+                    <c:forEach var="review" items="${reviews}">
+                        <fmt:formatDate value="${review.updatedAt}" pattern="yyyy-MM-dd'T'HH:mm:ssXXX" var="reviewDateIso" />
+                        <article class="review-item" data-review-rating="${review.rating}" data-has-comment="${not empty review.comment}">
+                            <div class="review-avatar" aria-hidden="true">
+                                <c:out value="${fn:substring(review.userDisplayName, 0, 1)}" />
+                            </div>
+                            <div class="review-body">
+                                <div class="review-meta">
+                                    <div class="review-author">
+                                        <strong><c:out value="${review.userDisplayName}" /></strong>
+                                        <c:if test="${not empty sessionScope.user && review.userId == sessionScope.user.uid}">
+                                            <span class="review-own-badge"><i class="fa-solid fa-check"></i> Của bạn</span>
+                                        </c:if>
+                                    </div>
+                                    <time datetime="${reviewDateIso}"><i class="fa-regular fa-clock"></i> <fmt:formatDate value="${review.updatedAt}" pattern="dd/MM/yyyy HH:mm" /></time>
+                                </div>
+                                <div class="review-rating-line">
+                                    <div class="review-item-stars" aria-label="${review.rating} trên 5 sao">
+                                        <c:forEach begin="1" end="5" var="star">
+                                            <i class="${review.rating >= star ? 'fa-solid' : 'fa-regular'} fa-star" aria-hidden="true"></i>
+                                        </c:forEach>
+                                    </div>
+                                    <strong>
+                                        <c:choose>
+                                            <c:when test="${review.rating == 5}">Tuyệt vời</c:when>
+                                            <c:when test="${review.rating == 4}">Hài lòng</c:when>
+                                            <c:when test="${review.rating == 3}">Bình thường</c:when>
+                                            <c:when test="${review.rating == 2}">Chưa hài lòng</c:when>
+                                            <c:otherwise>Không hài lòng</c:otherwise>
+                                        </c:choose>
+                                    </strong>
+                                </div>
+                                <c:choose>
+                                    <c:when test="${not empty review.comment}">
+                                        <p class="review-comment"><c:out value="${review.comment}" /></p>
+                                    </c:when>
+                                    <c:otherwise><p class="review-no-comment">Khách hàng chỉ chấm sao, không để lại nhận xét.</p></c:otherwise>
+                                </c:choose>
+                            </div>
+                        </article>
+                    </c:forEach>
+                    <div class="review-filter-empty" hidden>
+                        <i class="fa-solid fa-filter-circle-xmark"></i>
+                        <p>Chưa có đánh giá phù hợp với bộ lọc này.</p>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</section>
 
 <div id="v-data" style="display:none;">
     <c:forEach var="v" items="${p.variants}">
@@ -400,6 +614,38 @@
             if (firstColor) firstColor.checked = true;
         }
         updateStock();
+    })();
+
+    /* REVIEW FILTERS */
+    (function() {
+        const filters = Array.from(document.querySelectorAll('.review-filter'));
+        const reviewItems = Array.from(document.querySelectorAll('.review-item[data-review-rating]'));
+        const emptyState = document.querySelector('.review-filter-empty');
+        if (filters.length === 0 || reviewItems.length === 0) return;
+
+        function applyFilter(activeButton) {
+            const filter = activeButton.dataset.reviewFilter;
+            let visibleCount = 0;
+
+            filters.forEach(button => {
+                const isActive = button === activeButton;
+                button.classList.toggle('is-active', isActive);
+                button.setAttribute('aria-pressed', String(isActive));
+            });
+
+            reviewItems.forEach(item => {
+                const matches = filter === 'all'
+                    || (filter === 'comment' && item.dataset.hasComment === 'true')
+                    || item.dataset.reviewRating === filter;
+                item.hidden = !matches;
+                if (matches) visibleCount++;
+            });
+
+            if (emptyState) emptyState.hidden = visibleCount !== 0;
+        }
+
+        filters.forEach(button => button.addEventListener('click', () => applyFilter(button)));
+        applyFilter(filters[0]);
     })();
 </script>
 

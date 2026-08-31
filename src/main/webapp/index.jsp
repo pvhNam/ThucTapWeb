@@ -20,7 +20,7 @@
 	<meta name="theme-color" content="#0b0c10">
 	<title><fmt:message key="home.page_title" /> | Nam Thành Fashion</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	<link rel="stylesheet" href="CSS/style.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/style.css?v=20260831.1">
 	<%-- Giao diện trang chủ mới được tách riêng để không xung đột với các trang còn lại. --%>
 
 	<style media="not all">
@@ -489,7 +489,7 @@
 		.btn-cancel:hover { background: var(--ym-black); color: var(--ym-white); }
 		.modal-buy-btn:hover { background: var(--ym-white); color: var(--ym-black); }
 	</style>
-	<link rel="stylesheet" href="CSS/user/home-modern.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/home-modern.css?v=20260831.3">
 </head>
 
 <body class="ym-home-page">
@@ -631,6 +631,31 @@
 
 					<div class="ym-info-overlay">
 						<h3 class="ym-p-name">${p.pdescription}</h3>
+						<c:choose>
+							<c:when test="${p.reviewCount > 0}">
+								<div class="ym-product-rating" role="img"
+								     aria-label="${p.averageRating} trên 5 sao từ ${p.reviewCount} lượt đánh giá">
+									<span class="ym-rating-stars" aria-hidden="true">
+										<c:forEach begin="1" end="5" var="star">
+											<c:choose>
+												<c:when test="${p.averageRating >= star}"><i class="fa-solid fa-star"></i></c:when>
+												<c:when test="${p.averageRating >= star - 0.5}"><i class="fa-solid fa-star-half-stroke"></i></c:when>
+												<c:otherwise><i class="fa-regular fa-star"></i></c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</span>
+									<span class="ym-rating-label"><fmt:formatNumber value="${p.averageRating}" minFractionDigits="1" maxFractionDigits="1" /> (${p.reviewCount})</span>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="ym-product-rating" role="img" aria-label="Sản phẩm chưa có đánh giá">
+									<span class="ym-rating-stars" aria-hidden="true">
+										<c:forEach begin="1" end="5"><i class="fa-regular fa-star"></i></c:forEach>
+									</span>
+									<span class="ym-rating-label">Chưa có đánh giá</span>
+								</div>
+							</c:otherwise>
+						</c:choose>
 						<div class="ym-p-price"><fmt:formatNumber value="${p.price}" /> VNĐ</div>
 
 						<div class="ym-card-actions">

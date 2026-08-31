@@ -1,6 +1,7 @@
 package controller.user;
 
 import dao.ProductDAO;
+import dao.ProductReviewDAO;
 import dao.VoucherDAO;
 import dao.CartDAO;
 import jakarta.servlet.ServletException;
@@ -22,10 +23,12 @@ public class HomeController extends HttpServlet {
             throws ServletException, IOException {
 
         ProductDAO pdao = new ProductDAO();
+        ProductReviewDAO reviewDao = new ProductReviewDAO();
         VoucherDAO vdao = new VoucherDAO();
         CartDAO cdao = new CartDAO();
 
         List<Product> products = pdao.getAllProducts();
+        reviewDao.populateRatingSummaries(products);
         List<Voucher> vouchers = vdao.getAllVouchers();
 
         HttpSession session = request.getSession();

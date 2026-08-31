@@ -5,9 +5,9 @@
 <fmt:setLocale value="${sessionScope.lang != null ? sessionScope.lang : 'vi'}" />
 <fmt:setBundle basename="resources.messages" />
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/modern-shell.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/modern-shell.css?v=20260831.1">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/shared/smooth-navigation.css?v=20260822.4">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/user-pages.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/CSS/user/user-pages.css?v=20260831.1">
 <script src="${pageContext.request.contextPath}/JS/smooth-navigation.js?v=20260822.5" defer></script>
 
 <header class="ym-header" id="ym-site-header"
