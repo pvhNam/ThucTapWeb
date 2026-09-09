@@ -132,7 +132,7 @@ public class ReportDAO {
         String sqlRev = "SELECT " +
                 "SUM(total_money) as revenue, " +
                 "SUM(CASE WHEN payment_method = 'COD' OR payment_method = 'CASH' THEN total_money ELSE 0 END) as cash, " +
-                "SUM(CASE WHEN payment_method = 'BANKING' OR payment_method = 'BANK' OR payment_method = 'MOMO' THEN total_money ELSE 0 END) as bank " +
+                "SUM(CASE WHEN payment_method = 'BANKING' OR payment_method = 'BANK' OR payment_method = 'MOMO' OR payment_method = 'VNPAY' THEN total_money ELSE 0 END) as bank " +
                 "FROM orders WHERE MONTH(created_at) = ? AND YEAR(created_at) = ?";
         
         // Vốn tính dựa trên sản phẩm đã bán ra

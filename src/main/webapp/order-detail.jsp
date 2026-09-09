@@ -98,9 +98,7 @@
                 <i class="fa-solid fa-arrow-left"></i> <fmt:message key="order.back" />
             </a>
 
-            <% if (order.getStatus() != null
-                    && (Order.STATUS_PROCESSING.equals(order.getStatus())
-                        || Order.STATUS_PENDING_MOMO.equals(order.getStatus()))) { %>
+            <% if (Order.STATUS_PROCESSING.equals(order.getStatus())) { %>
                 <form action="order-detail" method="post" onsubmit="return confirm('<fmt:message key="order.cancel_confirm" />');" style="margin: 0;">
                     <input type="hidden" name="id" value="<%= order.getId() %>">
                     <input type="hidden" name="action" value="cancel">

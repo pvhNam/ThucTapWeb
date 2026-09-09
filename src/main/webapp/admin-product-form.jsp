@@ -74,6 +74,9 @@
             </div>
 
             <div class="form-group gallery-box">
+                <p style="margin-bottom: 18px; font-size: 13px;">Phân chia sản phẩm theo mùa hoặc dịp mặc tại
+                    <a href="admin-collections<%= isEdit ? "#product-" + p.getPid() : "" %>">Quản lý bộ sưu tập</a>.
+                    Một sản phẩm có thể thuộc nhiều bộ sưu tập.</p>
                 <label><i class="fa-solid fa-images"></i> Hình ảnh phụ (Gallery)</label>
                 <div id="extra-images-container">
                     <%

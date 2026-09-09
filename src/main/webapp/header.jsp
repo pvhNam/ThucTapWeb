@@ -70,7 +70,7 @@
 						</c:when>
 						<c:otherwise>
 							<div class="user-greet"><i class="fa-regular fa-face-smile"></i> <fmt:message key="header.greeting" /> <c:out value="${sessionScope.user.fullname}" />!</div>
-							<a href="${pageContext.request.contextPath}/profile.jsp" role="menuitem"><i class="fa-regular fa-id-card"></i> <fmt:message key="profile.info_title" /></a>
+							<a href="${pageContext.request.contextPath}/profile" role="menuitem"><i class="fa-regular fa-id-card"></i> <fmt:message key="profile.info_title" /></a>
 							<a href="${pageContext.request.contextPath}/order-history" role="menuitem"><i class="fa-solid fa-clock-rotate-left"></i> <fmt:message key="header.history_title" /></a>
 							<c:if test="${sessionScope.isAdmin}">
 								<a href="${pageContext.request.contextPath}/admin" class="ym-admin-link" role="menuitem"><i class="fa-solid fa-chart-line"></i> Quản trị Admin</a>

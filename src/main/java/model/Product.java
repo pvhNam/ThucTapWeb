@@ -3,6 +3,10 @@ package model;
 import java.util.List;
 import java.util.ArrayList;
 public class Product {
+    private java.util.Set<String> collectionThemes = java.util.Set.of();
+
+    public java.util.Set<String> getCollectionThemes() { return collectionThemes; }
+    public void setCollectionThemes(java.util.Set<String> themes) { this.collectionThemes = java.util.Set.copyOf(themes); }
     public int pid;
     public String pdescription;
     public double price;

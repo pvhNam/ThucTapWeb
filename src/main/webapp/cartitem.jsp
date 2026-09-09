@@ -117,22 +117,66 @@
                     </c:if>
 
                     <c:if test="${not empty sessionScope.voucherMsg}">
-                        <p class="msg-error"><i class="fa-solid fa-circle-exclamation"></i> ${sessionScope.voucherMsg}</p>
+                        <p class="${sessionScope.msgType == 'success' ? 'msg-success' : 'msg-error'}">
+                            <i class="fa-solid ${sessionScope.msgType == 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i>
+                            ${sessionScope.voucherMsg}
+                        </p>
                         <c:remove var="voucherMsg" scope="session" />
+                        <c:remove var="msgType" scope="session" />
                     </c:if>
                 </div>
 
                 <div class="summary-box">
                     <h3><i class="fa-solid fa-credit-card"></i> <fmt:message key="cart.payment_title" /></h3>
+                    <c:choose>
+                        <c:when test="${memberDiscountPercent gt 0}">
+                            <div class="success-alert-box" style="margin-bottom:16px;">
+                                <i class="fa-solid fa-crown"></i>
+                                ${memberTier}: tự động giảm <fmt:formatNumber value="${memberDiscountPercent}" maxFractionDigits="0"/>% mỗi hóa đơn.
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <p style="margin:0 0 14px;color:#666;font-size:13px;">
+                                Tổng chi tiêu thành công: <fmt:formatNumber value="${memberLifetimeSpend}" pattern="#,### VNĐ"/>.
+                                Đồng 2 triệu · Bạc 5 triệu · Vàng 10 triệu · Kim Cương 20 triệu.
+                            </p>
+                        </c:otherwise>
+                    </c:choose>
                     <form action="checkout" method="post">
                         <div class="summary-row">
                             <span><fmt:message key="cart.subtotal" /></span>
                             <span id="cart-subtotal"><fmt:formatNumber value="${subtotal}" pattern="#,### VNĐ"/></span>
                         </div>
 
-                        <div class="summary-row" id="cart-discount-row" style="color: #27ae60;" ${discountAmount le 0 ? 'hidden' : ''}>
-                            <span><fmt:message key="cart.discount" /></span>
-                            <span id="cart-discount">- <fmt:formatNumber value="${discountAmount}" pattern="#,### VNĐ"/></span>
+                        <div class="summary-row" id="cart-member-discount-row" style="color: #27ae60;" ${memberDiscountAmount le 0 ? 'hidden' : ''}>
+                            <span>Ưu đãi thành viên (${memberDiscountPercent}%)</span>
+                            <span id="cart-member-discount">- <fmt:formatNumber value="${memberDiscountAmount}" pattern="#,### VNĐ"/></span>
+                        </div>
+
+                        <div class="summary-row" id="cart-voucher-discount-row" style="color: #27ae60;" ${voucherDiscountAmount le 0 ? 'hidden' : ''}>
+                            <span>Voucher</span>
+                            <span id="cart-voucher-discount">- <fmt:formatNumber value="${voucherDiscountAmount}" pattern="#,### VNĐ"/></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-bell"></i> Nhận thông báo đơn hàng</label>
+                            <p style="margin:8px 0;color:#555;">
+                                <c:if test="${not empty sessionScope.user.email}">
+                                    Email: <c:out value="${sessionScope.user.email}" />
+                                </c:if>
+                                <c:if test="${not empty sessionScope.user.email and (not empty sessionScope.selectedContactPhone or not empty sessionScope.user.phonenumber)}"> · </c:if>
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope.selectedContactPhone}">
+                                        SĐT: <c:out value="${sessionScope.selectedContactPhone}" />
+                                    </c:when>
+                                    <c:when test="${not empty sessionScope.user.phonenumber}">
+                                        SĐT: <c:out value="${sessionScope.user.phonenumber}" />
+                                    </c:when>
+                                </c:choose>
+                            </p>
+                            <c:if test="${empty sessionScope.user.email and empty sessionScope.selectedContactPhone and empty sessionScope.user.phonenumber}">
+                                <p class="msg-error">Bạn cần cập nhật email hoặc số điện thoại trước khi đặt hàng.</p>
+                            </c:if>
                         </div>
 
                         <div class="summary-row total-final">
@@ -197,6 +241,16 @@
                                         <div class="payment-info">
                                             <span class="p-name">Ví MoMo</span>
                                             <span class="p-desc">Thanh toán online qua cổng thanh toán MoMo</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="payment-option">
+                                    <input type="radio" id="pay-vnpay" name="paymentMethod" value="VNPAY" />
+                                    <label for="pay-vnpay" class="payment-card-label">
+                                        <div class="payment-icon-box"><i class="fa-solid fa-credit-card"></i></div>
+                                        <div class="payment-info">
+                                            <span class="p-name">VNPay</span>
+                                            <span class="p-desc">Thanh toán qua thẻ, tài khoản ngân hàng hoặc VNPay QR</span>
                                         </div>
                                     </label>
                                 </div>

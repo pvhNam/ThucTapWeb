@@ -51,6 +51,9 @@ if (currUser != null) {
 			class="menu-item <%=activePage.equals("stock-import") ? "active" : ""%>">
 			<i class="fa-solid fa-truck-ramp-box"></i> Đặt hàng nhập kho
 		</a>
+		<a href="admin-collections" class="menu-item <%=activePage.equals("collections") ? "active" : ""%>">
+			<i class="fa-solid fa-layer-group"></i> Quản lý Bộ sưu tập
+		</a>
 		<%
 		}
 		%>

@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONObject;
 
 import dao.CartDAO;
+import dao.AddressDAO;
+import dao.LoyaltyDAO;
 import dao.OrderDAO;
 import dao.VoucherDAO;
 import jakarta.servlet.ServletException;
@@ -15,16 +17,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.CartItem;
+import model.Address;
+import model.Membership;
 import model.Order;
 import model.User;
 import model.Voucher;
 import service.MomoService;
+import service.OrderNotificationService;
+import service.PricingService;
+import service.VnpayService;
 
 @WebServlet("/checkout")
 public class CheckoutController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final long MOMO_MIN_AMOUNT = 1_000L;
     private static final long MOMO_MAX_AMOUNT = 50_000_000L;
+    private static final long VNPAY_MAX_AMOUNT = 9_999_999_999L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,10 +68,42 @@ public class CheckoutController extends HttpServlet {
             }
         }
 
-        double totalMoney = calculateTotal(cart, (Voucher) session.getAttribute("appliedVoucher"));
-        String address = request.getParameter("address");
-        if (address == null || address.trim().isEmpty()) {
-            address = "Dia chi mac dinh";
+        double subtotal = calculateSubtotal(cart);
+        Voucher sessionVoucher = (Voucher) session.getAttribute("appliedVoucher");
+        Voucher appliedVoucher = null;
+        if (sessionVoucher != null) {
+            appliedVoucher = new VoucherDAO().getAvailableVoucherForUserById(
+                    currentUser.getUid(), sessionVoucher.getId());
+            if (appliedVoucher == null) {
+                session.removeAttribute("appliedVoucher");
+                rejectCheckout(response, session, "Voucher da het han, da su dung hoac khong con trong vi.");
+                return;
+            }
+            if (subtotal < appliedVoucher.getMinOrder()) {
+                session.removeAttribute("appliedVoucher");
+                rejectCheckout(response, session, "Don hang chua du dieu kien toi thieu cua voucher.");
+                return;
+            }
+            session.setAttribute("appliedVoucher", appliedVoucher);
+        }
+
+        Membership membership = new LoyaltyDAO().getMembership(currentUser.getUid());
+        PricingService.Quote quote = PricingService.calculate(
+                subtotal, appliedVoucher, membership.getDiscountPercent());
+
+        Address deliveryAddress = resolveSelectedAddress(session, currentUser.getUid());
+        if (deliveryAddress == null) {
+            rejectCheckout(response, session, "Vui long chon dia chi giao hang hop le.");
+            return;
+        }
+        String address = formatAddress(deliveryAddress);
+        String contactEmail = normalizeContact(currentUser.getEmail());
+        String contactPhone = normalizeContact(deliveryAddress.getPhone());
+        if (contactPhone == null) contactPhone = normalizeContact(currentUser.getPhonenumber());
+        if (contactEmail == null && contactPhone == null) {
+            rejectCheckout(response, session,
+                    "Can co email hoac so dien thoai de nhan thong bao don hang. Vui long cap nhat ho so/dia chi.");
+            return;
         }
 
         String paymentMethod = request.getParameter("paymentMethod");
@@ -72,39 +112,97 @@ public class CheckoutController extends HttpServlet {
         }
 
         if ("MOMO".equalsIgnoreCase(paymentMethod)) {
-            handleMomoCheckout(request, response, session, currentUser.getUid(), cart, totalMoney, address);
+            handleMomoCheckout(request, response, session, currentUser.getUid(), cart, quote, address,
+                    contactEmail, contactPhone);
             return;
         }
 
-        handleDirectCheckout(response, session, currentUser, cartDao, cart, totalMoney, address, paymentMethod);
-    }
-
-    private double calculateTotal(List<CartItem> cart, Voucher appliedVoucher) {
-        double totalMoney = 0;
-        for (CartItem item : cart) {
-            totalMoney += item.getTotalPrice();
+        if ("VNPAY".equalsIgnoreCase(paymentMethod)) {
+            handleVnpayCheckout(request, response, session, currentUser.getUid(), cart, quote, address,
+                    contactEmail, contactPhone);
+            return;
         }
 
-        if (appliedVoucher != null) {
-            if ("PERCENT".equals(appliedVoucher.getDiscountType())) {
-                totalMoney = totalMoney * (1.0 - (appliedVoucher.getDiscountAmount() / 100.0));
-            } else {
-                totalMoney = totalMoney - appliedVoucher.getDiscountAmount();
+        handleDirectCheckout(response, session, currentUser, cartDao, cart, quote, address, paymentMethod,
+                contactEmail, contactPhone);
+    }
+
+    private double calculateSubtotal(List<CartItem> cart) {
+        double subtotal = 0;
+        for (CartItem item : cart) {
+            subtotal += item.getTotalPrice();
+        }
+        return subtotal;
+    }
+
+    private Address resolveSelectedAddress(HttpSession session, int userId) {
+        AddressDAO addressDao = new AddressDAO();
+        Object rawAddressId = session.getAttribute("selectedAddressId");
+        int addressId = parseAddressId(rawAddressId);
+        if (addressId > 0) {
+            Address selectedAddress = addressDao.getAddressByIdAndUserId(addressId, userId);
+            if (selectedAddress != null) {
+                rememberSelectedAddress(session, selectedAddress);
+                return selectedAddress;
             }
         }
 
-        if (totalMoney < 0) {
-            totalMoney = 0;
+        // Sessions created before selectedAddressId was introduced only contain the
+        // formatted address. Resolve it back to an address owned by this user so an
+        // already selected address does not unexpectedly block checkout.
+        Object legacyAddress = session.getAttribute("selectedAddress");
+        if (legacyAddress instanceof String formattedAddress && !formattedAddress.isBlank()) {
+            for (Address candidate : addressDao.getAddressesByUserId(userId)) {
+                if (formattedAddress.equals(formatAddress(candidate))) {
+                    rememberSelectedAddress(session, candidate);
+                    return candidate;
+                }
+            }
         }
-        return totalMoney;
+        return null;
+    }
+
+    private int parseAddressId(Object rawAddressId) {
+        if (rawAddressId instanceof Number number) {
+            return Math.max(0, number.intValue());
+        }
+        try {
+            return Math.max(0, Integer.parseInt(String.valueOf(rawAddressId)));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void rememberSelectedAddress(HttpSession session, Address address) {
+        session.setAttribute("selectedAddressId", address.getId());
+        session.setAttribute("selectedAddress", formatAddress(address));
+        session.setAttribute("selectedContactPhone", address.getPhone());
+    }
+
+    private String formatAddress(Address address) {
+        return address.getReceiverName() + " - " + address.getPhone() + " - "
+                + address.getSpecificAddress() + ", " + address.getWard() + ", "
+                + address.getDistrict() + ", " + address.getCity();
+    }
+
+    private String normalizeContact(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private void rejectCheckout(HttpServletResponse response, HttpSession session, String message) throws IOException {
+        session.setAttribute("voucherMsg", message);
+        session.setAttribute("msgType", "error");
+        response.sendRedirect("cart");
     }
 
     private void handleDirectCheckout(HttpServletResponse response, HttpSession session, User currentUser, CartDAO cartDao,
-            List<CartItem> cart, double totalMoney, String address, String paymentMethod) throws IOException {
+            List<CartItem> cart, PricingService.Quote quote, String address, String paymentMethod,
+            String contactEmail, String contactPhone) throws IOException {
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         OrderDAO orderDao = new OrderDAO();
         int newOrderId = orderDao.createOrderAndDecreaseStock(
-                currentUser.getUid(), totalMoney, address, paymentMethod, cart);
+                currentUser.getUid(), quote.getFinalTotal(), address, paymentMethod, cart,
+                contactEmail, contactPhone, quote.getMemberDiscountPercent());
 
         if (newOrderId <= 0) {
             session.setAttribute("voucherMsg", "Dat hang that bai, vui long thu lai.");
@@ -122,12 +220,14 @@ public class CheckoutController extends HttpServlet {
         }
 
         cartDao.clearCart(currentUser.getUid());
+        new OrderNotificationService().notifyOrderPlaced(orderDao.getOrderById(newOrderId));
         response.sendRedirect("order-success?id=" + newOrderId);
     }
 
     private void handleMomoCheckout(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-            int userId, List<CartItem> cart, double totalMoney, String address) throws IOException {
-        long momoAmount = Math.round(totalMoney);
+            int userId, List<CartItem> cart, PricingService.Quote quote, String address,
+            String contactEmail, String contactPhone) throws IOException {
+        long momoAmount = Math.round(quote.getFinalTotal());
         if (momoAmount < MOMO_MIN_AMOUNT || momoAmount > MOMO_MAX_AMOUNT) {
             session.setAttribute("voucherMsg",
                     "So tien thanh toan MoMo phai tu 1.000 den 50.000.000 VND.");
@@ -138,8 +238,8 @@ public class CheckoutController extends HttpServlet {
 
         Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
         OrderDAO orderDao = new OrderDAO();
-        int newOrderId = orderDao.createOrder(userId, totalMoney, address, "MOMO",
-                Order.STATUS_PENDING_MOMO, cart);
+        int newOrderId = orderDao.createOrder(userId, quote.getFinalTotal(), address, "MOMO",
+                Order.STATUS_PENDING_MOMO, cart, contactEmail, contactPhone, quote.getMemberDiscountPercent());
 
         if (newOrderId <= 0) {
             session.setAttribute("voucherMsg", "Khong the tao don hang cho thanh toan MoMo.");
@@ -147,6 +247,8 @@ public class CheckoutController extends HttpServlet {
             response.sendRedirect("cart");
             return;
         }
+
+        new OrderNotificationService().notifyOrderPlaced(orderDao.getOrderById(newOrderId));
 
         try {
             MomoService momoService = new MomoService();
@@ -169,19 +271,81 @@ public class CheckoutController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             orderDao.updateOrderStatus(newOrderId, Order.STATUS_MOMO_FAILED);
+            new OrderNotificationService().notifyStatusChanged(orderDao.getOrderById(newOrderId), null);
             session.setAttribute("voucherMsg", "Khong the khoi tao thanh toan MoMo. Vui long thu lai.");
             session.setAttribute("msgType", "error");
             response.sendRedirect("cart");
         }
     }
 
+    private void handleVnpayCheckout(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+            int userId, List<CartItem> cart, PricingService.Quote quote, String address,
+            String contactEmail, String contactPhone) throws IOException {
+        long vnpayAmount = Math.round(quote.getFinalTotal());
+        if (vnpayAmount <= 0 || vnpayAmount > VNPAY_MAX_AMOUNT) {
+            session.setAttribute("voucherMsg", "Số tiền thanh toán VNPay không hợp lệ.");
+            session.setAttribute("msgType", "error");
+            response.sendRedirect("cart");
+            return;
+        }
+
+        Voucher appliedVoucher = (Voucher) session.getAttribute("appliedVoucher");
+        VnpayService vnpayService;
+        try {
+            vnpayService = new VnpayService();
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("voucherMsg", "VNPay chưa được cấu hình đầy đủ trên máy chủ.");
+            session.setAttribute("msgType", "error");
+            response.sendRedirect("cart");
+            return;
+        }
+
+        OrderDAO orderDao = new OrderDAO();
+        int newOrderId = orderDao.createOrder(userId, quote.getFinalTotal(), address, "VNPAY",
+                Order.STATUS_PENDING_VNPAY, cart, contactEmail, contactPhone, quote.getMemberDiscountPercent());
+
+        if (newOrderId <= 0) {
+            session.setAttribute("voucherMsg", "Không thể tạo đơn hàng chờ thanh toán VNPay.");
+            session.setAttribute("msgType", "error");
+            response.sendRedirect("cart");
+            return;
+        }
+
+        new OrderNotificationService().notifyOrderPlaced(orderDao.getOrderById(newOrderId));
+
+        try {
+            int voucherId = appliedVoucher == null ? 0 : appliedVoucher.getId();
+            String transactionReference = vnpayService.createTransactionReference(newOrderId, voucherId);
+            String fallbackReturnUrl = buildBaseUrl(request) + "/vnpay-return";
+            String locale = (String) session.getAttribute("lang");
+            String paymentUrl = vnpayService.createPaymentUrl(
+                    vnpayAmount,
+                    transactionReference,
+                    "Thanh toan don hang " + newOrderId,
+                    fallbackReturnUrl,
+                    getClientIp(request),
+                    locale);
+
+            response.sendRedirect(paymentUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            orderDao.updateOrderStatus(newOrderId, Order.STATUS_VNPAY_FAILED);
+            new OrderNotificationService().notifyStatusChanged(orderDao.getOrderById(newOrderId), null);
+            session.setAttribute("voucherMsg", "Không thể khởi tạo thanh toán VNPay. Vui lòng thử lại.");
+            session.setAttribute("msgType", "error");
+            response.sendRedirect("cart");
+        }
+    }
+
     private String buildBaseUrl(HttpServletRequest request) {
+        String scheme = getForwardedScheme(request);
         StringBuilder baseUrl = new StringBuilder();
-        baseUrl.append(request.getScheme()).append("://").append(request.getServerName());
+        baseUrl.append(scheme).append("://").append(request.getServerName());
 
         int serverPort = request.getServerPort();
-        boolean defaultPort = ("http".equalsIgnoreCase(request.getScheme()) && serverPort == 80)
-                || ("https".equalsIgnoreCase(request.getScheme()) && serverPort == 443);
+        boolean defaultPort = ("http".equalsIgnoreCase(scheme) && serverPort == 80)
+                || ("https".equalsIgnoreCase(scheme) && (serverPort == 80 || serverPort == 443));
 
         if (!defaultPort) {
             baseUrl.append(":").append(serverPort);
@@ -191,7 +355,27 @@ public class CheckoutController extends HttpServlet {
         return baseUrl.toString();
     }
 
+    private String getForwardedScheme(HttpServletRequest request) {
+        String forwardedProto = request.getHeader("X-Forwarded-Proto");
+        if (forwardedProto != null && !forwardedProto.isBlank()) {
+            String firstValue = forwardedProto.split(",", 2)[0].trim();
+            if ("http".equalsIgnoreCase(firstValue) || "https".equalsIgnoreCase(firstValue)) {
+                return firstValue.toLowerCase(java.util.Locale.ROOT);
+            }
+        }
+        return request.getScheme();
+    }
+
     private String buildMomoOrderId(int internalOrderId) {
         return "FS" + internalOrderId + "_" + System.currentTimeMillis();
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor;
+        }
+        String realIp = request.getHeader("X-Real-IP");
+        return realIp == null || realIp.isBlank() ? request.getRemoteAddr() : realIp;
     }
 }

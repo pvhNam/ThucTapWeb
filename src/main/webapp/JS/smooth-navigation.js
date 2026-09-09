@@ -63,6 +63,12 @@
         catch (error) { return null; }
     }
 
+    function formActionUrl(form, submitter) {
+        var submitterAction = submitter && submitter.getAttribute('formaction');
+        var formAction = form && form.getAttribute('action');
+        return toUrl(submitterAction || formAction || window.location.href);
+    }
+
     function isDownloadSubmission(form, submitter, action) {
         var target = (submitter && submitter.getAttribute('formtarget')) || form.getAttribute('target');
         if (target && target.toLowerCase() !== '_self') return true;
@@ -94,7 +100,7 @@
     }
 
     function adminFormUrl(form, submitter) {
-        var action = toUrl((submitter && submitter.getAttribute('formaction')) || form.action);
+        var action = formActionUrl(form, submitter);
         if (!action) return null;
         action.search = formDataWithSubmitter(form, submitter).toString();
         return action;
@@ -818,12 +824,16 @@
         updateCartCount(data.cartCount);
 
         var subtotal = document.getElementById('cart-subtotal');
-        var discount = document.getElementById('cart-discount');
-        var discountRow = document.getElementById('cart-discount-row');
+        var memberDiscount = document.getElementById('cart-member-discount');
+        var memberDiscountRow = document.getElementById('cart-member-discount-row');
+        var voucherDiscount = document.getElementById('cart-voucher-discount');
+        var voucherDiscountRow = document.getElementById('cart-voucher-discount-row');
         var finalTotal = document.getElementById('cart-final-total');
         if (subtotal) subtotal.textContent = formatMoney(data.subtotal);
-        if (discount) discount.textContent = '- ' + formatMoney(data.discountAmount);
-        if (discountRow) discountRow.hidden = !(Number(data.discountAmount) > 0);
+        if (memberDiscount) memberDiscount.textContent = '- ' + formatMoney(data.memberDiscountAmount);
+        if (memberDiscountRow) memberDiscountRow.hidden = !(Number(data.memberDiscountAmount) > 0);
+        if (voucherDiscount) voucherDiscount.textContent = '- ' + formatMoney(data.voucherDiscountAmount);
+        if (voucherDiscountRow) voucherDiscountRow.hidden = !(Number(data.voucherDiscountAmount) > 0);
         if (finalTotal) finalTotal.textContent = formatMoney(data.finalTotal);
 
         var checkout = document.querySelector('.btn-checkout');
@@ -856,7 +866,7 @@
 
     async function addToCart(form, submitter) {
         if (!form.reportValidity()) return;
-        var url = toUrl((submitter && submitter.getAttribute('formaction')) || form.action);
+        var url = formActionUrl(form, submitter);
         if (!url) return;
         setBusy(submitter, true);
         startProgress(false);
@@ -884,7 +894,9 @@
         var card = form.closest('.cart-card');
         if (card) card.classList.add('is-updating');
         try {
-            var data = await postForm(form.action, formDataWithSubmitter(form, submitter));
+            var url = formActionUrl(form, submitter);
+            if (!url) throw new Error('Địa chỉ xử lý biểu mẫu không hợp lệ.');
+            var data = await postForm(url.href, formDataWithSubmitter(form, submitter));
             applyCartState(data, submitter || form);
             if (data.message) showMessage(data.message, data.success === false ? 'error' : 'success');
         } catch (error) {
@@ -968,7 +980,7 @@
         if (event.defaultPrevented) return;
         var form = event.target;
         var submitter = event.submitter;
-        var action = toUrl((submitter && submitter.getAttribute('formaction')) || form.action);
+        var action = formActionUrl(form, submitter);
         if (form.matches('form[data-admin-ajax]') && form.method.toLowerCase() === 'get') {
             event.preventDefault();
             window.clearTimeout(adminSearchTimer);

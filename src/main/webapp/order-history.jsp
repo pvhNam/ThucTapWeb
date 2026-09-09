@@ -76,11 +76,13 @@
                 case "pending":
                     include = model.Order.STATUS_PROCESSING.equals(normalized)
                             || model.Order.STATUS_PENDING_MOMO.equals(normalized)
+                            || model.Order.STATUS_PENDING_VNPAY.equals(normalized)
                             || model.Order.STATUS_PAID_PROCESSING.equals(normalized);
                     break;
                 case "cancelled":
                     include = model.Order.STATUS_CANCELLED.equals(normalized)
-                            || model.Order.STATUS_MOMO_FAILED.equals(normalized);
+                            || model.Order.STATUS_MOMO_FAILED.equals(normalized)
+                            || model.Order.STATUS_VNPAY_FAILED.equals(normalized);
                     break;
                 default:
                     include = true;
@@ -115,7 +117,9 @@
             for (Order o : filteredList) {
                 String statusClass;
                 String normalized = o.getNormalizedStatus();
-                if (model.Order.STATUS_CANCELLED.equals(normalized) || model.Order.STATUS_MOMO_FAILED.equals(normalized)) {
+                if (model.Order.STATUS_CANCELLED.equals(normalized)
+                        || model.Order.STATUS_MOMO_FAILED.equals(normalized)
+                        || model.Order.STATUS_VNPAY_FAILED.equals(normalized)) {
                     statusClass = "status-cancelled";
                 } else if (model.Order.STATUS_SUCCESS.equals(normalized)) {
                     statusClass = "status-success";

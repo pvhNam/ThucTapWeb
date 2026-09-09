@@ -72,7 +72,8 @@ public class ExportReportController extends HttpServlet {
                         if (item.paymentMethod != null &&
                           (item.paymentMethod.toUpperCase().contains("BANK")
                            || item.paymentMethod.toUpperCase().contains("CHUYEN")
-                           || item.paymentMethod.toUpperCase().contains("MOMO"))) {
+                           || item.paymentMethod.toUpperCase().contains("MOMO")
+                           || item.paymentMethod.toUpperCase().contains("VNPAY"))) {
                             payMethod = "Chuyen khoan";
                         }
                         row.createCell(4).setCellValue(payMethod);

@@ -30,7 +30,8 @@ public class VoucherController extends HttpServlet {
 
         if ("save".equals(action)) {
             String code = request.getParameter("code");
-            Voucher v = vDao.getVoucherByCode(code);
+            if (code != null) code = code.trim().toUpperCase();
+            Voucher v = vDao.getPublicVoucherByCode(code);
 
             if (v != null) {
                 boolean saved = vDao.saveVoucherToWallet(currentUser.getUid(), v.getId());

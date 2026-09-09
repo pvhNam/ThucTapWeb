@@ -8,7 +8,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Order;
+import model.User;
+import service.OrderNotificationService;
 
 @WebServlet("/order-detail")
 public class OrderDetailController extends HttpServlet {
@@ -16,8 +19,27 @@ public class OrderDetailController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User currentUser = session == null ? null : (User) session.getAttribute("user");
+        if (currentUser == null) {
+            response.sendRedirect("login");
+            return;
+        }
         String idParam = request.getParameter("id");
         if (idParam == null || idParam.isEmpty()) {
+            response.sendRedirect("order-history");
+            return;
+        }
+        try {
+            Order order = new OrderDAO().getOrderById(Integer.parseInt(idParam));
+            boolean adminOrStaff = currentUser.getIsAdmin() > 0;
+            if (order == null || (!adminOrStaff && order.getUserId() != currentUser.getUid())) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            request.setAttribute("order", order);
+            request.setAttribute("orderDetails", new OrderDAO().getDetails(order.getId()));
+        } catch (NumberFormatException e) {
             response.sendRedirect("order-history");
             return;
         }
@@ -28,6 +50,12 @@ public class OrderDetailController extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            HttpSession session = request.getSession(false);
+            User currentUser = session == null ? null : (User) session.getAttribute("user");
+            if (currentUser == null) {
+                response.sendRedirect("login");
+                return;
+            }
             String action = request.getParameter("action");
             int orderId = Integer.parseInt(request.getParameter("id"));
 
@@ -35,8 +63,9 @@ public class OrderDetailController extends HttpServlet {
                 OrderDAO dao = new OrderDAO();
                 Order order = dao.getOrderById(orderId);
 
-                if (order != null && canCancel(order.getStatus())) {
-                    dao.updateOrderStatus(orderId, Order.STATUS_CANCELLED);
+                if (order != null && order.getUserId() == currentUser.getUid() && canCancel(order.getStatus())
+                        && dao.updateOrderStatusIfCurrent(orderId, order.getStatus(), Order.STATUS_CANCELLED)) {
+                    new OrderNotificationService().notifyStatusChanged(dao.getOrderById(orderId), null);
                 }
             }
 
@@ -49,6 +78,6 @@ public class OrderDetailController extends HttpServlet {
     }
 
     private boolean canCancel(String status) {
-        return Order.STATUS_PROCESSING.equals(status) || Order.STATUS_PENDING_MOMO.equals(status);
+        return Order.STATUS_PROCESSING.equals(status);
     }
 }

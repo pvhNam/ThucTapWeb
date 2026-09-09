@@ -38,7 +38,7 @@ public class OrderDAO {
 
     public List<Order> getAllOrders() {
         List<Order> list = new ArrayList<>();
-        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o "
+        String sql = "SELECT o.*, u.fullname, u.phonenumber, u.email AS user_email FROM orders o "
                 + "JOIN users u ON o.user_id = u.uid "
                 + "ORDER BY o.created_at DESC";
         try {
@@ -55,7 +55,7 @@ public class OrderDAO {
     }
 
     public Order getOrderById(int orderId) {
-        String sql = "SELECT o.*, u.fullname, u.phonenumber FROM orders o "
+        String sql = "SELECT o.*, u.fullname, u.phonenumber, u.email AS user_email FROM orders o "
                 + "JOIN users u ON o.user_id = u.uid "
                 + "WHERE o.id = ?";
         try {
@@ -78,17 +78,30 @@ public class OrderDAO {
 
     public int createOrder(int userId, double totalMoney, String address, String paymentMethod, String status,
             List<CartItem> cart) {
-        return createOrderInternal(userId, totalMoney, address, paymentMethod, status, cart, false);
+        return createOrderInternal(userId, totalMoney, address, paymentMethod, status, cart, false, null, null, 0);
+    }
+
+    public int createOrder(int userId, double totalMoney, String address, String paymentMethod, String status,
+            List<CartItem> cart, String contactEmail, String contactPhone, double memberDiscountPercent) {
+        return createOrderInternal(userId, totalMoney, address, paymentMethod, status, cart, false,
+                contactEmail, contactPhone, memberDiscountPercent);
     }
 
     public int createOrderAndDecreaseStock(int userId, double totalMoney, String address, String paymentMethod,
             List<CartItem> cart) {
         return createOrderInternal(userId, totalMoney, address, paymentMethod,
-                Order.STATUS_PROCESSING, cart, true);
+                Order.STATUS_PROCESSING, cart, true, null, null, 0);
+    }
+
+    public int createOrderAndDecreaseStock(int userId, double totalMoney, String address, String paymentMethod,
+            List<CartItem> cart, String contactEmail, String contactPhone, double memberDiscountPercent) {
+        return createOrderInternal(userId, totalMoney, address, paymentMethod,
+                Order.STATUS_PROCESSING, cart, true, contactEmail, contactPhone, memberDiscountPercent);
     }
 
     private int createOrderInternal(int userId, double totalMoney, String address, String paymentMethod, String status,
-            List<CartItem> cart, boolean decreaseStock) {
+            List<CartItem> cart, boolean decreaseStock, String contactEmail, String contactPhone,
+            double memberDiscountPercent) {
         int orderId = 0;
         Connection connection = null;
         PreparedStatement psOrder = null;
@@ -98,8 +111,10 @@ public class OrderDAO {
             connection = new DBConnect().getConnection();
             connection.setAutoCommit(false);
 
-            String sqlOrder = "INSERT INTO orders (user_id, total_money, address, status, created_at, payment_method) "
-                    + "VALUES (?, ?, ?, ?, NOW(), ?)";
+            String sqlOrder = "INSERT INTO orders "
+                    + "(user_id, total_money, address, status, created_at, payment_method, "
+                    + "contact_email, contact_phone, member_discount_percent) "
+                    + "VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
 
             psOrder = connection.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
             psOrder.setInt(1, userId);
@@ -107,6 +122,9 @@ public class OrderDAO {
             psOrder.setString(3, address);
             psOrder.setString(4, status);
             psOrder.setString(5, paymentMethod);
+            psOrder.setString(6, normalizeContact(contactEmail));
+            psOrder.setString(7, normalizeContact(contactPhone));
+            psOrder.setDouble(8, Math.max(0, memberDiscountPercent));
 
             if (psOrder.executeUpdate() > 0) {
                 try (ResultSet rsKeys = psOrder.getGeneratedKeys()) {
@@ -170,11 +188,17 @@ public class OrderDAO {
         return orderId;
     }
 
-    /**
-     * Completes a MoMo order and decreases every selected variant in one transaction.
-     * Repeated callbacks are idempotent and do not decrease inventory twice.
-     */
+    /** Completes a MoMo order without decreasing inventory twice on repeated callbacks. */
     public boolean finalizeMomoPayment(int orderId) {
+        return finalizeOnlinePayment(orderId, Order.STATUS_PENDING_MOMO);
+    }
+
+    /** Completes a VNPay order without decreasing inventory twice on repeated IPNs. */
+    public boolean finalizeVnpayPayment(int orderId) {
+        return finalizeOnlinePayment(orderId, Order.STATUS_PENDING_VNPAY);
+    }
+
+    private boolean finalizeOnlinePayment(int orderId, String pendingStatus) {
         Connection connection = null;
         try {
             connection = DBConnect.getConnection();
@@ -195,7 +219,7 @@ public class OrderDAO {
                 connection.commit();
                 return true;
             }
-            if (!Order.STATUS_PENDING_MOMO.equals(currentStatus)) {
+            if (!pendingStatus.equals(currentStatus)) {
                 connection.rollback();
                 return false;
             }
@@ -226,7 +250,7 @@ public class OrderDAO {
                     "UPDATE orders SET status = ? WHERE id = ? AND status = ?")) {
                 update.setString(1, Order.STATUS_PAID_PROCESSING);
                 update.setInt(2, orderId);
-                update.setString(3, Order.STATUS_PENDING_MOMO);
+                update.setString(3, pendingStatus);
                 if (update.executeUpdate() != 1) {
                     throw new SQLException("Order status changed while completing payment");
                 }
@@ -315,6 +339,10 @@ public class OrderDAO {
 
     private String normalizeVariantValue(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private String normalizeContact(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     private static class StockLine {
@@ -408,12 +436,25 @@ public class OrderDAO {
         order.setPaymentMethod(resultSet.getString("payment_method"));
 
         try {
+            order.setContactEmail(resultSet.getString("contact_email"));
+            order.setContactPhone(resultSet.getString("contact_phone"));
+            order.setMemberDiscountPercent(resultSet.getDouble("member_discount_percent"));
+        } catch (SQLException ignored) {
+        }
+
+        try {
             order.setUserName(resultSet.getString("fullname"));
         } catch (SQLException ignored) {
         }
 
         try {
             order.setPhoneNumber(resultSet.getString("phonenumber"));
+            if (order.getContactPhone() == null || order.getContactPhone().isBlank()) {
+                order.setContactPhone(resultSet.getString("phonenumber"));
+            }
+            if (order.getContactEmail() == null || order.getContactEmail().isBlank()) {
+                order.setContactEmail(resultSet.getString("user_email"));
+            }
         } catch (SQLException ignored) {
         }
 

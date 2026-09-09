@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Order;
 import service.MomoService;
+import service.OrderNotificationService;
 
 @WebServlet("/momo-callback")
 public class MomoCallbackController extends HttpServlet {
@@ -111,12 +112,16 @@ public class MomoCallbackController extends HttpServlet {
                 boolean completed = orderDao.finalizeMomoPayment(orderId);
                 if (completed) {
                     cleanupSuccessfulPayment(order, extraData);
+                    new OrderNotificationService().notifyStatusChanged(orderDao.getOrderById(orderId), null);
                 }
                 result.success = completed;
                 return result;
             }
 
-            orderDao.updateOrderStatusIfCurrent(orderId, Order.STATUS_PENDING_MOMO, Order.STATUS_MOMO_FAILED);
+            if (orderDao.updateOrderStatusIfCurrent(
+                    orderId, Order.STATUS_PENDING_MOMO, Order.STATUS_MOMO_FAILED)) {
+                new OrderNotificationService().notifyStatusChanged(orderDao.getOrderById(orderId), null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

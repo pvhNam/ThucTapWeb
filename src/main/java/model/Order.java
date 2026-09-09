@@ -5,10 +5,12 @@ import java.sql.Date;
 public class Order {
 	public static final String STATUS_PROCESSING = "Dang xu ly";
 	public static final String STATUS_PENDING_MOMO = "Cho thanh toan MoMo";
+	public static final String STATUS_PENDING_VNPAY = "Cho thanh toan VNPay";
 	public static final String STATUS_PAID_PROCESSING = "Da thanh toan - Dang xu ly";
 	public static final String STATUS_SHIPPING = "Dang giao hang";
 	public static final String STATUS_SUCCESS = "Giao thanh cong";
 	public static final String STATUS_MOMO_FAILED = "Thanh toan MoMo that bai";
+	public static final String STATUS_VNPAY_FAILED = "Thanh toan VNPay that bai";
 	public static final String STATUS_CANCELLED = "Da huy";
 
 	private int id;
@@ -20,6 +22,9 @@ public class Order {
 	private String userName;
 	private String phoneNumber;
 	private String paymentMethod;
+	private String contactEmail;
+	private String contactPhone;
+	private double memberDiscountPercent;
 
 	public Order() {
 	}
@@ -55,6 +60,30 @@ public class Order {
 
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
+	}
+
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	public String getContactPhone() {
+		return contactPhone;
+	}
+
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+	public double getMemberDiscountPercent() {
+		return memberDiscountPercent;
+	}
+
+	public void setMemberDiscountPercent(double memberDiscountPercent) {
+		this.memberDiscountPercent = memberDiscountPercent;
 	}
 
 	// --- Các Getter/Setter cũ (Giữ nguyên) ---
@@ -105,8 +134,14 @@ public class Order {
 		if (lowerStatus.contains("momo") && lowerStatus.contains("that bai")) {
 			return STATUS_MOMO_FAILED;
 		}
+		if (lowerStatus.contains("vnpay") && lowerStatus.contains("that bai")) {
+			return STATUS_VNPAY_FAILED;
+		}
 		if (lowerStatus.contains("cho thanh toan momo")) {
 			return STATUS_PENDING_MOMO;
+		}
+		if (lowerStatus.contains("cho thanh toan vnpay")) {
+			return STATUS_PENDING_VNPAY;
 		}
 		if (lowerStatus.contains("da thanh toan") && lowerStatus.contains("xu ly")) {
 			return STATUS_PAID_PROCESSING;
@@ -134,6 +169,8 @@ public class Order {
 			return "Đang xử lý";
 		case STATUS_PENDING_MOMO:
 			return "Chờ thanh toán";
+		case STATUS_PENDING_VNPAY:
+			return "Chờ thanh toán VNPay";
 		case STATUS_PAID_PROCESSING:
 			return "Đã thanh toán - đang xử lý";
 		case STATUS_SHIPPING:
@@ -142,6 +179,8 @@ public class Order {
 			return "Giao thành công";
 		case STATUS_MOMO_FAILED:
 			return "Thanh toán MoMo thất bại";
+		case STATUS_VNPAY_FAILED:
+			return "Thanh toán VNPay thất bại";
 		case STATUS_CANCELLED:
 			return "Đã hủy";
 		default:
@@ -153,6 +192,7 @@ public class Order {
 		String normalizedStatus = getNormalizedStatus();
 		return STATUS_PROCESSING.equals(normalizedStatus)
 				|| STATUS_PENDING_MOMO.equals(normalizedStatus)
+				|| STATUS_PENDING_VNPAY.equals(normalizedStatus)
 				|| STATUS_PAID_PROCESSING.equals(normalizedStatus);
 	}
 
@@ -170,14 +210,13 @@ public class Order {
 	}
 
 	public boolean isCancelledStatus() {
-		return STATUS_CANCELLED.equals(getNormalizedStatus()) || STATUS_MOMO_FAILED.equals(getNormalizedStatus());
+		return STATUS_CANCELLED.equals(getNormalizedStatus())
+				|| STATUS_MOMO_FAILED.equals(getNormalizedStatus())
+				|| STATUS_VNPAY_FAILED.equals(getNormalizedStatus());
 	}
 
 	public boolean isAdminCancelableStatus() {
-		String normalizedStatus = getNormalizedStatus();
-		return STATUS_PROCESSING.equals(normalizedStatus)
-				|| STATUS_PENDING_MOMO.equals(normalizedStatus)
-				|| STATUS_PAID_PROCESSING.equals(normalizedStatus);
+		return STATUS_PROCESSING.equals(getNormalizedStatus());
 	}
 
 	public String getAdminBadgeClass() {

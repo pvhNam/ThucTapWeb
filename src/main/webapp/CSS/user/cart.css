@@ -471,6 +471,12 @@ body {
     margin-top: 10px;
 }
 
+.msg-success {
+    color: #1f8b4c;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 992px) {
     .cart-layout {
